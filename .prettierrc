@@ -1,0 +1,12 @@
+{
+    "printWidth": 125,
+    "tabWidth": 4,
+    "singleAttributePerLine": true,
+    "trailingComma": "none",
+    "experimentalTernaries": true,
+    "arrowParens": "avoid",
+    "plugins": ["./src/index.mjs"],
+    "grundyScssSorterWithRoot": false,
+    "grundyScssSorterGroupsOrder": ["@use", "$variable", "@font", "--variable", "decl", "@include", "@mixin", "rule"],
+    "grundyScssSorterGroups": "{\"@font\": { \"startsWith\": \"font\" }}"
+}

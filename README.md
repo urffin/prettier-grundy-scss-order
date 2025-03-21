@@ -1,2 +1,3 @@
 # grundy-scss-order
-simple sorter for scss properties
+
+Prettier plugin for simple sort scss properties

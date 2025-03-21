@@ -1,0 +1,33 @@
+{
+    "name": "prettier-grundy-scss-order",
+    "version": "0.0.3",
+    "description": "Sorter for properties in scss files",
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/urffin/grundy-scss-order.git"
+    },
+    "keywords": [
+        "prettier",
+        "prettier-plugin",
+        "css",
+        "scss",
+        "declaration",
+        "sorter",
+        "property",
+        "order"
+    ],
+    "author": "Grundy",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/urffin/grundy-scss-order/issues"
+    },
+    "homepage": "https://github.com/urffin/grundy-scss-order#readme",
+    "dependencies": {
+        "postcss": "^8.5.3",
+        "postcss-scss": "^4.0.9"
+    },
+    "peerDependencies": {
+        "prettier": "^3.5.3"
+    }
+}
