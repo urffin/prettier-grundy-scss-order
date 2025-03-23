@@ -1,4 +1,4 @@
-const defaultOrder = ["@use", "--variable", "$variable", "decl", "@include", "@mixin", "rule"];
+const defaultOrder = ["@use", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"];
 const defaultGroups = {
     "@use": { type: "use" },
     "@mixin": { type: "mixin" },
@@ -6,7 +6,9 @@ const defaultGroups = {
     $variable: { type: "$variable" },
     decl: { type: "decl" },
     "@include": { type: "include" },
-    rule: { type: "rule" }
+    rule: { type: "rule" },
+    "@if": { type: "if" },
+    "@else": { type: "else" }
 };
 
 function nodeGroup(node, groups) {
@@ -71,6 +73,8 @@ function nodeType(node) {
             if (node.name == "use") return "use";
             if (node.name == "mixin") return "mixin";
             if (node.name == "include") return "include";
+            if (node.name == "if") return "if";
+            if (node.name == "else") return "else";
             return "atrule";
         case "rule":
             return "rule";
@@ -105,6 +109,28 @@ function splitGroups(nodes, groups) {
     }
     cleanEnding(nodes.at(-1));
 }
+function removeElseStatements(nodes, groups) {
+    const elseStatements = [];
+    for (let i = nodes.length; i-- > 0; ) {
+        const node = nodes[i];
+        const nodeGroup = groups.get(node);
+        if (nodeGroup.includes("@else")) {
+            elseStatements.push({
+                node,
+                prev: node.prev()
+            });
+            node.remove();
+        }
+    }
+    return elseStatements;
+}
+
+function appendElseStatements(elseStatements) {
+    for (let i = elseStatements.length; i-- > 0; ) {
+        const { node, prev } = elseStatements[i];
+        prev.after(node);
+    }
+}
 
 export function grundyPropSorter({ groups = {}, order = defaultOrder, withRoot = false } = {}) {
     groups = Object.assign({}, defaultGroups, groups);
@@ -112,9 +138,11 @@ export function grundyPropSorter({ groups = {}, order = defaultOrder, withRoot =
     function runComparer(nodes) {
         if (Array.isArray(nodes)) {
             const groupMap = new Map(nodes.map(node => [node, nodeGroup(node, groups)]));
+            const elseStatements = removeElseStatements(nodes, groupMap);
             const typeComparer = createComparerByType(order, groupMap);
             nodes.sort(typeComparer);
             splitGroups(nodes, groupMap);
+            appendElseStatements(elseStatements);
         }
     }
     return {

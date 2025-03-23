@@ -1,6 +1,6 @@
 {
     "name": "prettier-grundy-scss-order",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "Sorter for properties in scss files",
     "main": "./src/index.mjs",
     "scripts": {},
@@ -8,6 +8,9 @@
         "type": "git",
         "url": "git+https://github.com/urffin/grundy-scss-order.git"
     },
+    "files": [
+        "!./src/*.test.mjs"
+    ],
     "keywords": [
         "prettier",
         "prettier-plugin",
