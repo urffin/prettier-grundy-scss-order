@@ -1,4 +1,4 @@
-const defaultOrder = ["@use", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"];
+const defaultOrder = ["@use", "@extend", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"];
 const defaultGroups = {
     "@use": { type: "use" },
     "@mixin": { type: "mixin" },
@@ -8,7 +8,8 @@ const defaultGroups = {
     "@include": { type: "include" },
     rule: { type: "rule" },
     "@if": { type: "if" },
-    "@else": { type: "else" }
+    "@else": { type: "else" },
+    "@extend": { type: "extend" }
 };
 
 function nodeGroup(node, groups) {
@@ -75,6 +76,7 @@ function nodeType(node) {
             if (node.name == "include") return "include";
             if (node.name == "if") return "if";
             if (node.name == "else") return "else";
+            if (node.name == "extend") return "extend";
             return "atrule";
         case "rule":
             return "rule";
