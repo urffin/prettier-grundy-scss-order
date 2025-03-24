@@ -55,4 +55,4 @@ Then possibly use this group in `grundyScssSorterGroupsOrder`:
 ```
 
 [npm]: https://www.npmjs.com/package/prettier-grundy-scss-order
-[npm-badge]: https://tinyshields.dev/npm/prettier-grundy-scss-order.svg
+[npm-badge]: https://img.shields.io/npm/v/prettier-grundy-scss-order?color=blue
