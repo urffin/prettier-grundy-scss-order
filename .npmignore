@@ -1,3 +1,6 @@
 example
 .prettierignore
 .prettierrc
+.vscode
+tests
+*.test.mjs

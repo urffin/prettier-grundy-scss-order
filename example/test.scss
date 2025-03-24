@@ -1,12 +1,4 @@
-@mixin underline() {
+.selector {
     --stroke-opacity: 0.36;
-    --stroke-color: rgb(var(--color-rgb) / var(--stroke-opacity));
-
-    text-decoration-color: var(--stroke-color);
-    text-decoration-line: underline;
-
-    @include focus.focus;
-    @include hover.hover {
-        --stroke-opacity: 0.12;
-    }
+    text-decoration-color: green;
 }

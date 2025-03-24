@@ -8,9 +8,6 @@
         "type": "git",
         "url": "git+https://github.com/urffin/grundy-scss-order.git"
     },
-    "files": [
-        "!./src/*.test.mjs"
-    ],
     "keywords": [
         "prettier",
         "prettier-plugin",
