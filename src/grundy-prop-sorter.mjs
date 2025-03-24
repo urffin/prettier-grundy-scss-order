@@ -4,7 +4,7 @@ const defaultGroups = {
     "@mixin": { type: "mixin" },
     "--variable": { type: "variable" },
     $variable: { type: "$variable" },
-    decl: { type: "decl" },
+    decl: { type: "decl", order: "alphabetical" },
     "@include": { type: "include" },
     rule: { type: "rule" },
     "@if": { type: "if" },
@@ -42,7 +42,7 @@ function checkCriteria(node, criterias) {
  * @param {Map<Node, String[]>} groupMap
  * @returns
  */
-function createComparerByType(order, groupMap) {
+function createComparerByType(order, groupMap, groups) {
     return (a, b) => {
         const aGroups = groupMap.get(a) ?? [];
         const bGroups = groupMap.get(b) ?? [];
@@ -51,6 +51,18 @@ function createComparerByType(order, groupMap) {
 
         if (aIndex == -1) return 1;
         if (bIndex == -1) return -1;
+
+        if (aIndex == bIndex) {
+            const currentGroup = groups[order[aIndex]];
+            if (currentGroup.order == "alphabetical") {
+                const aName = nodeName(a);
+                const bName = nodeName(b);
+                if (aName > bName) return 1;
+                if (aName < bName) return -1;
+                return 0;
+            }
+        }
+
         return aIndex - bIndex;
     };
 }
@@ -141,7 +153,7 @@ export function grundyPropSorter({ groups = {}, order = defaultOrder, withRoot =
         if (Array.isArray(nodes)) {
             const groupMap = new Map(nodes.map(node => [node, nodeGroup(node, groups)]));
             const elseStatements = removeElseStatements(nodes, groupMap);
-            const typeComparer = createComparerByType(order, groupMap);
+            const typeComparer = createComparerByType(order, groupMap, groups);
             nodes.sort(typeComparer);
             if (splitGroups) splitGroupsInternal(nodes, groupMap);
             appendElseStatements(elseStatements);

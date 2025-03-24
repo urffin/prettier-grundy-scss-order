@@ -25,4 +25,26 @@ text-decoration-color: green;
     );
 });
 
+test("Should sort css property alphabetically by default", async () => {
+    const result = await prettier.format(
+        `
+display: block;
+border: red;`,
+
+        {
+            parser: "scss",
+            plugins: [path.resolve(fileURLToPath(import.meta.url), "../../src/index.mjs")],
+            grundyScssSorterWithRoot: true,
+            grundyScssSorterGroupsOrder: ["decl"]
+        }
+    );
+
+    assert.equal(
+        result,
+        `border: red;
+display: block;
+`
+    );
+});
+
 test.run();
