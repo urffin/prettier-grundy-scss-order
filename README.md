@@ -1,6 +1,6 @@
 # grundy-scss-order
 
-[![npm][npm-badge]][npm]
+[![npm][npm-badge]][npm] ![GitHub Actions Workflow Status][npm-build]
 
 A [Prettier](https://prettier.io/) plugin to sort CSS or SCSS properties. Using [postcss-scss](https://github.com/postcss/postcss-scss) for parse source.
 
@@ -56,3 +56,4 @@ Then possibly use this group in `grundyScssSorterGroupsOrder`:
 
 [npm]: https://www.npmjs.com/package/prettier-grundy-scss-order
 [npm-badge]: https://img.shields.io/npm/v/prettier-grundy-scss-order?color=blue
+[npm-build]: https://img.shields.io/github/actions/workflow/status/urffin/grundy-scss-order/npm-publish.yml?label=build
