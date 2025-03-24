@@ -3,13 +3,21 @@ import postcss from "postcss";
 import postcssScss from "postcss-scss";
 import { grundyPropSorter } from "./grundy-prop-sorter.mjs";
 
+/**
+ *
+ * @param {string} text
+ * @param {*} options
+ * @returns
+ */
 function grundyParseSorter(text, options) {
-    const { grundyScssSorterGroups, grundyScssSorterWithRoot, grundyScssSorterGroupsOrder } = options;
+    const { grundyScssSorterGroups, grundyScssSorterWithRoot, grundyScssSorterGroupsOrder, grundyScssSorterSplitGroup } =
+        options;
     return postcss([
         grundyPropSorter({
             groups: grundyScssSorterGroups ? JSON.parse(grundyScssSorterGroups) : undefined,
             order: grundyScssSorterGroupsOrder,
-            withRoot: grundyScssSorterWithRoot
+            withRoot: grundyScssSorterWithRoot,
+            splitGroup: grundyScssSorterSplitGroup
         })
     ])
         .process(text, {
@@ -30,6 +38,12 @@ export const options = {
         category: "grundy-scss-declaration-sorter",
         default: false
     },
+    grundyScssSorterSplitGroup: {
+        type: "boolean",
+        description: "Flag if need split groups with empty line",
+        category: "grundy-scss-declaration-sorter",
+        default: false
+    },
     grundyScssSorterGroups: {
         type: "string",
         description: "Map of groups with criterias. This append new groups.",
@@ -40,7 +54,7 @@ export const options = {
         array: true,
         description: "An array of property names, their order is used to sort with. This overrides default ordering!",
         category: "grundy-scss-declaration-sorter",
-        default: [{ value: [] }]
+        default: [{ value: ["@use", "--variable", "$variable", "decl", "@if", "@include", "@mixin", "rule"] }]
     }
 };
 export const parsers = {

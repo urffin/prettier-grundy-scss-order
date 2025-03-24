@@ -87,7 +87,7 @@ function nodeType(node) {
     }
 }
 
-function splitGroups(nodes, groups) {
+function splitGroupsInternal(nodes, groups) {
     function cleanEnding(node) {
         node.raws.before = node.raws.before.replace(/\n+/g, "\n");
         node.raws.after = undefined;
@@ -132,7 +132,7 @@ function appendElseStatements(elseStatements) {
     }
 }
 
-export function grundyPropSorter({ groups = {}, order = defaultOrder, withRoot = false } = {}) {
+export function grundyPropSorter({ groups = {}, order = defaultOrder, withRoot = false, splitGroups = false } = {}) {
     groups = Object.assign({}, defaultGroups, groups);
 
     function runComparer(nodes) {
@@ -141,7 +141,7 @@ export function grundyPropSorter({ groups = {}, order = defaultOrder, withRoot =
             const elseStatements = removeElseStatements(nodes, groupMap);
             const typeComparer = createComparerByType(order, groupMap);
             nodes.sort(typeComparer);
-            splitGroups(nodes, groupMap);
+            if (splitGroups) splitGroupsInternal(nodes, groupMap);
             appendElseStatements(elseStatements);
         }
     }
