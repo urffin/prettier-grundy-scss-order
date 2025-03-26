@@ -1,9 +1,21 @@
 .selector {
-    --stroke-opacity: 0.36;
-    text-decoration-color: green;
+    --background: red;
+    --color: 0.36;
+
+    color: green;
 }
 
 .selector2 {
     border: red;
     display: block;
+
+    @include colors;
+}
+
+.selector3 {
+    @include colors;
+    @include hover;
+
+    .span {
+    }
 }

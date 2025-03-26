@@ -17,7 +17,7 @@ function grundyParseSorter(text, options) {
             groups: grundyScssSorterGroups ? JSON.parse(grundyScssSorterGroups) : undefined,
             order: grundyScssSorterGroupsOrder,
             withRoot: grundyScssSorterWithRoot,
-            splitGroup: grundyScssSorterSplitGroup
+            splitGroups: grundyScssSorterSplitGroup
         })
     ])
         .process(text, {

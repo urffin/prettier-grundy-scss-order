@@ -7,6 +7,17 @@
     "arrowParens": "avoid",
     "plugins": ["./src/index.mjs"],
     "grundyScssSorterWithRoot": false,
-    "grundyScssSorterGroupsOrder": ["@use", "--variable", "$variable", "@font", "decl", "@if", "@include", "@mixin", "rule"],
+    "grundyScssSorterSplitGroup": true,
+    "grundyScssSorterGroupsOrder": [
+        "@use",
+        "@extend",
+        "--variable",
+        "$variable",
+        "@font",
+        "decl",
+        "@if",
+        "@include",
+        "rule"
+    ],
     "grundyScssSorterGroups": "{\"@font\": { \"startsWith\": \"font\" }}"
 }

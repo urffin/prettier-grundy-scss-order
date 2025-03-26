@@ -106,6 +106,15 @@ function splitGroupsInternal(nodes, groups) {
         node.raws.before = node.raws.before.replace(/\n+/g, "\n");
         node.raws.after = undefined;
     }
+    function checkGroup(lastGroup, node) {
+        const currentGroups = groups.get(node);
+        cleanEnding(node);
+        if (!lastGroup.some(g => currentGroups.includes(g))) {
+            node.raws.before = "\n" + (node.raws.before ?? "");
+            return currentGroups;
+        }
+        return lastGroup;
+    }
     if (nodes.length == 0) return;
 
     cleanEnding(nodes[0]);
@@ -113,15 +122,9 @@ function splitGroupsInternal(nodes, groups) {
 
     let lastGroup = groups.get(nodes[0]);
     for (let i = 1; i < nodes.length - 1; i++) {
-        const node = nodes[i];
-        const currentGroups = groups.get(node);
-        cleanEnding(node);
-        if (!lastGroup.some(g => currentGroups.includes(g))) {
-            node.raws.before = "\n" + (node.raws.before ?? "");
-            lastGroup = currentGroups;
-        }
+        lastGroup = checkGroup(lastGroup, nodes[i]);
     }
-    cleanEnding(nodes.at(-1));
+    checkGroup(lastGroup, nodes.at(-1));
 }
 function removeElseStatements(nodes, groups) {
     const elseStatements = [];
