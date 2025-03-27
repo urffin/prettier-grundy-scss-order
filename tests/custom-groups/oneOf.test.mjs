@@ -22,7 +22,6 @@ test("Should create custom group by oneOf", async () => {
         }
     );
 
-    console.log(result);
     assert.equal(
         result,
         `font-size: large;
