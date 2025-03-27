@@ -23,13 +23,17 @@ function nodeGroup(node, groups) {
 }
 
 function checkCriteria(node, criterias) {
+    const _nodeName = nodeName(node);
     for (let criteria in criterias) {
         switch (criteria) {
             case "type":
                 if (nodeType(node) != criterias[criteria]) return false;
                 break;
             case "startsWith":
-                if (!nodeName(node).startsWith(criterias[criteria])) return false;
+                if (!_nodeName.startsWith(criterias[criteria])) return false;
+                break;
+            case "oneOf":
+                if (!criterias[criteria].includes(_nodeName)) return false;
                 break;
         }
     }
@@ -70,7 +74,7 @@ function createComparerByType(order, groupMap, groups) {
 function nodeName(node) {
     switch (node.type) {
         case "atrule":
-            return node.name;
+            return node.params;
         case "rule":
             return node.selector;
         case "decl":

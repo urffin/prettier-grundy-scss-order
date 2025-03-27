@@ -53,6 +53,24 @@ Then possibly use this group in `grundyScssSorterGroupsOrder`:
 ```js
 ["--variable", "$variable", "@font", "decl"];
 ```
+### Custom groups criterias
+
+To define custom group available next criterias
+
+- `startsWith` - check name starts with parameter
+- `oneOf` - check name one of array string
+- `type` - check node type one of predefined type
+
+  - "use"
+  - "mixin"
+  - "include"
+  - "if"
+  - "extend"
+  - "atrule"
+  - "rule"
+  - "decl"
+  - "$variable"
+  - "variable"
 
 [npm]: https://www.npmjs.com/package/prettier-grundy-scss-order
 [npm-badge]: https://img.shields.io/npm/v/prettier-grundy-scss-order?color=blue

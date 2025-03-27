@@ -14,10 +14,11 @@
         "--variable",
         "$variable",
         "@font",
+        "pos",
         "decl",
         "@if",
         "@include",
         "rule"
     ],
-    "grundyScssSorterGroups": "{\"@font\": { \"startsWith\": \"font\" }}"
+    "grundyScssSorterGroups": "{\"@font\": { \"startsWith\": \"font\", \"type\": \"decl\" }, \"pos\": {\"oneOf\":[\"position\", \"left\", \"top\"]}}"
 }

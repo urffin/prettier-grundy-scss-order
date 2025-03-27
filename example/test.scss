@@ -6,9 +6,15 @@
 }
 
 .selector2 {
+    font-family: "Courier New", Courier, monospace;
+    font-size: large;
+    position: relative;
+    left: 0;
+    top: 0;
     border: red;
     display: block;
 
+    @include fonts;
     @include colors;
 }
 

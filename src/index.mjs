@@ -12,6 +12,7 @@ import { grundyPropSorter } from "./grundy-prop-sorter.mjs";
 function grundyParseSorter(text, options) {
     const { grundyScssSorterGroups, grundyScssSorterWithRoot, grundyScssSorterGroupsOrder, grundyScssSorterSplitGroup } =
         options;
+
     return postcss([
         grundyPropSorter({
             groups: grundyScssSorterGroups ? JSON.parse(grundyScssSorterGroups) : undefined,
