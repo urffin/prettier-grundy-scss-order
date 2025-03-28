@@ -9,7 +9,9 @@ const defaultGroups = {
     rule: { type: "rule" },
     "@if": { type: "if" },
     "@else": { type: "else" },
-    "@extend": { type: "extend" }
+    "@extend": { type: "extend" },
+    "@media": { type: "media" },
+    "@supports": { type: "supports" }
 };
 
 function nodeGroup(node, groups) {
@@ -93,6 +95,8 @@ function nodeType(node) {
             if (node.name == "if") return "if";
             if (node.name == "else") return "else";
             if (node.name == "extend") return "extend";
+            if (node.name == "media") return "media";
+            if (node.name == "supports") return "supports";
             return "atrule";
         case "rule":
             return "rule";

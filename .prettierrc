@@ -18,6 +18,7 @@
         "decl",
         "@if",
         "@include",
+        "@media",
         "rule"
     ],
     "grundyScssSorterGroups": "{\"@font\": { \"startsWith\": \"font\", \"type\": \"decl\" }, \"pos\": {\"oneOf\":[\"position\", \"left\", \"top\"]}}"

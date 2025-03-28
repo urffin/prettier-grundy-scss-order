@@ -16,6 +16,14 @@
 
     @include fonts;
     @include colors;
+
+    @media hover {
+        color: red;
+    }
+
+    .s {
+        color: red;
+    }
 }
 
 .selector3 {
