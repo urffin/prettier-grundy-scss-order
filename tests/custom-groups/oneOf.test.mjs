@@ -63,4 +63,28 @@ font-family: "Courier New", Courier, monospace;
     );
 });
 
+test("Should create custom group by oneOf and exact", async () => {
+    const result = await prettier.format(
+        `
+            font-size: large;
+            --color: 0.36;
+            --bgColor: 0.36;`,
+        {
+            parser: "scss",
+            plugins: [path.resolve(fileURLToPath(import.meta.url), "../../../src/index.mjs")],
+            grundyScssSorterWithRoot: true,
+            grundyScssSorterGroupsOrder: ["custom", "--variable"],
+            grundyScssSorterGroups: JSON.stringify({ custom: { oneOf: ["--color", "font-size"], order: "exact" } })
+        }
+    );
+
+    assert.equal(
+        result,
+        `--color: 0.36;
+font-size: large;
+--bgColor: 0.36;
+`
+    );
+});
+
 test.run();

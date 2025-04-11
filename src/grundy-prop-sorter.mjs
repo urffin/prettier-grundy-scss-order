@@ -59,18 +59,35 @@ function createComparerByType(order, groupMap, groups) {
         if (bIndex == -1) return -1;
 
         if (aIndex == bIndex) {
-            const currentGroup = groups[order[aIndex]];
-            if (currentGroup.order == "alphabetical") {
-                const aName = nodeName(a);
-                const bName = nodeName(b);
-                if (aName > bName) return 1;
-                if (aName < bName) return -1;
-                return 0;
-            }
+            return compareInGroup(a, b, groups[order[aIndex]]);
         }
 
         return aIndex - bIndex;
     };
+}
+
+function compareInGroup(a, b, group) {
+    if (group.order == "alphabetical") {
+        const aName = nodeName(a);
+        const bName = nodeName(b);
+        if (aName > bName) return 1;
+        if (aName < bName) return -1;
+        return 0;
+    }
+
+    if (group.order == "exact") {
+        const aName = nodeName(a);
+        const bName = nodeName(b);
+        const aIndex = group.oneOf.findIndex(name => name == aName);
+        const bIndex = group.oneOf.findIndex(name => name == bName);
+
+        if (aIndex == -1) return 1;
+        if (bIndex == -1) return -1;
+
+        return aIndex - bIndex;
+    }
+
+    return 0;
 }
 
 function nodeName(node) {
@@ -157,8 +174,14 @@ function appendElseStatements(elseStatements) {
     }
 }
 
-export function grundyPropSorter({ groups = {}, order = defaultOrder, withRoot = false, splitGroups = false } = {}) {
-    groups = Object.assign({}, defaultGroups, groups);
+export function grundyPropSorter({
+    groups = {},
+    order = defaultOrder,
+    withRoot = false,
+    splitGroups = false,
+    presetGroups
+} = {}) {
+    groups = Object.assign({}, defaultGroups, presetGroups, groups);
 
     function runComparer(nodes) {
         if (Array.isArray(nodes)) {

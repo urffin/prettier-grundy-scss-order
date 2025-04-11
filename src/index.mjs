@@ -2,6 +2,7 @@ import prettierPostcss from "prettier/parser-postcss";
 import postcss from "postcss";
 import postcssScss from "postcss-scss";
 import { grundyPropSorter } from "./grundy-prop-sorter.mjs";
+import { tryLoadPreset } from "./tryLoadPreset.mjs";
 
 /**
  *
@@ -9,27 +10,32 @@ import { grundyPropSorter } from "./grundy-prop-sorter.mjs";
  * @param {*} options
  * @returns
  */
-function grundyParseSorter(text, options) {
-    const { grundyScssSorterGroups, grundyScssSorterWithRoot, grundyScssSorterGroupsOrder, grundyScssSorterSplitGroup } =
-        options;
+async function grundyParseSorter(text, options) {
+    const {
+        grundyScssSorterGroups,
+        grundyScssSorterWithRoot,
+        grundyScssSorterGroupsOrder,
+        grundyScssSorterSplitGroup,
+        grundyScssSorterPreset
+    } = options;
 
-    return postcss([
+    const preset = await tryLoadPreset(grundyScssSorterPreset);
+
+    const processed = await postcss([
         grundyPropSorter({
             groups: grundyScssSorterGroups ? JSON.parse(grundyScssSorterGroups) : undefined,
-            order: grundyScssSorterGroupsOrder,
-            withRoot: grundyScssSorterWithRoot,
-            splitGroups: grundyScssSorterSplitGroup
+            order: grundyScssSorterGroupsOrder ?? preset?.order,
+            withRoot: grundyScssSorterWithRoot ?? preset?.withRoot,
+            splitGroups: grundyScssSorterSplitGroup ?? preset?.splitGroups,
+            presetGroups: preset?.groups
         })
-    ])
-        .process(text, {
-            from: undefined,
-            syntax: postcssScss
-        })
-        .then(result => result.css)
-        .then(sortedCss => {
-            options.originalText = sortedCss;
-            return prettierPostcss.parsers[options.parser].parse(sortedCss, [options.parser], options);
-        });
+    ]).process(text, {
+        from: undefined,
+        syntax: postcssScss
+    });
+    const sortedCss = processed.css;
+    options.originalText = sortedCss;
+    return prettierPostcss.parsers[options.parser].parse(sortedCss, [options.parser], options);
 }
 
 export const options = {
@@ -42,20 +48,23 @@ export const options = {
     grundyScssSorterSplitGroup: {
         type: "boolean",
         description: "Flag if need split groups with empty line",
-        category: "grundy-scss-declaration-sorter",
-        default: false
+        category: "grundy-scss-declaration-sorter"
     },
     grundyScssSorterGroups: {
         type: "string",
         description: "Map of groups with criterias. This append new groups.",
         category: "grundy-scss-declaration-sorter"
     },
+    grundyScssSorterPreset: {
+        type: "string",
+        description: "Preset groups and orders",
+        category: "grundy-scss-declaration-sorter"
+    },
     grundyScssSorterGroupsOrder: {
         type: "string",
         array: true,
         description: "An array of property names, their order is used to sort with. This overrides default ordering!",
-        category: "grundy-scss-declaration-sorter",
-        default: [{ value: ["@use", "--variable", "$variable", "decl", "@if", "@include", "@mixin", "rule"] }]
+        category: "grundy-scss-declaration-sorter"
     }
 };
 export const parsers = {
