@@ -1,6 +1,6 @@
 {
     "name": "prettier-grundy-scss-order",
-    "version": "0.0.9",
+    "version": "0.1.0",
     "description": "Sorter for properties in scss files",
     "main": "./src/index.mjs",
     "scripts": {

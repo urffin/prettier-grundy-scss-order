@@ -26,6 +26,13 @@ This plugin adds next configurable keys to Prettier:
 - `grundyScssSorterWithRoot` - flag if need sort on root level, default: `false`
 - `grundyScssSorterSplitGroup` - flag if need split groups in result with empty line, default: `false`
 - `grundyScssSorterGroups` - define custom groups to sort, **extend** default groups
+- `grundyScssSorterPreset` - predefined properties, for example: `csscomb`
+
+### Presets
+
+Available presets for migrate from other plugins
+
+- ['csscomb'](src/presets/csscomb.mjs) - preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter
 
 ### Predefined groups
 
