@@ -21,18 +21,101 @@ To enable the plugin use the Prettier API, CLI or configuration file. For exampl
 
 This plugin adds next configurable keys to Prettier:
 
-- `grundyScssSorterGroupsOrder` - array of groups in needed order, default:
-  `["@use", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"]`
-- `grundyScssSorterWithRoot` - flag if need sort on root level, default: `false`
-- `grundyScssSorterSplitGroup` - flag if need split groups in result with empty line, default: `false`
-- `grundyScssSorterGroups` - define custom groups to sort, **extend** default groups
-- `grundyScssSorterPreset` - predefined properties, for example: `csscomb`
+<table>
+<tr>
+<th>Option Name</th>
+<th>Description</th>
+<th>Default value</th>
+</tr>
+<tr>
+<td>
+
+`grundyScssSorterGroupsOrder`</td>
+
+<td>array of groups in needed order</td>
+<td>
+
+```json
+["@use", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"]
+```
+
+</td>
+</tr>
+<tr>
+<td>
+
+`grundyScssSorterWithRoot`</td>
+
+<td>flag if need sort on root level</td>
+<td>
+
+`false`</td>
+
+<tr><td>
+
+`grundyScssSorterSplitGroup`</td>
+
+<td>flag if need split groups in result with empty line</td>
+<td>
+
+`false`</td>
+
+</tr>
+<tr><td>
+
+`grundyScssSorterGroups`</td>
+
+<td>
+
+define custom groups to sort, **extend** default groups</td>
+
+<td></td>
+
+</tr>
+<tr><td>
+
+`grundyScssSorterPreset`</td>
+
+<td>
+
+predefined properties, for example: `csscomb`</td>
+
+<td></td>
+
+</tr>
+    </table>
 
 ### Presets
 
 Available presets for migrate from other plugins
 
-- ['csscomb'](src/presets/csscomb.mjs) - preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter
+<table>
+<tr>
+<th>Preset</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>
+
+[csscomb](src/presets/csscomb.mjs)
+
+</td>
+<td>
+
+preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter with default preset</td>
+
+</tr>
+<tr>
+<td>
+
+[csscomb-yandex](src/presets/csscomb-yandex.mjs)</td>
+
+<td>
+
+preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter with [`yandex`](https://github.com/csscomb/csscomb.js/blob/dev/config/yandex.json) preset</td>
+
+</tr>
+</table>
 
 ### Predefined groups
 
