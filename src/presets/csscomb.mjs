@@ -111,4 +111,4 @@ export const groups = {
     }
 };
 export const withRoot = false;
-export const splitGroups = true;
+export const splitGroups = false;
