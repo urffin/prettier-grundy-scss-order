@@ -102,7 +102,7 @@ Available presets for migrate from other plugins
 </td>
 <td>
 
-preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter with default preset</td>
+preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter with [`default`](https://github.com/csscomb/csscomb.js/blob/dev/config/csscomb.json) preset</td>
 
 </tr>
 <tr>
