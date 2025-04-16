@@ -115,6 +115,16 @@ preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorte
 preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter with [`yandex`](https://github.com/csscomb/csscomb.js/blob/dev/config/yandex.json) preset</td>
 
 </tr>
+<tr>
+<td>
+
+[csscomb-zen](src/presets/csscomb-zen.mjs)</td>
+
+<td>
+
+preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter with [`zen`](https://github.com/csscomb/csscomb.js/blob/dev/config/zen.json) preset</td>
+
+</tr>
 </table>
 
 ### Predefined groups

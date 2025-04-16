@@ -3,5 +3,6 @@ example
 .prettierignore
 .prettierrc
 .vscode
+.editorconfig
 tests
 *.test.mjs
