@@ -7,6 +7,7 @@ A [Prettier](https://prettier.io/) plugin to sort CSS or SCSS properties. Using 
 ## Usage
 
 Following the Prettier plugin guidelines, this package depends on Prettier as a peer dependency:
+
 `npm install prettier-grundy-scss-order --save-dev`
 
 To enable the plugin use the Prettier API, CLI or configuration file. For example using the JS configuration:
