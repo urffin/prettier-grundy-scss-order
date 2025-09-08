@@ -1,4 +1,4 @@
-# Prettier-grundy-scss-order ([EN](../README.md))
+# Prettier-grundy-scss-order [ᴱᴺ](../README.md)
 
 [![npm][npm-badge]][npm] ![GitHub Actions Workflow Status][npm-build]
 
