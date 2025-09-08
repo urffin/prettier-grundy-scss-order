@@ -1,6 +1,6 @@
 {
     "name": "prettier-grundy-scss-order",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "Sorter for properties in scss files",
     "main": "./src/index.mjs",
     "scripts": {
@@ -26,7 +26,7 @@
     "bugs": {
         "url": "https://github.com/urffin/grundy-scss-order/issues"
     },
-    "homepage": "https://github.com/urffin/grundy-scss-order#readme",
+    "homepage": "https://grundyjs.ru/prettier-grundy-scss-order/",
     "dependencies": {
         "postcss": "^8.5.3",
         "postcss-scss": "^4.0.9"
