@@ -1,11 +1,11 @@
 {
     "name": "prettier-grundy-scss-order",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "Sorter for properties in scss files",
     "main": "./src/index.mjs",
+    "types": "./types/prettier-grundy-scss-order.d.ts",
     "scripts": {
-        "test": "uvu tests",
-        "build": "vite build"
+        "test": "uvu tests"
     },
     "repository": {
         "type": "git",
