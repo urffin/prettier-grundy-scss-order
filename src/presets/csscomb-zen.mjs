@@ -1,4 +1,17 @@
+/**
+ * @typedef {import('prettier-grundy-scss-order').Groups} Groups
+ */
+
+/**
+ * Order of groups for CSSComb Zen preset
+ * @type {string[]}
+ */
 export const order = ["order-props"];
+
+/**
+ * Group definitions for CSSComb Zen preset - contains all properties in a single group
+ * @type {Groups}
+ */
 
 export const groups = {
     "order-props": {
@@ -412,5 +425,14 @@ export const groups = {
     }
 };
 
+/**
+ * Whether to sort properties at root level
+ * @type {boolean}
+ */
 export const withRoot = false;
+
+/**
+ * Whether to add empty lines between groups
+ * @type {boolean}
+ */
 export const splitGroups = false;

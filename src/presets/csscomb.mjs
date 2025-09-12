@@ -1,4 +1,17 @@
+/**
+ * @typedef {import('prettier-grundy-scss-order').Groups} Groups
+ */
+
+/**
+ * Order of groups for CSSComb preset
+ * @type {string[]}
+ */
 export const order = ["fonts", "position", "display", "box-model", "layout", "content-wrap", "content-pack"];
+
+/**
+ * Group definitions for CSSComb preset
+ * @type {Groups}
+ */
 
 export const groups = {
     fonts: {
@@ -110,5 +123,15 @@ export const groups = {
         order: "exact"
     }
 };
+
+/**
+ * Whether to sort properties at root level
+ * @type {boolean}
+ */
 export const withRoot = false;
+
+/**
+ * Whether to add empty lines between groups
+ * @type {boolean}
+ */
 export const splitGroups = false;

@@ -5,10 +5,14 @@ import { grundyPropSorter } from "./grundy-prop-sorter.mjs";
 import { tryLoadPreset } from "./tryLoadPreset.mjs";
 
 /**
- *
- * @param {string} text
- * @param {*} options
- * @returns
+ * @typedef {import('prettier-grundy-scss-order').PrettierGrundyScssOptions} PrettierGrundyScssOptions
+ */
+
+/**
+ * Parse and sort SCSS text using the grundy sorter
+ * @param {string} text - The SCSS text to parse and sort
+ * @param {PrettierGrundyScssOptions} options - The options for sorting
+ * @returns {Promise<import('prettier').AST>} - The parsed AST
  */
 async function grundyParseSorter(text, options) {
     const {
@@ -73,3 +77,4 @@ export const parsers = {
         parse: grundyParseSorter
     }
 };
+export default { options, parsers };

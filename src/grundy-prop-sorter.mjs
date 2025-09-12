@@ -1,18 +1,13 @@
-const defaultOrder = ["@use", "@extend", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"];
-const defaultGroups = {
-    "@use": { type: "use" },
-    "@mixin": { type: "mixin" },
-    "--variable": { type: "variable" },
-    $variable: { type: "$variable" },
-    decl: { type: "decl", order: "alphabetical" },
-    "@include": { type: "include" },
-    rule: { type: "rule" },
-    "@if": { type: "if" },
-    "@else": { type: "else" },
-    "@extend": { type: "extend" },
-    "@media": { type: "media" },
-    "@supports": { type: "supports" }
-};
+/**
+ * @typedef {import('prettier-grundy-scss-order').Groups} Groups
+ */
+
+import {
+    order as defaultOrder,
+    groups as defaultGroups,
+    withRoot as defaultWithRoot,
+    splitGroups as defaultSplitGroups
+} from "./presets/default.mjs";
 
 function nodeGroup(node, groups) {
     const nodeGroups = [];
@@ -174,11 +169,21 @@ function appendElseStatements(elseStatements) {
     }
 }
 
+/**
+ * Create PostCSS plugin for sorting SCSS properties
+ * @param {Object} options - Plugin options
+ * @param {Groups} [options.groups={}] - Custom groups to merge with default groups
+ * @param {string[]} [options.order] - Order of groups
+ * @param {boolean} [options.withRoot=false] - Whether to sort at root level
+ * @param {boolean} [options.splitGroups=false] - Whether to add empty lines between groups
+ * @param {Groups} [options.presetGroups] - Groups from preset
+ * @returns {Object} PostCSS plugin object
+ */
 export function grundyPropSorter({
     groups = {},
     order = defaultOrder,
-    withRoot = false,
-    splitGroups = false,
+    withRoot = defaultWithRoot,
+    splitGroups = defaultSplitGroups,
     presetGroups
 } = {}) {
     groups = Object.assign({}, defaultGroups, presetGroups, groups);

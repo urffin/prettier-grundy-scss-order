@@ -1,4 +1,17 @@
+/**
+ * @typedef {import('prettier-grundy-scss-order').Groups} Groups
+ */
+
+/**
+ * Order of groups for CSSComb Yandex preset
+ * @type {string[]}
+ */
 export const order = ["position", "display", "box-model", "table", "content", "opacity", "font"];
+
+/**
+ * Group definitions for CSSComb Yandex preset
+ * @type {Groups}
+ */
 
 export const groups = {
     position: {
@@ -363,5 +376,14 @@ export const groups = {
     }
 };
 
+/**
+ * Whether to sort properties at root level
+ * @type {boolean}
+ */
 export const withRoot = false;
+
+/**
+ * Whether to add empty lines between groups
+ * @type {boolean}
+ */
 export const splitGroups = false;
