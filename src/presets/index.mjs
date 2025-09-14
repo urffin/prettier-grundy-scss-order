@@ -4,6 +4,13 @@
 
 // Re-export all presets
 export * as defaultPreset from "./default.mjs";
-export * as csscombPreset from "./csscomb.mjs";
-export * as csscombYandexPreset from "./csscomb-yandex.mjs";
-export * as csscombZenPreset from "./csscomb-zen.mjs";
+import * as csscombPreset from "./csscomb.mjs";
+import * as csscombYandexPreset from "./csscomb-yandex.mjs";
+import * as csscombZenPreset from "./csscomb-zen.mjs";
+
+export const presets = {
+    default: defaultPreset,
+    csscomb: csscombPreset,
+    "csscomb-yandex": csscombYandexPreset,
+    "csscomb-zen": csscombZenPreset
+};

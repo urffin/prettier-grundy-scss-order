@@ -1,15 +1,19 @@
 {
     "name": "prettier-grundy-scss-order",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "Sorter for properties in scss files",
     "main": "./src/index.mjs",
+    "exports": {
+        ".": "./src/index.mjs",
+        "./presets": "./src/presets/index.mjs"
+    },
     "types": "./types/prettier-grundy-scss-order.d.ts",
     "scripts": {
         "test": "uvu tests"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/urffin/grundy-scss-order.git"
+        "url": "git+https://github.com/urffin/prettier-grundy-scss-order.git"
     },
     "keywords": [
         "prettier",
@@ -24,7 +28,7 @@
     "author": "Grundy",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/urffin/grundy-scss-order/issues"
+        "url": "https://github.com/urffin/prettier-grundy-scss-order/issues"
     },
     "homepage": "https://grundyjs.ru/prettier-grundy-scss-order/",
     "dependencies": {
