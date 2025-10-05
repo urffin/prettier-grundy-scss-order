@@ -31,7 +31,7 @@ export const groups = {
  * Whether to sort properties at root level
  * @type {boolean}
  */
-export const withRoot = false;
+export const withRoot = true;
 
 /**
  * Whether to add empty lines between groups
