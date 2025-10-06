@@ -50,7 +50,7 @@ This plugin adds next configurable keys to Prettier:
 <td>flag if need sort on root level</td>
 <td>
 
-`false`</td>
+`true`</td>
 
 <tr><td>
 
