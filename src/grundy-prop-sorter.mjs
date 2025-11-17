@@ -130,7 +130,7 @@ function splitGroupsInternal(nodes, groups) {
         const currentGroups = groups.get(node);
         cleanEnding(node);
         if (!lastGroup.some(g => currentGroups.includes(g))) {
-            node.raws.before = "\n" + (node.raws.before ?? "");
+            node.raws.before = "\n\n" + (node.raws.before ?? "");
             return currentGroups;
         }
         return lastGroup;

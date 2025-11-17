@@ -57,4 +57,31 @@ color: green;
     );
 });
 
+test("Should split group at rule", async () => {
+    const result = await prettier.format(
+        `test {
+    line-height: 10px;
+}
+@use "colors";
+`,
+        {
+            parser: "scss",
+            plugins: [path.resolve(fileURLToPath(import.meta.url), "../../src/index.mjs")],
+            grundyScssSorterWithRoot: true,
+            grundyScssSorterSplitGroup: true,
+            grundyScssSorterGroupsOrder: ["@use", "$variable", "rule"]
+        }
+    );
+
+    assert.equal(
+        result,
+        `@use "colors";
+
+test {
+  line-height: 10px;
+}
+`
+    );
+});
+
 test.run();

@@ -253,6 +253,10 @@ left: 10px;
 </tr>
 </table>
 
+## Попробовать
+
+**[Перейти в песочницу](https://grundyjs.ru/prettier-grundy-scss-order/playground/)**
+
 [npm]: https://www.npmjs.com/package/prettier-grundy-scss-order
 [npm-badge]: https://img.shields.io/npm/v/prettier-grundy-scss-order?color=blue
 [npm-build]: https://img.shields.io/github/actions/workflow/status/urffin/grundy-scss-order/npm-publish.yml?label=build
