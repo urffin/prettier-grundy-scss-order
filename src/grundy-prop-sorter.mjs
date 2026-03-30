@@ -1,5 +1,6 @@
 /**
  * @typedef {import('prettier-grundy-scss-order').Groups} Groups
+ * @typedef {import('prettier-grundy-scss-order').GroupCriteria} GroupCriteria
  */
 
 import {
@@ -19,6 +20,12 @@ function nodeGroup(node, groups) {
     return nodeGroups;
 }
 
+/**
+ *
+ * @param {*} node
+ * @param {GroupCriteria} criterias
+ * @returns {bool} true if criteria applied
+ */
 function checkCriteria(node, criterias) {
     const _nodeName = nodeName(node);
     for (let criteria in criterias) {
@@ -121,15 +128,21 @@ function nodeType(node) {
     }
 }
 
-function splitGroupsInternal(nodes, groups) {
+function splitGroupsInternal(nodes, groupMap, groups) {
     function cleanEnding(node) {
         node.raws.before = node.raws.before.replace(/\n+/g, "\n");
         node.raws.after = undefined;
     }
+    /**
+     *
+     * @param {GroupCriteria} lastGroup
+     * @param {*} node
+     * @returns {GroupCriteria} last group
+     */
     function checkGroup(lastGroup, node) {
-        const currentGroups = groups.get(node);
+        const currentGroups = groupMap.get(node);
         cleanEnding(node);
-        if (!lastGroup.some(g => currentGroups.includes(g))) {
+        if (!lastGroup.some(g => currentGroups.includes(g)) || currentGroups.some(g => groups[g]?.splitItems)) {
             node.raws.before = "\n\n" + (node.raws.before ?? "");
             return currentGroups;
         }
@@ -140,7 +153,7 @@ function splitGroupsInternal(nodes, groups) {
     cleanEnding(nodes[0]);
     if (nodes.length == 1) return;
 
-    let lastGroup = groups.get(nodes[0]);
+    let lastGroup = groupMap.get(nodes[0]);
     for (let i = 1; i < nodes.length - 1; i++) {
         lastGroup = checkGroup(lastGroup, nodes[i]);
     }
@@ -194,7 +207,7 @@ export function grundyPropSorter({
             const elseStatements = removeElseStatements(nodes, groupMap);
             const typeComparer = createComparerByType(order, groupMap, groups);
             nodes.sort(typeComparer);
-            if (splitGroups) splitGroupsInternal(nodes, groupMap);
+            if (splitGroups) splitGroupsInternal(nodes, groupMap, groups);
             appendElseStatements(elseStatements);
         }
     }

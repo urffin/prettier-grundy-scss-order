@@ -21,6 +21,8 @@ declare module "prettier-grundy-scss-order" {
         startsWith?: string;
         /** Sorting order within the group */
         order?: "exact" | "alphabetical";
+        /** Whether to add empty lines between nodes in the group */
+        splitItems?: boolean;
     }
 
     /**
