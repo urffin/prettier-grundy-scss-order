@@ -141,7 +141,9 @@ test("Should split items inside group", async () => {
         padding: 4px;
 
         @include utils.focus;
+
         @include utils.transition("color");
+
         @include utils.hover {
             color: var(--color-ebony);
         }
@@ -159,6 +161,7 @@ test("Should split items inside group", async () => {
             fill: currentColor;
         }
     }
+
     @include utils.media-up(utils.$mobile-breakpoint) {
         display: none;
     }
