@@ -37,7 +37,7 @@
 <td>
 
 ```json
-["@use", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"]
+["@use", "@extend", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"]
 ```
 
 </td>

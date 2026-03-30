@@ -37,7 +37,7 @@ This plugin adds next configurable keys to Prettier:
 <td>
 
 ```json
-["@use", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"]
+["@use", "@extend", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"]
 ```
 
 </td>
