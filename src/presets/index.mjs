@@ -7,6 +7,7 @@ import * as preset from "./default.mjs";
 import * as csscombPreset from "./csscomb.mjs";
 import * as csscombYandexPreset from "./csscomb-yandex.mjs";
 import * as csscombZenPreset from "./csscomb-zen.mjs";
+import * as pepelsbeyPreset from "./pepelsbey.mjs";
 
 export const defaultPreset = preset;
 
@@ -14,5 +15,6 @@ export const presets = {
     default: defaultPreset,
     csscomb: csscombPreset,
     "csscomb-yandex": csscombYandexPreset,
+    pepelsbey: pepelsbeyPreset,
     "csscomb-zen": csscombZenPreset
 };

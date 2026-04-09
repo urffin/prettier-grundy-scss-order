@@ -24,13 +24,14 @@ async function grundyParseSorter(text, options) {
     } = options;
 
     const preset = await tryLoadPreset(grundyScssSorterPreset);
+    const defaultPreset = grundyScssSorterPreset !== "default" ? await tryLoadPreset("default") : preset;
 
     const processed = await postcss([
         grundyPropSorter({
             groups: grundyScssSorterGroups ? JSON.parse(grundyScssSorterGroups) : undefined,
-            order: grundyScssSorterGroupsOrder ?? preset?.order,
-            withRoot: grundyScssSorterWithRoot ?? preset?.withRoot,
-            splitGroups: grundyScssSorterSplitGroup ?? preset?.splitGroups,
+            order: grundyScssSorterGroupsOrder ?? preset?.order ?? defaultPreset.order,
+            withRoot: grundyScssSorterWithRoot ?? preset?.withRoot ?? defaultPreset.withRoot,
+            splitGroups: grundyScssSorterSplitGroup ?? preset?.splitGroups ?? defaultPreset.splitGroups,
             presetGroups: preset?.groups
         })
     ]).process(text, {
@@ -68,13 +69,16 @@ export const options = {
         type: "string",
         array: true,
         description: "An array of property names, their order is used to sort with. This overrides default ordering!",
-        category: "grundy-scss-declaration-sorter"
+        category: "grundy-scss-declaration-sorter",
+        default: ["@use", "@extend", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"]
     }
 };
+
 export const parsers = {
     scss: {
         ...prettierPostcss.parsers.scss,
         parse: grundyParseSorter
     }
 };
+
 export default { options, parsers };
