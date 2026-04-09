@@ -126,6 +126,16 @@
 пересет для миграции с [`csscomb`](https://github.com/csscomb/csscomb.js) использующий [`zen`](https://github.com/csscomb/csscomb.js/blob/dev/config/zen.json) пресет</td>
 
 </tr>
+<tr>
+<td>
+
+[pepelsbey](../src/presets/pepelsbey.mjs)</td>
+
+<td>
+
+пресет со всеми CSS свойствами в одной группе с точным порядком, на основе [stylelint-config-pepelsbey](https://github.com/pepelsbey/stylelint-config-pepelsbey/blob/main/order.js)</td>
+
+</tr>
 </table>
 
 ### Предопределенные группы

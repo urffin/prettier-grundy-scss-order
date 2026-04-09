@@ -126,6 +126,16 @@ preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorte
 preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter with [`zen`](https://github.com/csscomb/csscomb.js/blob/dev/config/zen.json) preset</td>
 
 </tr>
+<tr>
+<td>
+
+[pepelsbey](src/presets/pepelsbey.mjs)</td>
+
+<td>
+
+preset with all CSS properties in a single group using exact order, based on [stylelint-config-pepelsbey](https://github.com/pepelsbey/stylelint-config-pepelsbey/blob/main/order.js)</td>
+
+</tr>
 </table>
 
 ### Predefined groups
