@@ -5,21 +5,5 @@
     "trailingComma": "none",
     "experimentalTernaries": true,
     "arrowParens": "avoid",
-    "plugins": ["./src/index.mjs"],
-    "grundyScssSorterWithRoot": false,
-    "grundyScssSorterSplitGroup": true,
-    "grundyScssSorterGroupsOrder": [
-        "@use",
-        "@extend",
-        "--variable",
-        "$variable",
-        "@font",
-        "pos",
-        "decl",
-        "@if",
-        "@include",
-        "@media",
-        "rule"
-    ],
-    "grundyScssSorterGroups": "{\"@font\": { \"startsWith\": \"font\", \"type\": \"decl\" }, \"pos\": {\"oneOf\":[\"position\", \"left\", \"top\"]}}"
+    "plugins": ["./src/index.mjs"]
 }

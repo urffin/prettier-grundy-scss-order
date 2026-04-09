@@ -1,6 +1,6 @@
 {
     "name": "prettier-grundy-scss-order",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "Sorter for properties in scss files",
     "main": "./src/index.mjs",
     "exports": {
@@ -38,11 +38,11 @@
     },
     "homepage": "https://grundyjs.ru/prettier-grundy-scss-order/",
     "dependencies": {
-        "postcss": "^8.5.3",
+        "postcss": "^8.5.8",
         "postcss-scss": "^4.0.9"
     },
     "peerDependencies": {
-        "prettier": "^3.5.3"
+        "prettier": "^3.8.1"
     },
     "devDependencies": {
         "uvu": "^0.5.6"
