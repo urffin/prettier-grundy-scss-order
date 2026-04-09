@@ -1,0 +1,35 @@
+.warningBlock__close {
+    @extend %buttonReset;
+
+    @include utils.media-down(utils.$mobile-breakpoint) {
+        color: var(--color-gray-regent);
+        margin: -4px;
+        margin-left: auto;
+        padding: 4px;
+
+        @include utils.focus;
+
+        @include utils.transition("color");
+
+        @include utils.hover {
+            color: var(--color-ebony);
+        }
+
+        [data-important="false"] & {
+            [data-mode="dark"] & {
+                @include utils.hover {
+                    color: var(--color-white);
+                }
+            }
+        }
+
+        svg {
+            display: block;
+            fill: currentColor;
+        }
+    }
+
+    @include utils.media-up(utils.$mobile-breakpoint) {
+        display: none;
+    }
+}
