@@ -1,6 +1,10 @@
 /**
  * @typedef {import('prettier-grundy-scss-order').Groups} Groups
  * @typedef {import('prettier-grundy-scss-order').GroupCriteria} GroupCriteria
+ * @typedef {import('postcss').ChildNode} ChildNode
+ * @typedef {import('postcss').Root} Root
+ * @typedef {Map<ChildNode, string[]>} GroupMap
+ * @typedef {{ node: ChildNode, prev: ChildNode | undefined }} ElseStatement
  */
 
 import {
@@ -10,6 +14,11 @@ import {
     splitGroups as defaultSplitGroups
 } from "./presets/default.mjs";
 
+/**
+ * @param {ChildNode} node
+ * @param {Groups} groups
+ * @returns {string[]}
+ */
 function nodeGroup(node, groups) {
     const nodeGroups = [];
     for (let group in groups) {
@@ -22,9 +31,9 @@ function nodeGroup(node, groups) {
 
 /**
  *
- * @param {*} node
+ * @param {ChildNode} node
  * @param {GroupCriteria} criterias
- * @returns {bool} true if criteria applied
+ * @returns {boolean} Whether the node matches all criteria
  */
 function checkCriteria(node, criterias) {
     const _nodeName = nodeName(node);
@@ -46,9 +55,10 @@ function checkCriteria(node, criterias) {
 
 /**
  *
- * @param {String[]} order
- * @param {Map<Node, String[]>} groupMap
- * @returns
+ * @param {string[]} order
+ * @param {GroupMap} groupMap
+ * @param {Groups} groups
+ * @returns {(a: ChildNode, b: ChildNode) => number}
  */
 function createComparerByType(order, groupMap, groups) {
     return (a, b) => {
@@ -57,6 +67,7 @@ function createComparerByType(order, groupMap, groups) {
         const aIndex = order.findIndex(group => aGroups.includes(group));
         const bIndex = order.findIndex(group => bGroups.includes(group));
 
+        if (aIndex === -1 && bIndex === -1) return 0;
         if (aIndex == -1) return 1;
         if (bIndex == -1) return -1;
 
@@ -68,6 +79,12 @@ function createComparerByType(order, groupMap, groups) {
     };
 }
 
+/**
+ * @param {ChildNode} a
+ * @param {ChildNode} b
+ * @param {GroupCriteria} group
+ * @returns {number}
+ */
 function compareInGroup(a, b, group) {
     if (group.order == "alphabetical") {
         const aName = nodeName(a);
@@ -92,6 +109,10 @@ function compareInGroup(a, b, group) {
     return 0;
 }
 
+/**
+ * @param {ChildNode} node
+ * @returns {string}
+ */
 function nodeName(node) {
     switch (node.type) {
         case "atrule":
@@ -105,6 +126,10 @@ function nodeName(node) {
     }
 }
 
+/**
+ * @param {ChildNode} node
+ * @returns {string}
+ */
 function nodeType(node) {
     switch (node.type) {
         case "atrule":
@@ -128,19 +153,29 @@ function nodeType(node) {
     }
 }
 
+/**
+ * @param {ChildNode[]} nodes
+ * @param {GroupMap} groupMap
+ * @param {Groups} groups
+ * @returns {void}
+ */
 function splitGroupsInternal(nodes, groupMap, groups) {
+    /**
+     * @param {ChildNode} node
+     * @returns {void}
+     */
     function cleanEnding(node) {
         node.raws.before = node.raws.before.replace(/\n+/g, "\n");
         node.raws.after = undefined;
     }
     /**
      *
-     * @param {GroupCriteria} lastGroup
-     * @param {*} node
-     * @returns {GroupCriteria} last group
+     * @param {string[]} lastGroup
+     * @param {ChildNode} node
+     * @returns {string[]} Current group names
      */
     function checkGroup(lastGroup, node) {
-        const currentGroups = groupMap.get(node);
+        const currentGroups = groupMap.get(node) ?? [];
         cleanEnding(node);
         if (!lastGroup.some(g => currentGroups.includes(g)) || currentGroups.some(g => groups[g]?.splitItems)) {
             node.raws.before = "\n\n" + (node.raws.before ?? "");
@@ -153,17 +188,23 @@ function splitGroupsInternal(nodes, groupMap, groups) {
     cleanEnding(nodes[0]);
     if (nodes.length == 1) return;
 
-    let lastGroup = groupMap.get(nodes[0]);
+    let lastGroup = groupMap.get(nodes[0]) ?? [];
     for (let i = 1; i < nodes.length - 1; i++) {
         lastGroup = checkGroup(lastGroup, nodes[i]);
     }
-    checkGroup(lastGroup, nodes.at(-1));
+    checkGroup(lastGroup, nodes[nodes.length - 1]);
 }
+/**
+ * @param {ChildNode[]} nodes
+ * @param {GroupMap} groups
+ * @returns {ElseStatement[]}
+ */
 function removeElseStatements(nodes, groups) {
+    /** @type {ElseStatement[]} */
     const elseStatements = [];
     for (let i = nodes.length; i-- > 0; ) {
         const node = nodes[i];
-        const nodeGroup = groups.get(node);
+        const nodeGroup = groups.get(node) ?? [];
         if (nodeGroup.includes("@else")) {
             elseStatements.push({
                 node,
@@ -175,6 +216,10 @@ function removeElseStatements(nodes, groups) {
     return elseStatements;
 }
 
+/**
+ * @param {ElseStatement[]} elseStatements
+ * @returns {void}
+ */
 function appendElseStatements(elseStatements) {
     for (let i = elseStatements.length; i-- > 0; ) {
         const { node, prev } = elseStatements[i];
@@ -190,7 +235,7 @@ function appendElseStatements(elseStatements) {
  * @param {boolean} [options.withRoot=false] - Whether to sort at root level
  * @param {boolean} [options.splitGroups=false] - Whether to add empty lines between groups
  * @param {Groups} [options.presetGroups] - Groups from preset
- * @returns {Object} PostCSS plugin object
+ * @returns {import('postcss').Plugin} PostCSS plugin object
  */
 export function grundyPropSorter({
     groups = {},
@@ -201,6 +246,10 @@ export function grundyPropSorter({
 } = {}) {
     groups = Object.assign({}, defaultGroups, presetGroups, groups);
 
+    /**
+     * @param {ChildNode[] | undefined} nodes
+     * @returns {void}
+     */
     function runComparer(nodes) {
         if (Array.isArray(nodes)) {
             const groupMap = new Map(nodes.map(node => [node, nodeGroup(node, groups)]));
@@ -213,6 +262,9 @@ export function grundyPropSorter({
     }
     return {
         postcssPlugin: "grundy-scss-order",
+        /**
+         * @param {Root} css
+         */
         OnceExit: css => {
             if (withRoot) {
                 runComparer(css.nodes);

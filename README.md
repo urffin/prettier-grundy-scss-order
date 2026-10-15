@@ -1,272 +1,152 @@
-# Prettier-grundy-scss-order [ᴿᵁ](ru/README.md)
+# prettier-grundy-scss-order [Русский](ru/README.md)
 
-[![npm][npm-badge]][npm] ![GitHub Actions Workflow Status][npm-build]
+[![npm][npm-badge]][npm] [![GitHub Actions Workflow Status][npm-build]][github-actions]
 
-A [Prettier](https://prettier.io/) plugin to sort CSS or SCSS properties. Using [postcss-scss](https://github.com/postcss/postcss-scss) for parse source.
+Keep SCSS readable as it grows. `prettier-grundy-scss-order` is a [Prettier](https://prettier.io/) plugin that puts declarations, variables, Sass directives, and nested rules in a predictable order every time you format a file.
 
-## Usage
+It is designed for real SCSS codebases: keep variables together, place layout properties consistently, separate logical sections with blank lines, and migrate from established property orders without rewriting your styles by hand.
 
-Following the Prettier plugin guidelines, this package depends on Prettier as a peer dependency:
+## Why use it?
 
-`npm install prettier-grundy-scss-order --save-dev`
+- **One format command, one team-wide style.** No more review comments about property order.
+- **SCSS-aware sorting.** Sort `$variables`, CSS custom properties, `@use`, `@extend`, `@include`, `@mixin`, conditions, and nested rules — not only declarations.
+- **Adopt an existing convention.** Choose `csscomb`, `csscomb-yandex`, `csscomb-zen`, or `pepelsbey`.
+- **Make the order yours.** Create groups by node type, property prefix, or an explicit list of properties.
 
-To enable the plugin use the Prettier API, CLI or configuration file. For example using the JS configuration:
+## Before and after
 
-```json
-{
-    "plugins": ["prettier-grundy-scss-order"]
+```scss
+.card {
+    padding: 16px;
+    color: white;
+    --card-color: #222;
+    display: flex;
 }
 ```
 
-### Configuration
-
-This plugin adds next configurable keys to Prettier:
-
-<table>
-<tr>
-<th>Option Name</th>
-<th>Description</th>
-<th>Default value</th>
-</tr>
-<tr>
-<td>
-
-`grundyScssSorterGroupsOrder`</td>
-
-<td>array of groups in needed order</td>
-<td>
-
-```json
-["@use", "@extend", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"]
+```scss
+.card {
+    --card-color: #222;
+    color: white;
+    display: flex;
+    padding: 16px;
+}
 ```
 
-</td>
-</tr>
-<tr>
-<td>
+## Quick start
 
-`grundyScssSorterWithRoot`</td>
+Install Prettier and the plugin:
 
-<td>flag if need sort on root level</td>
-<td>
+```bash
+npm install --save-dev prettier prettier-grundy-scss-order
+```
 
-`true`</td>
-
-<tr><td>
-
-`grundyScssSorterSplitGroup`</td>
-
-<td>flag if need split groups in result with empty line</td>
-<td>
-
-`false`</td>
-
-</tr>
-<tr><td>
-
-`grundyScssSorterGroups`</td>
-
-<td>
-
-define custom groups to sort, **extend** default groups</td>
-
-<td></td>
-
-</tr>
-<tr><td>
-
-`grundyScssSorterPreset`</td>
-
-<td>
-
-predefined properties, for example: `csscomb`</td>
-
-<td></td>
-
-</tr>
-    </table>
-
-### Presets
-
-Available presets for migrate from other plugins
-
-<table>
-<tr>
-<th>Preset</th>
-<th>Description</th>
-</tr>
-<tr>
-<td>
-
-[csscomb](src/presets/csscomb.mjs)
-
-</td>
-<td>
-
-preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter with [`default`](https://github.com/csscomb/csscomb.js/blob/dev/config/csscomb.json) preset</td>
-
-</tr>
-<tr>
-<td>
-
-[csscomb-yandex](src/presets/csscomb-yandex.mjs)</td>
-
-<td>
-
-preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter with [`yandex`](https://github.com/csscomb/csscomb.js/blob/dev/config/yandex.json) preset</td>
-
-</tr>
-<tr>
-<td>
-
-[csscomb-zen](src/presets/csscomb-zen.mjs)</td>
-
-<td>
-
-preset for migrate from [`csscomb`](https://github.com/csscomb/csscomb.js) sorter with [`zen`](https://github.com/csscomb/csscomb.js/blob/dev/config/zen.json) preset</td>
-
-</tr>
-<tr>
-<td>
-
-[pepelsbey](src/presets/pepelsbey.mjs)</td>
-
-<td>
-
-preset with all CSS properties in a single group using exact order, based on [stylelint-config-pepelsbey](https://github.com/pepelsbey/stylelint-config-pepelsbey/blob/main/order.js)</td>
-
-</tr>
-</table>
-
-### Predefined groups
-
-- `@use` - scss [`use` statements](https://sass-lang.com/documentation/at-rules/use/)
-- `@mixin` - scss [`@mixin` statements](https://sass-lang.com/documentation/at-rules/mixin/)
-- `--variable` - css [custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/--*):
-- `$variable` - scss [variables](https://sass-lang.com/documentation/variables/)
-- `decl` - any css properties: `color: ...`, `backgroud: ...`, etc.
-- `@include` - scss [`@include` statements](https://sass-lang.com/documentation/at-rules/mixin/)
-- `rule` - css selector rule: `.class {...}`, `tag{...}`, `#id{...}`, etc.
-- `@if` - scss [`@if` with optionally `@else`/`@else if`](https://sass-lang.com/documentation/at-rules/control/if/) statements
-- `@media` - css [`@media`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media) statements
-- `@supports` - css [`@supports`](https://developer.mozilla.org/en-US/docs/Web/CSS/@supports) statements
-
-### Custom groups
-
-With option `grundyScssSorterGroups` possibly add custom groups satisfying the criterias
-
-example, add group `@font` - in this group select all properties started with `font`: `font`, `font-size`, etc.
+Add it to `prettier.config.mjs`:
 
 ```js
-"{\"@font\": { \"startsWith\": \"font\" }}";
+export default {
+    plugins: ["prettier-grundy-scss-order"]
+};
 ```
 
-Then possibly use this group in `grundyScssSorterGroupsOrder`:
+Then format your SCSS as usual:
+
+```bash
+npx prettier --write "src/**/*.scss"
+```
+
+The default order is:
+
+```text
+@use → @extend → CSS custom properties → Sass variables → @if → declarations → @include → @mixin → nested rules
+```
+
+Declarations inside the `decl` group are sorted alphabetically. Sorting applies at the root level and inside nested rules.
+
+## Configuration
+
+Set options in your Prettier configuration:
 
 ```js
-["--variable", "$variable", "@font", "decl"];
+export default {
+    plugins: ["prettier-grundy-scss-order"],
+    grundyScssSorterSplitGroup: true,
+    grundyScssSorterGroupsOrder: ["--variable", "$variable", "layout", "typography", "decl", "@include", "rule"],
+    grundyScssSorterGroups: JSON.stringify({
+        layout: {
+            oneOf: ["display", "position", "inset", "width", "height", "margin", "padding"],
+            order: "exact"
+        },
+        typography: {
+            startsWith: "font",
+            type: "decl"
+        }
+    })
+};
 ```
 
-### Custom groups criterias
+| Option                        | Description                                                                                   | Default                                                                     |
+| ----------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `grundyScssSorterGroupsOrder` | Group names in the desired order. Nodes not matching a listed group are placed after them.    | `[@use, @extend, --variable, $variable, @if, decl, @include, @mixin, rule]` |
+| `grundyScssSorterWithRoot`    | Sort root-level nodes as well as declarations inside rules.                                   | `true`                                                                      |
+| `grundyScssSorterSplitGroup`  | Add a blank line between groups. Groups marked as split also separate their individual items. | `false`                                                                     |
+| `grundyScssSorterGroups`      | JSON string with custom groups. Custom definitions extend the built-in groups.                | —                                                                           |
+| `grundyScssSorterPreset`      | A bundled property-order preset.                                                              | —                                                                           |
 
-To define custom group available next criterias
+## Presets
 
-- `startsWith` - check name starts with parameter
-- `oneOf` - check name one of array string
-- `type` - check node type one of predefined type
+Start with a familiar convention, then override it only where your project differs:
 
-    - "use"
-    - "mixin"
-    - "include"
-    - "if"
-    - "extend"
-    - "atrule"
-    - "rule"
-    - "decl"
-    - "$variable"
-    - "variable"
-    - "media"
-    - "supports"
-
-#### Samples
-
-<table>
-<tr>
-<th width="5%">Criteria</th>
-<th width="35%">Sample</th>
-<th width="25%">Description</th>
-<th >Applied to</th>
-</tr>
-<tr>
-<td>type</td>
-<td>
-
-```json
-{
-    "type": "use"
-}
+```js
+export default {
+    plugins: ["prettier-grundy-scss-order"],
+    grundyScssSorterPreset: "pepelsbey"
+};
 ```
 
-</td>
-<td>select "@use" statements</td>
-<td>
+| Preset                                             | Best for                                                                        |
+| -------------------------------------------------- | ------------------------------------------------------------------------------- |
+| [`csscomb`](src/presets/csscomb.mjs)               | Migrating from CSScomb’s default configuration.                                 |
+| [`csscomb-yandex`](src/presets/csscomb-yandex.mjs) | Migrating from CSScomb’s Yandex configuration.                                  |
+| [`csscomb-zen`](src/presets/csscomb-zen.mjs)       | Migrating from CSScomb’s Zen configuration.                                     |
+| [`pepelsbey`](src/presets/pepelsbey.mjs)           | A comprehensive exact CSS-property order based on `stylelint-config-pepelsbey`. |
 
-```scss
-@use "colors";
-@use "colors" as c;
-```
+## Built-in groups
 
-</td>
-</tr>
-<tr>
-<td>startsWith</td>
-<td>
+| Group                 | Matches                                                              |
+| --------------------- | -------------------------------------------------------------------- |
+| `@use`                | Sass `@use` statements                                               |
+| `@extend`             | Sass `@extend` statements                                            |
+| `--variable`          | CSS custom properties                                                |
+| `$variable`           | Sass variables                                                       |
+| `@if`                 | Sass `@if` statements; matching `@else` blocks remain attached       |
+| `decl`                | CSS declarations, sorted alphabetically by default                   |
+| `@include`            | Sass `@include` statements                                           |
+| `@mixin`              | Sass `@mixin` declarations                                           |
+| `rule`                | Nested selectors and rules                                           |
+| `@media`, `@supports` | Media and feature-query at-rules; add them to your order when needed |
 
-```json
-{
-    "startsWith": "font"
-}
-```
+## Custom groups
 
-</td>
-<td>select statements starts with "font"</td>
-<td>
+Each group can combine these criteria:
 
-```scss
-font: "Courier New";
-font-size: 10px;
-@include fonts;
-```
+| Criterion    | Meaning                                                                            | Example                                              |
+| ------------ | ---------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `type`       | Matches an SCSS node type.                                                         | `{ type: "decl" }`                                   |
+| `startsWith` | Matches a node name starting with a string.                                        | `{ startsWith: "font", type: "decl" }`               |
+| `oneOf`      | Matches one of the listed node names.                                              | `{ oneOf: ["position", "inset"] }`                   |
+| `order`      | Sorts a group using `"alphabetical"` or the array order in `oneOf` with `"exact"`. | `{ oneOf: ["display", "position"], order: "exact" }` |
+| `splitItems` | Separates items in this group with blank lines when group splitting is enabled.    | `{ type: "include", splitItems: true }`              |
 
-</td>
-</tr>
-<tr>
-<td>oneOf</td>
-<td>
+Supported values for `type`: `use`, `extend`, `mixin`, `include`, `if`, `else`, `atrule`, `rule`, `decl`, `$variable`, `variable`, `media`, and `supports`.
 
-```json
-{
-    "oneOf": ["position", "left"]
-}
-```
-
-</td>
-<td>select statements with name that exactly matches one of the array elements</td>
-<td>
-
-```scss
-position: relative;
-left: 10px;
-```
-
-</td>
-</tr>
-</table>
+> Use `type: "decl"` with `startsWith` or `oneOf` when the group should contain only CSS properties. Without it, the criterion can also match the name or parameters of another SCSS node.
 
 ## Try it
 
-**[Open playground](https://grundyjs.ru/prettier-grundy-scss-order/playground/)**
+**[Open the playground](https://grundyjs.ru/prettier-grundy-scss-order/playground/)** to experiment with groups and presets before adding them to your project.
 
 [npm]: https://www.npmjs.com/package/prettier-grundy-scss-order
 [npm-badge]: https://img.shields.io/npm/v/prettier-grundy-scss-order?color=blue
 [npm-build]: https://img.shields.io/github/actions/workflow/status/urffin/grundy-scss-order/npm-publish.yml?label=build
+[github-actions]: https://github.com/urffin/grundy-scss-order/actions/workflows/npm-publish.yml

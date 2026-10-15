@@ -29,7 +29,8 @@ async function grundyParseSorter(text, options) {
     const processed = await postcss([
         grundyPropSorter({
             groups: grundyScssSorterGroups ? JSON.parse(grundyScssSorterGroups) : undefined,
-            order: grundyScssSorterGroupsOrder ?? preset?.order ?? defaultPreset.order,
+            order:
+                grundyScssSorterGroupsOrder?.length ? grundyScssSorterGroupsOrder : (preset?.order ?? defaultPreset.order),
             withRoot: grundyScssSorterWithRoot ?? preset?.withRoot ?? defaultPreset.withRoot,
             splitGroups: grundyScssSorterSplitGroup ?? preset?.splitGroups ?? defaultPreset.splitGroups,
             presetGroups: preset?.groups
@@ -48,7 +49,7 @@ export const options = {
         type: "boolean",
         description: "Flag if need sort root node",
         category: "grundy-scss-declaration-sorter",
-        default: false
+        default: true
     },
     grundyScssSorterSplitGroup: {
         type: "boolean",
@@ -70,7 +71,7 @@ export const options = {
         array: true,
         description: "An array of property names, their order is used to sort with. This overrides default ordering!",
         category: "grundy-scss-declaration-sorter",
-        default: ["@use", "@extend", "--variable", "$variable", "@if", "decl", "@include", "@mixin", "rule"]
+        default: [{ value: [] }]
     }
 };
 
