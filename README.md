@@ -142,6 +142,12 @@ Supported values for `type`: `use`, `extend`, `mixin`, `include`, `if`, `else`, 
 
 > Use `type: "decl"` with `startsWith` or `oneOf` when the group should contain only CSS properties. Without it, the criterion can also match the name or parameters of another SCSS node.
 
+## Comments
+
+Comments on their own line move with the following statement. Comments after a statement on the same line stay with that statement. Standalone comments at the end of a block remain there. Group separators are inserted before leading comments.
+
+`// prettier-ignore` and `/* prettier-ignore */` protect the following statement and its contents from sorting. Other statements are sorted separately on each side of the ignored statement.
+
 ## Try it
 
 **[Open the playground](https://grundyjs.ru/prettier-grundy-scss-order/playground/)** to experiment with groups and presets before adding them to your project.

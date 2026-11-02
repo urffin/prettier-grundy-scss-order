@@ -4,7 +4,7 @@
  * @typedef {import('postcss').ChildNode} ChildNode
  * @typedef {import('postcss').Root} Root
  * @typedef {Map<ChildNode, string[]>} GroupMap
- * @typedef {{ node: ChildNode, prev: ChildNode | undefined }} ElseStatement
+ * @typedef {{ node: ChildNode, nodes: ChildNode[], ignored: boolean }} SortUnit
  */
 
 import {
@@ -154,76 +154,84 @@ function nodeType(node) {
 }
 
 /**
+ * Treat comments as part of a statement, rather than independent sortable nodes.
+ * Own-line comments lead the next statement; same-line comments trail the previous
+ * statement. Unattached final comments stay at the end of the container.
  * @param {ChildNode[]} nodes
+ * @returns {{ units: SortUnit[], footer: ChildNode[] }}
+ */
+function collectUnits(nodes) {
+    /** @type {SortUnit[]} */
+    const units = [];
+    let pending = [];
+    for (const node of nodes) {
+        const previous = units.at(-1);
+        if (node.type === "comment") {
+            if (
+                previous &&
+                pending.length === 0 &&
+                !/[\r\n]/.test(node.raws.before ?? "") &&
+                node.text.trim() !== "prettier-ignore"
+            ) {
+                previous.nodes.push(node);
+            } else {
+                pending.push(node);
+            }
+            continue;
+        }
+        const ignored = pending.some(comment => comment.text.trim() === "prettier-ignore");
+        // Comments between branches must not break the if/else association.
+        if (
+            node.type === "atrule" &&
+            node.name === "else" &&
+            previous?.node.type === "atrule" &&
+            previous.node.name === "if"
+        ) {
+            previous.nodes.push(...pending, node);
+            previous.ignored ||= ignored;
+        } else {
+            units.push({ node, nodes: [...pending, node], ignored });
+        }
+        pending = [];
+    }
+    return { units, footer: pending };
+}
+
+/**
+ * Place group spacing before leading comments, never inside a statement unit.
+ * @param {SortUnit[]} units
  * @param {GroupMap} groupMap
  * @param {Groups} groups
- * @returns {void}
  */
-function splitGroupsInternal(nodes, groupMap, groups) {
-    /**
-     * @param {ChildNode} node
-     * @returns {void}
-     */
-    function cleanEnding(node) {
-        node.raws.before = node.raws.before.replace(/\n+/g, "\n");
-        node.raws.after = undefined;
-    }
-    /**
-     *
-     * @param {string[]} lastGroup
-     * @param {ChildNode} node
-     * @returns {string[]} Current group names
-     */
-    function checkGroup(lastGroup, node) {
-        const currentGroups = groupMap.get(node) ?? [];
-        cleanEnding(node);
-        if (!lastGroup.some(g => currentGroups.includes(g)) || currentGroups.some(g => groups[g]?.splitItems)) {
-            node.raws.before = "\n\n" + (node.raws.before ?? "");
-            return currentGroups;
+function splitGroupsInternal(units, groupMap, groups) {
+    let lastGroup = [];
+    for (let i = 0; i < units.length; i++) {
+        const unit = units[i];
+        const currentGroups = groupMap.get(unit.node) ?? [];
+        const first = unit.nodes[0];
+        const newGroup = !lastGroup.some(g => currentGroups.includes(g)) || currentGroups.some(g => groups[g]?.splitItems);
+        if (!unit.ignored) {
+            first.raws.before = (first.raws.before ?? "").replace(/\n+/g, "\n");
+            if (i > 0 && newGroup) {
+                first.raws.before = "\n\n" + first.raws.before;
+            }
         }
-        return lastGroup;
+        if (i === 0 || newGroup) lastGroup = currentGroups;
     }
-    if (nodes.length == 0) return;
-
-    cleanEnding(nodes[0]);
-    if (nodes.length == 1) return;
-
-    let lastGroup = groupMap.get(nodes[0]) ?? [];
-    for (let i = 1; i < nodes.length - 1; i++) {
-        lastGroup = checkGroup(lastGroup, nodes[i]);
-    }
-    checkGroup(lastGroup, nodes[nodes.length - 1]);
-}
-/**
- * @param {ChildNode[]} nodes
- * @param {GroupMap} groups
- * @returns {ElseStatement[]}
- */
-function removeElseStatements(nodes, groups) {
-    /** @type {ElseStatement[]} */
-    const elseStatements = [];
-    for (let i = nodes.length; i-- > 0; ) {
-        const node = nodes[i];
-        const nodeGroup = groups.get(node) ?? [];
-        if (nodeGroup.includes("@else")) {
-            elseStatements.push({
-                node,
-                prev: node.prev()
-            });
-            node.remove();
-        }
-    }
-    return elseStatements;
 }
 
 /**
- * @param {ElseStatement[]} elseStatements
- * @returns {void}
+ * A moved // comment must not swallow the next statement or closing brace.
+ * @param {import('postcss').Container} container
  */
-function appendElseStatements(elseStatements) {
-    for (let i = elseStatements.length; i-- > 0; ) {
-        const { node, prev } = elseStatements[i];
-        prev.after(node);
+function terminateLineComments(container) {
+    for (let i = 0; i < container.nodes.length; i++) {
+        const node = container.nodes[i];
+        if (node.type !== "comment" || !node.raws.inline) continue;
+        const next = container.nodes[i + 1];
+        const raws = next ? next.raws : container.raws;
+        const key = next ? "before" : "after";
+        if (!/[\r\n]/.test(raws[key] ?? "")) raws[key] = "\n" + (raws[key] ?? "");
     }
 }
 
@@ -247,32 +255,45 @@ export function grundyPropSorter({
     groups = Object.assign({}, defaultGroups, presetGroups, groups);
 
     /**
-     * @param {ChildNode[] | undefined} nodes
-     * @returns {void}
+     * @param {import('postcss').Container} container
+     * @param {boolean} shouldSort
      */
-    function runComparer(nodes) {
-        if (Array.isArray(nodes)) {
-            const groupMap = new Map(nodes.map(node => [node, nodeGroup(node, groups)]));
-            const elseStatements = removeElseStatements(nodes, groupMap);
-            const typeComparer = createComparerByType(order, groupMap, groups);
-            nodes.sort(typeComparer);
-            if (splitGroups) splitGroupsInternal(nodes, groupMap, groups);
-            appendElseStatements(elseStatements);
+    function sortContainer(container, shouldSort = true) {
+        if (!Array.isArray(container.nodes)) return;
+        const { units, footer } = collectUnits(container.nodes);
+        if (shouldSort) {
+            const groupMap = new Map(units.map(unit => [unit.node, nodeGroup(unit.node, groups)]));
+            const compare = createComparerByType(order, groupMap, groups);
+            // An ignored statement is a boundary, and its descendants are untouched.
+            let start = 0;
+            for (let i = 0; i <= units.length; i++) {
+                if (i === units.length || units[i].ignored) {
+                    const sorted = units.slice(start, i).sort((a, b) => compare(a.node, b.node));
+                    units.splice(start, sorted.length, ...sorted);
+                    start = i + 1;
+                }
+            }
+            if (splitGroups) splitGroupsInternal(units, groupMap, groups);
+            for (let i = 1; i < units.length; i++) {
+                const first = units[i].nodes[0];
+                if (first.type === "comment" && !/[\r\n]/.test(first.raws.before ?? "")) {
+                    first.raws.before = "\n" + (first.raws.before ?? "");
+                }
+            }
+            container.nodes = [...units.flatMap(unit => unit.nodes), ...footer];
+            terminateLineComments(container);
+        }
+        for (const unit of units) {
+            if (unit.ignored) continue;
+            for (const node of unit.nodes) {
+                if (node.nodes) sortContainer(node);
+            }
         }
     }
     return {
         postcssPlugin: "grundy-scss-order",
-        /**
-         * @param {Root} css
-         */
-        OnceExit: css => {
-            if (withRoot) {
-                runComparer(css.nodes);
-            }
-            css.walk(node => {
-                runComparer(node.nodes);
-            });
-        }
+        /** @param {Root} css */
+        OnceExit: css => sortContainer(css, withRoot)
     };
 }
 
