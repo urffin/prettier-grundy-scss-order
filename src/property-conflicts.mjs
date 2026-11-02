@@ -83,6 +83,122 @@ function namesConflict(first, second) {
     return false;
 }
 
+// Candidate indexes only discard pairs that cannot conflict. The predicate above
+// remains authoritative, including exceptions such as all/direction and custom names.
+function prefixes(name) {
+    const result = [name];
+    for (let i = name.indexOf("-"); i !== -1; i = name.indexOf("-", i + 1)) result.push(name.slice(0, i));
+    return result;
+}
+
+const candidateFamilies = new Map();
+for (const family of [
+    "border",
+    "grid",
+    "margin",
+    "padding",
+    "scroll-margin",
+    "scroll-padding",
+    "overflow",
+    "overscroll-behavior"
+]) {
+    candidateFamilies.set(family, [family]);
+}
+for (const [shorthand, longhands] of extraLonghands) {
+    for (const member of [shorthand, ...longhands]) {
+        if (!candidateFamilies.has(member)) candidateFamilies.set(member, []);
+        candidateFamilies.get(member).push("extra:" + shorthand);
+    }
+}
+
+function families(name, ancestors) {
+    const result = [];
+    for (const ancestor of ancestors) result.push(...(candidateFamilies.get(ancestor) ?? []));
+    if (/^(top|right|bottom|left|inset(?:-.+)?)$/.test(name)) result.push("offsets");
+    if (/^(min-|max-)?(width|height|inline-size|block-size)$/.test(name)) result.push("size");
+    if (name === "text-wrap" || name === "white-space") result.push("text-wrap-overlap");
+    return result;
+}
+
+function addToIndex(index, key, position) {
+    if (!index.has(key)) index.set(key, []);
+    index.get(key).push(position);
+}
+
+function addDirectConstraints(names, successors, incoming, start = 0) {
+    for (let i = 0; i < names.length; i++) {
+        for (let j = Math.max(i + 1, start); j < names.length; j++) {
+            if (namesConflict(names[i], names[j])) {
+                successors[i].push(j);
+                incoming[j]++;
+            }
+        }
+    }
+}
+
+function buildConstraints(names, successors, incoming) {
+    // Index construction costs more than a few direct comparisons. Keep short
+    // segments simple; the index pays off on larger declaration blocks.
+    if (names.length < 32) {
+        addDirectConstraints(names, successors, incoming);
+        return;
+    }
+    const exact = new Map();
+    const descendants = new Map();
+    const related = new Map();
+    const custom = new Map();
+    const declarations = [];
+    const ordinary = [];
+    const opaque = [];
+    const resets = [];
+    for (let j = 0; j < names.length; j++) {
+        const current = names[j];
+        if (current === null) continue;
+        const candidates = new Set(opaque);
+        const include = positions => {
+            for (const i of positions ?? []) candidates.add(i);
+        };
+        const isCustom = current.raw.startsWith("--");
+        let ancestors = [];
+        let groups = [];
+        if (current.raw === "*") {
+            include(declarations);
+        } else if (isCustom) {
+            include(custom.get(current.raw));
+        } else {
+            include(resets);
+            if (current.name === "all") include(ordinary);
+            ancestors = prefixes(current.name);
+            groups = families(current.name, ancestors);
+            for (const name of ancestors) include(exact.get(name));
+            include(descendants.get(current.name));
+            for (const group of groups) include(related.get(group));
+        }
+        // Dense families and broad resets leave little work to discard. Avoid
+        // paying for candidate sets as well as nearly all pair comparisons.
+        if (j >= 32 && candidates.size * 2 >= j) {
+            addDirectConstraints(names, successors, incoming, j);
+            return;
+        }
+        for (const i of candidates) {
+            if (namesConflict(names[i], current)) {
+                successors[i].push(j);
+                incoming[j]++;
+            }
+        }
+        declarations.push(j);
+        if (current.raw === "*") opaque.push(j);
+        else if (isCustom) addToIndex(custom, current.raw, j);
+        else {
+            ordinary.push(j);
+            if (current.name === "all") resets.push(j);
+            addToIndex(exact, current.name, j);
+            for (const name of ancestors) addToIndex(descendants, name, j);
+            for (const group of groups) addToIndex(related, group, j);
+        }
+    }
+}
+
 /**
  * Stable topological ordering: original conflicting pairs are hard constraints;
  * the configured comparer chooses between currently unconstrained statements.
@@ -101,14 +217,7 @@ export function sortWithPropertyConstraints(units, compare) {
     });
     const successors = units.map(() => []);
     const incoming = units.map(() => 0);
-    for (let i = 0; i < units.length; i++) {
-        for (let j = i + 1; j < units.length; j++) {
-            if (namesConflict(names[i], names[j])) {
-                successors[i].push(j);
-                incoming[j]++;
-            }
-        }
-    }
+    buildConstraints(names, successors, incoming);
     const sorted = [];
     while (sorted.length < units.length) {
         let best = -1;
