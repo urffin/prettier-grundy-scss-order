@@ -33,7 +33,7 @@ font-size: large;
     );
 });
 
-test("Should create custom group by startsWith includes", async () => {
+test("Should create custom group by startsWith without crossing an include", async () => {
     const result = await prettier.format(
         `
             @include fonts;
@@ -53,10 +53,11 @@ test("Should create custom group by startsWith includes", async () => {
 
     assert.equal(
         result,
-        `--color: 0.36;
+        `@include fonts;
+
+--color: 0.36;
 --bgColor: 0.36;
 
-@include fonts;
 font-family: "Courier New", Courier, monospace;
 font-size: large;
 `
@@ -83,13 +84,13 @@ test("Should create custom group by startsWith with type", async () => {
 
     assert.equal(
         result,
-        `--color: 0.36;
+        `@include fonts;
+
+--color: 0.36;
 --bgColor: 0.36;
 
 font-family: "Courier New", Courier, monospace;
 font-size: large;
-
-@include fonts;
 `
     );
 });

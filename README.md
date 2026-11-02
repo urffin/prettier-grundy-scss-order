@@ -4,12 +4,12 @@
 
 Keep SCSS readable as it grows. `prettier-grundy-scss-order` is a [Prettier](https://prettier.io/) plugin that puts declarations, variables, Sass directives, and nested rules in a predictable order every time you format a file.
 
-It is designed for real SCSS codebases: keep variables together, place layout properties consistently, separate logical sections with blank lines, and migrate from established property orders without rewriting your styles by hand.
+It is designed for real SCSS codebases: place layout properties consistently, separate logical sections with blank lines, and migrate from established property orders while keeping variable assignments and mixin calls in place.
 
 ## Why use it?
 
 - **One format command, one team-wide style.** No more review comments about property order.
-- **SCSS-aware sorting.** Sort `$variables`, CSS custom properties, `@use`, `@extend`, `@include`, `@mixin`, conditions, and nested rules — not only declarations.
+- **SCSS-aware sorting.** Group CSS custom properties, declarations, Sass directives, and nested rules while respecting variable assignments and mixin calls as sorting boundaries.
 - **Adopt an existing convention.** Choose `csscomb`, `csscomb-yandex`, `csscomb-zen`, or `pepelsbey`.
 - **Make the order yours.** Create groups by node type, property prefix, or an explicit list of properties.
 
@@ -61,7 +61,7 @@ The default order is:
 @use → @extend → CSS custom properties → Sass variables → @if → declarations → @include → @mixin → nested rules
 ```
 
-Declarations inside the `decl` group are sorted alphabetically. Sorting applies at the root level and inside nested rules.
+Declarations inside the `decl` group are sorted alphabetically, subject to conflict constraints. Sorting applies at the root level and inside nested rules, separately between execution boundaries described below. Group order never moves assignments or mixin calls across other statements.
 
 ## Configuration
 
@@ -146,7 +146,15 @@ Supported values for `type`: `use`, `extend`, `mixin`, `include`, `if`, `else`, 
 
 The source order of potentially conflicting declarations takes priority over presets and custom groups. This preserves shorthand/longhand overrides (such as `margin-top` followed by `margin`), repeated fallback declarations, aliases, and overlapping logical/physical properties. Independent declarations still follow the configured order.
 
-Conflict detection is conservative: for example, declarations in the `border` and `grid` families retain their relative order even when particular longhands could be independent. Interpolated or escaped property names and nested Sass property blocks keep their position relative to other declarations. This does not evaluate Sass or guarantee safe movement across variable assignments, mixin calls, or other executable directives.
+Conflict detection is conservative: for example, declarations in the `border` and `grid` families retain their relative order even when particular longhands could be independent. Interpolated or escaped property names and nested Sass property blocks keep their position relative to other declarations.
+
+## Execution boundaries
+
+Sass assignments (`$value: ...`, including `!default`, `!global`, and `theme.$value: ...`), `@include`, and `@content` stay in their original position. Statements cannot cross these boundaries, even when a preset or custom group requests a different order. CSS custom properties (`--value`) remain sortable declarations.
+
+Enclosing blocks containing these operations also stay in place, including an entire `@if`/`@else` chain when any branch contains one. Their contents are still sorted recursively between boundaries; `prettier-ignore` additionally protects the entire subtree. Comments remain attached, and group spacing still applies.
+
+This intentionally changes earlier formatting that hoisted assignments or grouped mixin calls. It preserves when variables are read and when mixins emit CSS or change variables. The sorter does not evaluate Sass: general control-flow ordering, module loading, and side effects hidden in function calls are not fully analyzed.
 
 ## Comments
 

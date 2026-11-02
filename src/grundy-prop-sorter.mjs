@@ -255,6 +255,26 @@ export function grundyPropSorter({
 } = {}) {
     groups = Object.assign({}, defaultGroups, presetGroups, groups);
 
+    /** @type {WeakMap<ChildNode, boolean>} */
+    const executionBoundaries = new WeakMap();
+
+    /**
+     * Assignments and calls may change values or emit CSS at this exact point.
+     * Pin enclosing blocks too: moving one would move its effects across siblings.
+     * This does not prevent sorting safe segments inside those blocks.
+     * @param {ChildNode} node
+     * @returns {boolean}
+     */
+    function hasExecutionBoundary(node) {
+        if (executionBoundaries.has(node)) return executionBoundaries.get(node);
+        const boundary =
+            (node.type === "decl" && /(?:^|\.)\$/.test(node.prop)) ||
+            (node.type === "atrule" && (node.name === "include" || node.name === "content")) ||
+            (node.nodes?.some(hasExecutionBoundary) ?? false);
+        executionBoundaries.set(node, boundary);
+        return boundary;
+    }
+
     /**
      * @param {import('postcss').Container} container
      * @param {boolean} shouldSort
@@ -265,10 +285,11 @@ export function grundyPropSorter({
         if (shouldSort) {
             const groupMap = new Map(units.map(unit => [unit.node, nodeGroup(unit.node, groups)]));
             const compare = createComparerByType(order, groupMap, groups);
-            // An ignored statement is a boundary, and its descendants are untouched.
+            // Boundaries stay in place regardless of the configured group order.
+            // Check every branch of a collected if/else unit, not only its first node.
             let start = 0;
             for (let i = 0; i <= units.length; i++) {
-                if (i === units.length || units[i].ignored) {
+                if (i === units.length || units[i].ignored || units[i].nodes.some(hasExecutionBoundary)) {
                     const sorted = sortWithPropertyConstraints(units.slice(start, i), compare);
                     units.splice(start, sorted.length, ...sorted);
                     start = i + 1;

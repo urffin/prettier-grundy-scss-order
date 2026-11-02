@@ -74,7 +74,7 @@ test("Honors root prettier-ignore even when root sorting is disabled", async () 
 test("Keeps comments on nested rules and includes when splitting individual items", async () => {
     await check(
         ".a {\n // child\n .child { z-index: 1; color: red; } // child end\n // mixin\n @include paint; // mixin end\n }",
-        ".a {\n // mixin\n @include paint; // mixin end\n\n // child\n .child { color: red; z-index: 1; } // child end\n }",
+        ".a {\n // child\n .child { color: red; z-index: 1; } // child end\n\n // mixin\n @include paint; // mixin end\n }",
         { grundyScssSorterSplitGroup: true }
     );
 });

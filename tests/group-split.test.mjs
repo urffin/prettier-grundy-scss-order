@@ -135,11 +135,6 @@ test("Should split items inside group", async () => {
     @extend %buttonReset;
 
     @include utils.media-down(utils.$mobile-breakpoint) {
-        color: var(--color-gray-regent);
-        margin: -4px;
-        margin-left: auto;
-        padding: 4px;
-
         @include utils.focus;
 
         @include utils.transition("color");
@@ -147,6 +142,11 @@ test("Should split items inside group", async () => {
         @include utils.hover {
             color: var(--color-ebony);
         }
+
+        color: var(--color-gray-regent);
+        margin: -4px;
+        margin-left: auto;
+        padding: 4px;
 
         [data-important="false"] & {
             [data-mode="dark"] & {
@@ -167,7 +167,6 @@ test("Should split items inside group", async () => {
     }
 }
 `;
-    console.log(expect);
     assert.equal(result, expect);
 });
 

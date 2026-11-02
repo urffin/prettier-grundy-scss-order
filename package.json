@@ -45,6 +45,7 @@
         "prettier": "^3.8.1"
     },
     "devDependencies": {
+        "sass": "^1.107.1",
         "uvu": "^0.5.6"
     }
 }
