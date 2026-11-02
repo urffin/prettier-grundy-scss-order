@@ -45,7 +45,7 @@ test("Splits groups before their leading comments and keeps trailing comments in
 test("Keeps comments within an if/else chain", async () => {
     await check(
         ".a { z-index: 1;\n @if $a { color: red; }\n // alternative\n @else if $b { color: blue; }\n /* fallback */\n @else { color: green; } }",
-        ".a { @if $a { color: red; }\n // alternative\n @else if $b { color: blue; }\n /* fallback */\n @else { color: green; } z-index: 1; }"
+        ".a { z-index: 1; @if $a { color: red; }\n // alternative\n @else if $b { color: blue; }\n /* fallback */\n @else { color: green; } }"
     );
 });
 
@@ -59,7 +59,7 @@ test("Keeps prettier-ignore and its subtree untouched as a sorting boundary", as
 test("Handles root comments, comment-only containers, and CRLF", async () => {
     await check(
         "// rule\r\n.a { /* only */ }\r\n// module\r\n@use 'colors';\r\n// footer",
-        "// module\n@use 'colors';\n// rule\n.a { /* only */ }\n// footer"
+        "// rule\n.a { /* only */ }\n// module\n@use 'colors';\n// footer"
     );
 });
 

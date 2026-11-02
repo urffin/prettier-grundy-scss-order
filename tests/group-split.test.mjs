@@ -59,10 +59,10 @@ color: green;
 
 test("Should split group at rule", async () => {
     const result = await prettier.format(
-        `test {
+        `@use "colors";
+test {
     line-height: 10px;
 }
-@use "colors";
 `,
         {
             parser: "scss",

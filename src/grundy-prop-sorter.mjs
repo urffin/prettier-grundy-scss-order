@@ -15,6 +15,25 @@ import {
 } from "./presets/default.mjs";
 import { sortWithPropertyConstraints } from "./property-conflicts.mjs";
 
+// These directives execute, control evaluation, or load modules at this position.
+// In particular, hoisting @use over @forward can configure a module too late.
+const executionDirectives = new Set([
+    "include",
+    "content",
+    "if",
+    "else",
+    "for",
+    "each",
+    "while",
+    "return",
+    "warn",
+    "debug",
+    "error",
+    "use",
+    "forward",
+    "import"
+]);
+
 /**
  * @param {ChildNode} node
  * @param {Groups} groups
@@ -259,7 +278,7 @@ export function grundyPropSorter({
     const executionBoundaries = new WeakMap();
 
     /**
-     * Assignments and calls may change values or emit CSS at this exact point.
+     * Assignments and directives may change values or emit CSS at this exact point.
      * Pin enclosing blocks too: moving one would move its effects across siblings.
      * This does not prevent sorting safe segments inside those blocks.
      * @param {ChildNode} node
@@ -269,7 +288,7 @@ export function grundyPropSorter({
         if (executionBoundaries.has(node)) return executionBoundaries.get(node);
         const boundary =
             (node.type === "decl" && /(?:^|\.)\$/.test(node.prop)) ||
-            (node.type === "atrule" && (node.name === "include" || node.name === "content")) ||
+            (node.type === "atrule" && executionDirectives.has(node.name)) ||
             (node.nodes?.some(hasExecutionBoundary) ?? false);
         executionBoundaries.set(node, boundary);
         return boundary;

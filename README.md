@@ -150,11 +150,15 @@ Conflict detection is conservative: for example, declarations in the `border` an
 
 ## Execution boundaries
 
-Sass assignments (`$value: ...`, including `!default`, `!global`, and `theme.$value: ...`), `@include`, and `@content` stay in their original position. Statements cannot cross these boundaries, even when a preset or custom group requests a different order. CSS custom properties (`--value`) remain sortable declarations.
+Sass assignments (`$value: ...`, including `!default`, `!global`, and `theme.$value: ...`), `@include`, `@content`, control flow (`@if`/`@else`, `@for`, `@each`, `@while`, `@return`), diagnostics (`@warn`, `@debug`, `@error`), and module loads (`@use`, `@forward`, `@import`) stay in their original position. Statements cannot cross these boundaries, even when a preset or custom group requests a different order. CSS custom properties (`--value`) remain sortable declarations.
 
-Enclosing blocks containing these operations also stay in place, including an entire `@if`/`@else` chain when any branch contains one. Their contents are still sorted recursively between boundaries; `prettier-ignore` additionally protects the entire subtree. Comments remain attached, and group spacing still applies.
+Enclosing blocks containing these operations also stay in place, and each `@if`/`@else` chain is kept together at its original position. Their contents are still sorted recursively between boundaries; `prettier-ignore` additionally protects the entire subtree. Comments remain attached, and group spacing still applies.
 
-This intentionally changes earlier formatting that hoisted assignments or grouped mixin calls. It preserves when variables are read and when mixins emit CSS or change variables. The sorter does not evaluate Sass: general control-flow ordering, module loading, and side effects hidden in function calls are not fully analyzed.
+This intentionally changes earlier formatting that hoisted assignments, conditions, or module loads. In particular, `@forward` and `@use` are never regrouped: their order can affect module configuration and emitted CSS. Invalid module placement is left in place for Sass to diagnose.
+
+Presets, group criteria, alphabetical/exact ordering, and blank-line settings still apply within each sortable segment. They cannot override execution boundaries or property conflicts; there is no unsafe-mode switch. Boundary groups still affect spacing. Conservative checks can prevent harmless moves too, especially for enclosing blocks and the `border`/`grid` families.
+
+The sorter does not evaluate Sass or prove equivalence for arbitrary stylesheets. Side effects hidden in function calls and general cascade dependencies between ordinary nested rules or CSS at-rules still require further analysis.
 
 ## Comments
 
