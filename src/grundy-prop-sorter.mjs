@@ -35,38 +35,49 @@ const executionDirectives = new Set([
 ]);
 
 /**
- * @param {ChildNode} node
+ * Compile configuration once per sorter, preserving first-occurrence semantics
+ * for duplicate group names and duplicate entries in exact ordering lists.
  * @param {Groups} groups
- * @returns {string[]}
+ * @param {string[]} order
  */
-function nodeGroup(node, groups) {
-    const nodeGroups = [];
-    for (let group in groups) {
-        if (checkCriteria(node, groups[group])) {
-            nodeGroups.push(group);
-        }
-    }
-    return nodeGroups;
+function compileGroups(groups, order) {
+    const priorities = new Map();
+    order.forEach((name, index) => {
+        if (!priorities.has(name)) priorities.set(name, index);
+    });
+    return Object.keys(groups).map(name => {
+        const criteria = groups[name];
+        const exactRanks = new Map();
+        criteria.oneOf?.forEach((property, index) => {
+            if (!exactRanks.has(property)) exactRanks.set(property, index);
+        });
+        return {
+            name,
+            criteria,
+            oneOf: new Set(criteria.oneOf),
+            exactRanks,
+            priority: priorities.get(name) ?? -1
+        };
+    });
 }
 
 /**
- *
- * @param {ChildNode} node
- * @param {GroupCriteria} criterias
- * @returns {boolean} Whether the node matches all criteria
+ * @param {string} name
+ * @param {string} type
+ * @param {ReturnType<typeof compileGroups>[number]} group
  */
-function checkCriteria(node, criterias) {
-    const _nodeName = nodeName(node);
-    for (let criteria in criterias) {
-        switch (criteria) {
+function checkCriteria(name, type, group) {
+    const criteria = group.criteria;
+    for (const criterion in criteria) {
+        switch (criterion) {
             case "type":
-                if (nodeType(node) != criterias[criteria]) return false;
+                if (type != criteria.type) return false;
                 break;
             case "startsWith":
-                if (!_nodeName.startsWith(criterias[criteria])) return false;
+                if (!name.startsWith(criteria.startsWith)) return false;
                 break;
             case "oneOf":
-                if (!criterias[criteria].includes(_nodeName)) return false;
+                if (!group.oneOf.has(name)) return false;
                 break;
         }
     }
@@ -74,59 +85,55 @@ function checkCriteria(node, criterias) {
 }
 
 /**
- *
- * @param {string[]} order
- * @param {GroupMap} groupMap
- * @param {Groups} groups
- * @returns {(a: ChildNode, b: ChildNode) => number}
+ * Build comparison keys once per statement. Group membership is kept separately
+ * for blank-line grouping, which can depend on every matching group.
+ * @param {SortUnit[]} units
+ * @param {ReturnType<typeof compileGroups>} groups
  */
-function createComparerByType(order, groupMap, groups) {
-    return (a, b) => {
-        const aGroups = groupMap.get(a) ?? [];
-        const bGroups = groupMap.get(b) ?? [];
-        const aIndex = order.findIndex(group => aGroups.includes(group));
-        const bIndex = order.findIndex(group => bGroups.includes(group));
-
-        if (aIndex === -1 && bIndex === -1) return 0;
-        if (aIndex == -1) return 1;
-        if (bIndex == -1) return -1;
-
-        if (aIndex == bIndex) {
-            return compareInGroup(a, b, groups[order[aIndex]]);
+function prepareNodes(units, groups) {
+    /** @type {GroupMap} */
+    const groupMap = new Map();
+    const keys = new Map();
+    for (const { node } of units) {
+        const name = nodeName(node);
+        const type = nodeType(node);
+        const matches = [];
+        let primary;
+        for (const group of groups) {
+            if (!checkCriteria(name, type, group)) continue;
+            matches.push(group.name);
+            if (group.priority !== -1 && (!primary || group.priority < primary.priority)) primary = group;
         }
-
-        return aIndex - bIndex;
-    };
+        groupMap.set(node, matches);
+        keys.set(node, {
+            name,
+            priority: primary?.priority ?? -1,
+            order: primary?.criteria.order,
+            exactRank: primary?.exactRanks.get(name) ?? -1
+        });
+    }
+    return { groupMap, keys };
 }
 
-/**
- * @param {ChildNode} a
- * @param {ChildNode} b
- * @param {GroupCriteria} group
- * @returns {number}
- */
-function compareInGroup(a, b, group) {
-    if (group.order == "alphabetical") {
-        const aName = nodeName(a);
-        const bName = nodeName(b);
-        if (aName > bName) return 1;
-        if (aName < bName) return -1;
+/** @param {ReturnType<typeof prepareNodes>["keys"]} keys */
+function createComparerByType(keys) {
+    return (a, b) => {
+        const first = keys.get(a);
+        const second = keys.get(b);
+        if (first.priority === -1 && second.priority === -1) return 0;
+        if (first.priority === -1) return 1;
+        if (second.priority === -1) return -1;
+        if (first.priority !== second.priority) return first.priority - second.priority;
+        if (first.order === "alphabetical") {
+            if (first.name > second.name) return 1;
+            if (first.name < second.name) return -1;
+        } else if (first.order === "exact") {
+            if (first.exactRank === -1) return 1;
+            if (second.exactRank === -1) return -1;
+            return first.exactRank - second.exactRank;
+        }
         return 0;
-    }
-
-    if (group.order == "exact") {
-        const aName = nodeName(a);
-        const bName = nodeName(b);
-        const aIndex = group.oneOf.findIndex(name => name == aName);
-        const bIndex = group.oneOf.findIndex(name => name == bName);
-
-        if (aIndex == -1) return 1;
-        if (bIndex == -1) return -1;
-
-        return aIndex - bIndex;
-    }
-
-    return 0;
+    };
 }
 
 /**
@@ -278,6 +285,7 @@ export function grundyPropSorter({
         throw new Error(`Unknown SCSS sorter safety mode: ${safety}`);
     }
     groups = Object.assign({}, defaultGroups, presetGroups, groups);
+    const compiledGroups = compileGroups(groups, order);
 
     /** @type {WeakMap<ChildNode, boolean>} */
     const executionBoundaries = new WeakMap();
@@ -307,8 +315,8 @@ export function grundyPropSorter({
         if (!Array.isArray(container.nodes)) return;
         const { units, footer } = collectUnits(container.nodes);
         if (shouldSort) {
-            const groupMap = new Map(units.map(unit => [unit.node, nodeGroup(unit.node, groups)]));
-            const compare = createComparerByType(order, groupMap, groups);
+            const { groupMap, keys } = prepareNodes(units, compiledGroups);
+            const compare = createComparerByType(keys);
             // Boundaries stay in place regardless of the configured group order.
             // Check every branch of a collected if/else unit, not only its first node.
             let start = 0;

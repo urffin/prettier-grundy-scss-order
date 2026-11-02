@@ -55,11 +55,11 @@ function propertyName(node) {
 
 function namesConflict(first, second) {
     if (first === null || second === null) return false;
-    if (first === "*" || second === "*") return true;
+    if (first.raw === "*" || second.raw === "*") return true;
     // Custom properties are case-sensitive and are not affected by `all`.
-    if (first.startsWith("--") || second.startsWith("--")) return first === second;
-    const a = normalize(first);
-    const b = normalize(second);
+    if (first.raw.startsWith("--") || second.raw.startsWith("--")) return first.raw === second.raw;
+    const a = first.name;
+    const b = second.name;
     if (a === "all" || b === "all") {
         return !["direction", "unicode-bidi"].includes(a === "all" ? b : a);
     }
@@ -93,7 +93,12 @@ function namesConflict(first, second) {
  * @returns {T[]}
  */
 export function sortWithPropertyConstraints(units, compare) {
-    const names = units.map(unit => propertyName(unit.node));
+    const names = units.map(unit => {
+        const raw = propertyName(unit.node);
+        // Preserve the original name for custom-property detection: removing a
+        // vendor prefix must not turn an ordinary property into a custom one.
+        return raw === null ? null : { raw, name: raw.startsWith("--") ? raw : normalize(raw) };
+    });
     const successors = units.map(() => []);
     const incoming = units.map(() => 0);
     for (let i = 0; i < units.length; i++) {
