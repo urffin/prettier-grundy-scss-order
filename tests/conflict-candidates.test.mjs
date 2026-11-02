@@ -1,7 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import { sortWithPropertyConstraints } from "../src/property-conflicts.mjs";
+import { sortWithPropertyConstraints as sortConstraints } from "../src/property-conflicts.mjs";
+import { postcssAdapter } from "../src/postcss-adapter.mjs";
+
+const sortWithPropertyConstraints = (units, compare) => sortConstraints(units, compare, postcssAdapter.propertyName);
 
 // Frozen release implementation is an independent all-pairs oracle. Keep it
 // unchanged when optimizing candidate discovery or topological ordering.

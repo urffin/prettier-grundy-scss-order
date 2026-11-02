@@ -40,19 +40,6 @@ function expandsTo(shorthand, property) {
     return contains(shorthand, property) || (extraLonghands.get(shorthand) ?? []).some(name => contains(name, property));
 }
 
-/**
- * Read a declaration name without evaluating Sass. Nested property blocks and
- * dynamic/escaped names are deliberately opaque: declarations cannot cross them.
- * @param {import('postcss').ChildNode} node
- * @returns {string | null}
- */
-function propertyName(node) {
-    if (node.type === "rule" && /:\s*$/.test(node.selector)) return "*";
-    if (node.type !== "decl" || node.prop.startsWith("$")) return null;
-    if (!/^[-a-zA-Z0-9_]+$/.test(node.prop) || node.nodes) return "*";
-    return node.prop;
-}
-
 function namesConflict(first, second) {
     if (first === null || second === null) return false;
     if (first.raw === "*" || second.raw === "*") return true;
@@ -203,12 +190,13 @@ function buildConstraints(names, successors, incoming) {
  * Stable topological ordering: original conflicting pairs are hard constraints;
  * the configured comparer chooses between currently unconstrained statements.
  * A special-case Array.sort comparator would not be transitive for these pairs.
- * @template {{ node: import('postcss').ChildNode }} T
+ * @template {{ node: object }} T
  * @param {T[]} units
- * @param {(a: import('postcss').ChildNode, b: import('postcss').ChildNode) => number} compare
+ * @param {(a: object, b: object) => number} compare
+ * @param {(node: object) => string | null} propertyName
  * @returns {T[]}
  */
-export function sortWithPropertyConstraints(units, compare) {
+export function sortWithPropertyConstraints(units, compare, propertyName) {
     const names = units.map(unit => {
         const raw = propertyName(unit.node);
         // Preserve the original name for custom-property detection: removing a
