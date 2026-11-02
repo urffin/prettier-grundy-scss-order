@@ -61,7 +61,7 @@ The default order is:
 @use → @extend → CSS custom properties → Sass variables → @if → declarations → @include → @mixin → nested rules
 ```
 
-Declarations inside the `decl` group are sorted alphabetically, subject to conflict constraints. Sorting applies at the root level and inside nested rules, separately between execution boundaries described below. Group order never moves assignments or mixin calls across other statements.
+Declarations inside the `decl` group are sorted alphabetically. By default, conflict constraints and execution boundaries limit reordering at the root level and inside nested rules. Explicitly select `structural` mode to allow your configured order across these boundaries.
 
 ## Configuration
 
@@ -142,6 +142,22 @@ Supported values for `type`: `use`, `extend`, `mixin`, `include`, `if`, `else`, 
 
 > Use `type: "decl"` with `startsWith` or `oneOf` when the group should contain only CSS properties. Without it, the criterion can also match the name or parameters of another SCSS node.
 
+## Safety mode
+
+`grundyScssSorterSafety` accepts `"conservative"` (default) or `"structural"`. A preset or custom group alone never changes the mode.
+
+```js
+export default {
+    plugins: ["prettier-grundy-scss-order"],
+    grundyScssSorterSafety: "structural",
+    grundyScssSorterGroupsOrder: ["$variable", "decl", "@include", "rule"]
+};
+```
+
+`structural` applies configured ordering without execution boundaries or property conflict constraints. It can move variables, calls, conditions, and modules, and reorder shorthand/longhand properties. The caller is responsible for the resulting SCSS behavior. Both modes keep comments attached, preserve complete `if`/`else` chains, terminate line comments, and honor `prettier-ignore`. Root sorting and group spacing options work in both modes. Invalid mode names are rejected.
+
+The following conflict and execution protections describe `conservative` mode.
+
 ## Conflicting properties
 
 The source order of potentially conflicting declarations takes priority over presets and custom groups. This preserves shorthand/longhand overrides (such as `margin-top` followed by `margin`), repeated fallback declarations, aliases, and overlapping logical/physical properties. Independent declarations still follow the configured order.
@@ -156,7 +172,7 @@ Enclosing blocks containing these operations also stay in place, and each `@if`/
 
 This intentionally changes earlier formatting that hoisted assignments, conditions, or module loads. In particular, `@forward` and `@use` are never regrouped: their order can affect module configuration and emitted CSS. Invalid module placement is left in place for Sass to diagnose.
 
-Presets, group criteria, alphabetical/exact ordering, and blank-line settings still apply within each sortable segment. They cannot override execution boundaries or property conflicts; there is no unsafe-mode switch. Boundary groups still affect spacing. Conservative checks can prevent harmless moves too, especially for enclosing blocks and the `border`/`grid` families.
+In `conservative` mode, presets, group criteria, alphabetical/exact ordering, and blank-line settings apply within each sortable segment. They cannot override execution boundaries or property conflicts. Boundary groups still affect spacing. Conservative checks can prevent harmless moves too, especially for enclosing blocks and the `border`/`grid` families. Select `structural` explicitly when configured ordering should take priority.
 
 The sorter does not evaluate Sass or prove equivalence for arbitrary stylesheets. Side effects hidden in function calls and general cascade dependencies between ordinary nested rules or CSS at-rules still require further analysis.
 

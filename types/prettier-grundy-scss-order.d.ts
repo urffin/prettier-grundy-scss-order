@@ -2,6 +2,8 @@ declare module "prettier-grundy-scss-order" {
     import { Plugin } from "prettier";
 
     export interface PrettierGrundyScssOptions {
+        /** Defaults to conservative. Structural allows reordering that may change SCSS behavior. */
+        grundyScssSorterSafety?: "conservative" | "structural";
         grundyScssSorterWithRoot?: boolean;
         grundyScssSorterSplitGroup?: boolean;
         grundyScssSorterGroups?: string;

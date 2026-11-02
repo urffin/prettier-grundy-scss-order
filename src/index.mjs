@@ -20,7 +20,8 @@ async function grundyParseSorter(text, options) {
         grundyScssSorterWithRoot,
         grundyScssSorterGroupsOrder,
         grundyScssSorterSplitGroup,
-        grundyScssSorterPreset
+        grundyScssSorterPreset,
+        grundyScssSorterSafety
     } = options;
 
     const preset = await tryLoadPreset(grundyScssSorterPreset);
@@ -28,6 +29,7 @@ async function grundyParseSorter(text, options) {
 
     const processed = await postcss([
         grundyPropSorter({
+            safety: grundyScssSorterSafety,
             groups: grundyScssSorterGroups ? JSON.parse(grundyScssSorterGroups) : undefined,
             order:
                 grundyScssSorterGroupsOrder?.length ? grundyScssSorterGroupsOrder : (preset?.order ?? defaultPreset.order),
@@ -45,6 +47,19 @@ async function grundyParseSorter(text, options) {
 }
 
 export const options = {
+    grundyScssSorterSafety: {
+        type: "choice",
+        category: "grundy-scss-declaration-sorter",
+        description: "Preserve semantic ordering, or explicitly allow configured ordering with structural protection only",
+        default: "conservative",
+        choices: [
+            { value: "conservative", description: "Preserve execution boundaries and conflicting property order" },
+            {
+                value: "structural",
+                description: "Allow configured ordering; preserve comments, if/else chains and prettier-ignore"
+            }
+        ]
+    },
     grundyScssSorterWithRoot: {
         type: "boolean",
         description: "Flag if need sort root node",

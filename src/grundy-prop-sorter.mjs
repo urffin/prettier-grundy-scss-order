@@ -263,6 +263,7 @@ function terminateLineComments(container) {
  * @param {boolean} [options.withRoot=false] - Whether to sort at root level
  * @param {boolean} [options.splitGroups=false] - Whether to add empty lines between groups
  * @param {Groups} [options.presetGroups] - Groups from preset
+ * @param {"conservative" | "structural"} [options.safety="conservative"] - Ordering protection
  * @returns {import('postcss').Plugin} PostCSS plugin object
  */
 export function grundyPropSorter({
@@ -270,8 +271,12 @@ export function grundyPropSorter({
     order = defaultOrder,
     withRoot = defaultWithRoot,
     splitGroups = defaultSplitGroups,
-    presetGroups
+    presetGroups,
+    safety = "conservative"
 } = {}) {
+    if (safety !== "conservative" && safety !== "structural") {
+        throw new Error(`Unknown SCSS sorter safety mode: ${safety}`);
+    }
     groups = Object.assign({}, defaultGroups, presetGroups, groups);
 
     /** @type {WeakMap<ChildNode, boolean>} */
@@ -308,8 +313,16 @@ export function grundyPropSorter({
             // Check every branch of a collected if/else unit, not only its first node.
             let start = 0;
             for (let i = 0; i <= units.length; i++) {
-                if (i === units.length || units[i].ignored || units[i].nodes.some(hasExecutionBoundary)) {
-                    const sorted = sortWithPropertyConstraints(units.slice(start, i), compare);
+                if (
+                    i === units.length ||
+                    units[i].ignored ||
+                    (safety === "conservative" && units[i].nodes.some(hasExecutionBoundary))
+                ) {
+                    const segment = units.slice(start, i);
+                    const sorted =
+                        safety === "conservative" ?
+                            sortWithPropertyConstraints(segment, compare)
+                        :   segment.sort((a, b) => compare(a.node, b.node));
                     units.splice(start, sorted.length, ...sorted);
                     start = i + 1;
                 }
