@@ -170,4 +170,21 @@ test("Should split items inside group", async () => {
     assert.equal(result, expect);
 });
 
+test("Should normalize whitespace-only blank lines on the first pass in both safety modes", async () => {
+    for (const safety of ["conservative", "structural"]) {
+        const options = {
+            parser: "scss",
+            plugins: [path.resolve(fileURLToPath(import.meta.url), "../../src/index.mjs")],
+            grundyScssSorterSafety: safety,
+            grundyScssSorterSplitGroup: true
+        };
+        for (const newline of ["\n", "\r\n"]) {
+            const source = `.a { color: red;${newline}  ${newline}\t${newline}display: block; }`;
+            const result = await prettier.format(source, options);
+            assert.equal(result, ".a {\n  color: red;\n  display: block;\n}\n");
+            assert.equal(await prettier.format(result, options), result);
+        }
+    }
+});
+
 test.run();

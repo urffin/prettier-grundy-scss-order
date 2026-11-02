@@ -231,7 +231,7 @@ function splitGroupsInternal(units, groupMap, groups) {
         const first = unit.nodes[0];
         const newGroup = !lastGroup.some(g => currentGroups.includes(g)) || currentGroups.some(g => groups[g]?.splitItems);
         if (!unit.ignored) {
-            first.raws.before = (first.raws.before ?? "").replace(/\n+/g, "\n");
+            first.raws.before = (first.raws.before ?? "").replace(/\r?\n(?:[\t ]*\r?\n)+/g, "\n");
             if (i > 0 && newGroup) {
                 first.raws.before = "\n\n" + first.raws.before;
             }
