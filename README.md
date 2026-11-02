@@ -142,6 +142,12 @@ Supported values for `type`: `use`, `extend`, `mixin`, `include`, `if`, `else`, 
 
 > Use `type: "decl"` with `startsWith` or `oneOf` when the group should contain only CSS properties. Without it, the criterion can also match the name or parameters of another SCSS node.
 
+## Conflicting properties
+
+The source order of potentially conflicting declarations takes priority over presets and custom groups. This preserves shorthand/longhand overrides (such as `margin-top` followed by `margin`), repeated fallback declarations, aliases, and overlapping logical/physical properties. Independent declarations still follow the configured order.
+
+Conflict detection is conservative: for example, declarations in the `border` and `grid` families retain their relative order even when particular longhands could be independent. Interpolated or escaped property names and nested Sass property blocks keep their position relative to other declarations. This does not evaluate Sass or guarantee safe movement across variable assignments, mixin calls, or other executable directives.
+
 ## Comments
 
 Comments on their own line move with the following statement. Comments after a statement on the same line stay with that statement. Standalone comments at the end of a block remain there. Group separators are inserted before leading comments.

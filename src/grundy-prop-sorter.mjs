@@ -13,6 +13,7 @@ import {
     withRoot as defaultWithRoot,
     splitGroups as defaultSplitGroups
 } from "./presets/default.mjs";
+import { sortWithPropertyConstraints } from "./property-conflicts.mjs";
 
 /**
  * @param {ChildNode} node
@@ -268,7 +269,7 @@ export function grundyPropSorter({
             let start = 0;
             for (let i = 0; i <= units.length; i++) {
                 if (i === units.length || units[i].ignored) {
-                    const sorted = units.slice(start, i).sort((a, b) => compare(a.node, b.node));
+                    const sorted = sortWithPropertyConstraints(units.slice(start, i), compare);
                     units.splice(start, sorted.length, ...sorted);
                     start = i + 1;
                 }
