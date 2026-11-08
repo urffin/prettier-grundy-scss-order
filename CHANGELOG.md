@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.2 — 2026-11-08
 
 - Allow strict sorting of independent physical inset properties, border strokes/images versus radii, and known grid properties with disjoint longhands. Preserve real shorthand, reset and logical-property conflicts, with conservative fallback for unknown family extensions.
 
