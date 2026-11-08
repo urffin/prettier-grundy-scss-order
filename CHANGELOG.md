@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add push/PR compatibility checks for Node.js 22/24/26 and Prettier 3.8.1/latest 3.x, plus a Windows job. Release publishing reuses the same checks.
+- Verify installed tarballs and their TypeScript declarations in isolated consumer projects; add an informational sorting benchmark.
+
 - Validate group JSON, criteria, node types and group references; report unknown presets instead of silently falling back. Exact ordering now requires `oneOf`. Empty match-all groups, empty lists and duplicate order entries remain supported.
 - Apply option precedence consistently: explicit value, then preset, then defaults. In particular, omitted `grundyScssSorterWithRoot` now respects presets that disable root sorting. Set it explicitly to `true` to retain the previous root behavior with those presets.
 - Add precise preset/node type unions and require `oneOf` for exact ordering in TypeScript, with a separate type-check command.

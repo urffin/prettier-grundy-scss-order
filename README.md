@@ -93,6 +93,14 @@ export default {
 | `grundyScssSorterGroups`      | JSON string with custom groups. Custom definitions extend the built-in groups.                | —                                                                           |
 | `grundyScssSorterPreset`      | A bundled property-order preset.                                                              | —                                                                           |
 
+## Compatibility and checks
+
+The CI matrix covers current patch releases of Node.js 22, 24 and 26 with Prettier 3.8.1 (the minimum supported version) and the latest stable 3.x. All six combinations run on Linux; Node.js 24 with the latest Prettier 3.x also runs on Windows. The moving `3` selector stays within the supported peer dependency range and does not opt into Prettier 4 or prereleases.
+
+Pushes and pull requests run runtime tests, `npm run test:types`, and `npm run test:package`. The package check installs the actual tarball in a temporary consumer project and verifies public exports, all presets, both safety modes, configuration, comments, idempotence and the installed declarations. Release publishing waits for the same reusable checks.
+
+Run `npm ci`, `npm test`, `npm run test:types`, and `npm run test:package` locally. The package check needs registry access. `npm run benchmark` reports medians for sorter preparation and ordering, excluding parsing and printing; CI records these in the job summary without timing thresholds. Development checks use Sass and TypeScript as dev dependencies; neither is added to the published runtime dependencies.
+
 ## Presets
 
 Start with a familiar convention, then override it only where your project differs:

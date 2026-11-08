@@ -16,7 +16,9 @@
     "types": "./types/prettier-grundy-scss-order.d.ts",
     "scripts": {
         "test": "uvu tests",
-        "test:types": "tsc -p tests/types/tsconfig.json"
+        "test:types": "tsc -p tests/types/tsconfig.json",
+        "test:package": "node scripts/test-package.mjs",
+        "benchmark": "node scripts/benchmark.mjs"
     },
     "repository": {
         "type": "git",

@@ -5,4 +5,5 @@ example
 .vscode
 .editorconfig
 tests
+scripts
 *.test.mjs

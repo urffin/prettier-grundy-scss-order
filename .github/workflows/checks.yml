@@ -1,0 +1,50 @@
+name: Compatibility checks
+
+on:
+    workflow_call:
+
+permissions:
+    contents: read
+
+jobs:
+    compatibility:
+        name: Node ${{ matrix.node }} / Prettier ${{ matrix.prettier }} / ${{ matrix.os }}
+        runs-on: ${{ matrix.os }}
+        timeout-minutes: 15
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest]
+                node: ["22", "24", "26"]
+                prettier: ["3.8.1", "3"]
+                include:
+                    - os: windows-latest
+                      node: "24"
+                      prettier: "3"
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: ${{ matrix.node }}
+                  cache: npm
+            - run: npm ci
+            - name: Select Prettier within the supported major
+              run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund prettier@${{ matrix.prettier }}
+            - name: Report actual versions
+              run: node -e "console.log(process.version, 'Prettier', require('prettier/package.json').version)"
+            - run: npm test
+            - run: npm run test:types
+            - run: npm run test:package
+
+    benchmark:
+        name: Sorting benchmark (informational)
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: "24"
+                  cache: npm
+            - run: npm ci
+            - run: npm run benchmark
