@@ -12,9 +12,12 @@ const rootDirectory = path.resolve(directory, "../..");
 const prettierCli = path.resolve(rootDirectory, "node_modules/prettier/bin/prettier.cjs");
 
 test("Should format non-SCSS files when groups order is not configured", async () => {
-    const { stdout } = await execFileAsync(process.execPath, [prettierCli, "--check", "package.json"], {
-        cwd: rootDirectory
-    });
+    // Git may check out CRLF on Windows; this test checks plugin compatibility, not checkout line endings.
+    const { stdout } = await execFileAsync(
+        process.execPath,
+        [prettierCli, "--check", "--end-of-line", "auto", "package.json"],
+        { cwd: rootDirectory }
+    );
 
     assert.match(stdout, /All matched files use Prettier code style/);
 });
