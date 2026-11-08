@@ -95,6 +95,12 @@ export default {
 
 ## Compatibility and checks
 
+### Upgrading to 0.4.0
+
+Invalid configuration now produces errors: check preset and group names, group JSON, node types and criteria, and provide `oneOf` for `order: "exact"`. Options follow explicit value → preset → default. With `csscomb`, `csscomb-yandex`, `csscomb-zen` or `pepelsbey`, omitted `grundyScssSorterWithRoot` now inherits `false`; set it explicitly to `true` to preserve the previous root-sorting behavior. Without a preset it remains `true`. Explicit `grundyScssSorterSplitGroups: false` overrides the `pepelsbey` preset's `true`. The default safety mode remains `conservative`; `structural` remains an explicit choice. See [the changelog](./CHANGELOG.md) for details.
+
+### Supported matrix
+
 The CI matrix covers current patch releases of Node.js 22, 24 and 26 with Prettier 3.8.1 (the minimum supported version) and the latest stable 3.x. All six combinations run on Linux; Node.js 24 with the latest Prettier 3.x also runs on Windows. The moving `3` selector stays within the supported peer dependency range and does not opt into Prettier 4 or prereleases.
 
 Pushes and pull requests run runtime tests, `npm run test:types`, and `npm run test:package`. The package check installs the actual tarball in a temporary consumer project and verifies public exports, all presets, both safety modes, configuration, comments, idempotence and the installed declarations. Release publishing waits for the same reusable checks.

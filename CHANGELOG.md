@@ -1,6 +1,16 @@
 # Changelog
 
-## Unreleased
+## 0.4.0 — 2026-11-08
+
+### Upgrading from 0.3.x
+
+Configuration is now validated instead of silently accepting invalid settings. Unknown presets and group references, malformed group JSON, invalid node types or criteria, and `order: "exact"` without `oneOf` produce errors. Correct these settings before upgrading; TypeScript declarations enforce preset/node names and the required exact-order list too. Empty catch-all groups, empty `oneOf` lists and duplicate order entries remain supported.
+
+Options now consistently follow **explicit value → preset → default**. Without a preset, root sorting remains enabled. With `csscomb`, `csscomb-yandex`, `csscomb-zen` or `pepelsbey`, an omitted `grundyScssSorterWithRoot` now inherits `false`, so top-level constructs retain their order. Set `grundyScssSorterWithRoot: true` explicitly to preserve the previous root-sorting behavior with these presets. Explicit `false` still disables it.
+
+`pepelsbey` enables group splitting by default; explicit `grundyScssSorterSplitGroups: false` takes precedence. Safety defaults remain unchanged: `conservative` is the default and `structural` is an explicit opt-in. Parsing still uses `postcss-scss`; no Dart Sass parser migration is included.
+
+### Changes
 
 - Add push/PR compatibility checks for Node.js 22/24/26 and Prettier 3.8.1/latest 3.x, plus a Windows job. Release publishing reuses the same checks.
 - Verify installed tarballs and their TypeScript declarations in isolated consumer projects; add an informational sorting benchmark.
