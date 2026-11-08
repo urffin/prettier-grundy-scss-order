@@ -1,8 +1,6 @@
 declare module "prettier-grundy-scss-order/presets" {
-    import { PresetConfig } from "prettier-grundy-scss-order";
+    import { PresetConfig, PresetName } from "prettier-grundy-scss-order";
 
     export const defaultPreset: PresetConfig;
-    export const presets: {
-        [presetName: string]: PresetConfig;
-    };
+    export const presets: Record<PresetName, PresetConfig>;
 }

@@ -2,7 +2,7 @@ import prettierPostcss from "prettier/parser-postcss";
 import postcss from "postcss";
 import postcssScss from "postcss-scss";
 import { grundyPropSorter } from "./grundy-prop-sorter.mjs";
-import { tryLoadPreset } from "./tryLoadPreset.mjs";
+import { resolveConfiguration } from "./configuration.mjs";
 
 /**
  * @typedef {import('prettier-grundy-scss-order').PrettierGrundyScssOptions} PrettierGrundyScssOptions
@@ -15,29 +15,8 @@ import { tryLoadPreset } from "./tryLoadPreset.mjs";
  * @returns {Promise<import('prettier').AST>} - The parsed AST
  */
 async function grundyParseSorter(text, options) {
-    const {
-        grundyScssSorterGroups,
-        grundyScssSorterWithRoot,
-        grundyScssSorterGroupsOrder,
-        grundyScssSorterSplitGroup,
-        grundyScssSorterPreset,
-        grundyScssSorterSafety
-    } = options;
-
-    const preset = await tryLoadPreset(grundyScssSorterPreset);
-    const defaultPreset = grundyScssSorterPreset !== "default" ? await tryLoadPreset("default") : preset;
-
-    const processed = await postcss([
-        grundyPropSorter({
-            safety: grundyScssSorterSafety,
-            groups: grundyScssSorterGroups ? JSON.parse(grundyScssSorterGroups) : undefined,
-            order:
-                grundyScssSorterGroupsOrder?.length ? grundyScssSorterGroupsOrder : (preset?.order ?? defaultPreset.order),
-            withRoot: grundyScssSorterWithRoot ?? preset?.withRoot ?? defaultPreset.withRoot,
-            splitGroups: grundyScssSorterSplitGroup ?? preset?.splitGroups ?? defaultPreset.splitGroups,
-            presetGroups: preset?.groups
-        })
-    ]).process(text, {
+    const configuration = await resolveConfiguration(options);
+    const processed = await postcss([grundyPropSorter(configuration)]).process(text, {
         from: undefined,
         syntax: postcssScss
     });
@@ -63,8 +42,7 @@ export const options = {
     grundyScssSorterWithRoot: {
         type: "boolean",
         description: "Flag if need sort root node",
-        category: "grundy-scss-declaration-sorter",
-        default: true
+        category: "grundy-scss-declaration-sorter"
     },
     grundyScssSorterSplitGroup: {
         type: "boolean",

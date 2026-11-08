@@ -32,6 +32,7 @@ import {
     withRoot as defaultWithRoot,
     splitGroups as defaultSplitGroups
 } from "./presets/default.mjs";
+import { validateGroups, validateOrder } from "./configuration.mjs";
 import { sortWithPropertyConstraints } from "./property-conflicts.mjs";
 
 // These directives execute, control evaluation, or load modules at this position.
@@ -246,7 +247,13 @@ export function createSorter(
     if (safety !== "conservative" && safety !== "structural") {
         throw new Error(`Unknown SCSS sorter safety mode: ${safety}`);
     }
-    groups = Object.assign({}, defaultGroups, presetGroups, groups);
+    validateGroups(groups);
+    if (presetGroups !== undefined) validateGroups(presetGroups, "preset.groups");
+    if (typeof withRoot !== "boolean" || typeof splitGroups !== "boolean") {
+        throw new Error("Invalid SCSS sorter configuration: withRoot and splitGroups must be booleans.");
+    }
+    groups = Object.assign(Object.create(null), defaultGroups, presetGroups, groups);
+    validateOrder(order, groups);
     const compiledGroups = compileGroups(groups, order);
     /** @type {WeakMap<ChildNode, boolean>} */
     let executionBoundaries = new WeakMap();

@@ -15,7 +15,8 @@
     },
     "types": "./types/prettier-grundy-scss-order.d.ts",
     "scripts": {
-        "test": "uvu tests"
+        "test": "uvu tests",
+        "test:types": "tsc -p tests/types/tsconfig.json"
     },
     "repository": {
         "type": "git",
@@ -46,6 +47,7 @@
     },
     "devDependencies": {
         "sass": "^1.107.1",
+        "typescript": "7.0.2",
         "uvu": "^0.5.6"
     }
 }

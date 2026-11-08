@@ -111,6 +111,18 @@ export default {
 | [`csscomb-zen`](src/presets/csscomb-zen.mjs)       | Migrating from CSScomb’s Zen configuration.                                     |
 | [`pepelsbey`](src/presets/pepelsbey.mjs)           | A comprehensive exact CSS-property order based on `stylelint-config-pepelsbey`. |
 
+## Configuration precedence and validation
+
+Options use this priority: explicit value → selected preset → default preset. Explicit `false` overrides `true`. Without a preset, root sorting defaults to `true` and group splitting to `false`. All four non-default presets disable root sorting; `pepelsbey` enables group splitting. Set `grundyScssSorterWithRoot: true` explicitly to sort the root with those presets.
+
+Group definitions merge by name: defaults → preset → custom groups. A later definition replaces the entire group, rather than merging individual criteria. A non-empty `grundyScssSorterGroupsOrder` replaces the preset order; an omitted or empty array inherits it. Repeated group names and `oneOf` entries are allowed; their first occurrence determines priority.
+
+Invalid JSON, non-object groups, unknown criteria or node types, wrong field types, unknown presets and references to undefined groups throw an error naming the option or group. `order: "exact"` requires a `oneOf` array. Empty lists are valid and match nothing; a group `{}` matches every sortable statement. Criteria within a group are combined with AND. Defined groups that match no statements are allowed.
+
+Statements matching no listed group retain their relative order after the configured groups, subject to the safety mode. Unknown at-rules use `type: "atrule"`. Comments stay attached to statements and are not independently sorted.
+
+This changes two formerly silent behaviors: misspelled configuration now fails, and omitted root sorting respects the preset. Explicit `structural` mode remains available.
+
 ## Built-in groups
 
 | Group                 | Matches                                                              |
@@ -138,7 +150,7 @@ Each group can combine these criteria:
 | `order`      | Sorts a group using `"alphabetical"` or the array order in `oneOf` with `"exact"`. | `{ oneOf: ["display", "position"], order: "exact" }` |
 | `splitItems` | Separates items in this group with blank lines when group splitting is enabled.    | `{ type: "include", splitItems: true }`              |
 
-Supported values for `type`: `use`, `extend`, `mixin`, `include`, `if`, `else`, `atrule`, `rule`, `decl`, `$variable`, `variable`, `media`, and `supports`.
+Supported values for `type`: `use`, `extend`, `mixin`, `include`, `if`, `else`, `atrule`, `rule`, `decl`, `$variable`, `variable`, `media`, `supports`, and `comment`. Comment attachment takes precedence over group ordering.
 
 > Use `type: "decl"` with `startsWith` or `oneOf` when the group should contain only CSS properties. Without it, the criterion can also match the name or parameters of another SCSS node.
 

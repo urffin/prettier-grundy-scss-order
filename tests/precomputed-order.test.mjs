@@ -11,6 +11,7 @@ for (const safety of ["conservative", "structural"]) {
             grundyScssSorterSafety: safety,
             grundyScssSorterGroupsOrder: ["missing", "layout", "text", "layout"],
             grundyScssSorterGroups: JSON.stringify({
+                missing: { oneOf: [] },
                 text: { oneOf: ["color", "display"], order: "exact" },
                 layout: { oneOf: ["width", "display", "width"], order: "exact" }
             })

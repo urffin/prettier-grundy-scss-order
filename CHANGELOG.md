@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Validate group JSON, criteria, node types and group references; report unknown presets instead of silently falling back. Exact ordering now requires `oneOf`. Empty match-all groups, empty lists and duplicate order entries remain supported.
+- Apply option precedence consistently: explicit value, then preset, then defaults. In particular, omitted `grundyScssSorterWithRoot` now respects presets that disable root sorting. Set it explicitly to `true` to retain the previous root behavior with those presets.
+- Add precise preset/node type unions and require `oneOf` for exact ordering in TypeScript, with a separate type-check command.
+- Index candidate property conflicts and separate sorting policy from the PostCSS AST adapter.
+
 ## 0.3.0
 
 ### Sorting safety and configuration
