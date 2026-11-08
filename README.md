@@ -188,7 +188,7 @@ The following conflict and execution protections describe `strict` mode.
 
 The source order of potentially conflicting declarations takes priority over presets and custom groups. This preserves shorthand/longhand overrides (such as `margin-top` followed by `margin`), repeated fallback declarations, aliases, and overlapping logical/physical properties. Independent declarations still follow the configured order.
 
-Conflict detection is conservative: for example, declarations in the `border` and `grid` families retain their relative order even when particular longhands could be independent. Interpolated or escaped property names and nested Sass property blocks keep their position relative to other declarations.
+Independent physical offsets (`top`, `right`, `bottom`, `left`), border strokes/images versus corner radii, and known grid properties with disjoint longhands may follow the configured order. Overlapping shorthands, logical/physical mappings and the `border` reset of `border-image` remain protected. Unknown family extensions still use conservative checks. Interpolated or escaped property names and nested Sass property blocks keep their position relative to other declarations.
 
 ## Execution boundaries
 

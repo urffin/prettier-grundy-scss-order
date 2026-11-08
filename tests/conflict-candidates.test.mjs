@@ -128,7 +128,11 @@ const properties = [
 const names = [...new Set([...properties, ...properties.filter(p => !p.startsWith("--")).map(p => p + "-suffix")])];
 const declaration = prop => ({ type: "decl", prop });
 const variants = [
-    ...names.map(declaration),
+    // These properties intentionally no longer follow the 0.3.0 family policy.
+    // Their new dependencies are covered by independent expected-pair tests.
+    ...names
+        .filter(name => !["grid", "grid-area", "grid-row", "top", "right", "bottom", "left"].includes(name))
+        .map(declaration),
     { type: "rule", selector: "font:" },
     { type: "rule", selector: ".ordinary" },
     { type: "atrule", name: "media" },
@@ -140,7 +144,7 @@ function check(nodes, compare) {
     assert.equal(ids(sortWithPropertyConstraints(units, compare)), ids(reference(units, compare)));
 }
 
-test("Candidate index matches release 0.3.0 for both directions of every property pair", () => {
+test("Candidate index matches release 0.3.0 for unchanged property families", () => {
     for (const first of variants) {
         for (const second of variants) {
             check([first, second], (a, b) => b.id - a.id);

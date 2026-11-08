@@ -40,6 +40,30 @@ function expandsTo(shorthand, property) {
     return contains(shorthand, property) || (extraLonghands.get(shorthand) ?? []).some(name => contains(name, property));
 }
 
+// Only known properties get narrower write sets; unfamiliar extensions retain
+// the conservative family fallback below.
+const gridWrites = new Map([
+    ["grid", ["rows", "columns", "areas", "auto-rows", "auto-columns", "auto-flow"]],
+    ["grid-template", ["rows", "columns", "areas"]],
+    ["grid-template-rows", ["rows"]],
+    ["grid-template-columns", ["columns"]],
+    ["grid-template-areas", ["areas"]],
+    ["grid-auto-rows", ["auto-rows"]],
+    ["grid-auto-columns", ["auto-columns"]],
+    ["grid-auto-flow", ["auto-flow"]],
+    ["grid-area", ["row-start", "row-end", "column-start", "column-end"]],
+    ["grid-row", ["row-start", "row-end"]],
+    ["grid-column", ["column-start", "column-end"]],
+    ["grid-row-start", ["row-start"]],
+    ["grid-row-end", ["row-end"]],
+    ["grid-column-start", ["column-start"]],
+    ["grid-column-end", ["column-end"]]
+]);
+const radius = /^border-(?:radius|(?:top|bottom)-(?:left|right)-radius|(?:start|end)-(?:start|end)-radius)$/;
+const borderStrokeOrImage =
+    /^border(?:-(?:(?:top|right|bottom|left|(?:block|inline)(?:-(?:start|end))?)(?:-(?:width|style|color))?|width|style|color|image(?:-(?:source|slice|width|outset|repeat))?))?$/;
+const physicalInset = /^(top|right|bottom|left)$/;
+
 function namesConflict(first, second) {
     if (first === null || second === null) return false;
     if (first.raw === "*" || second.raw === "*") return true;
@@ -49,6 +73,11 @@ function namesConflict(first, second) {
     const b = second.name;
     if (a === "all" || b === "all") {
         return !["direction", "unicode-bidi"].includes(a === "all" ? b : a);
+    }
+    if (physicalInset.test(a) && physicalInset.test(b)) return a === b;
+    if ((radius.test(a) && borderStrokeOrImage.test(b)) || (radius.test(b) && borderStrokeOrImage.test(a))) return false;
+    if (gridWrites.has(a) && gridWrites.has(b)) {
+        return gridWrites.get(a).some(property => gridWrites.get(b).includes(property));
     }
     if (expandsTo(a, b) || expandsTo(b, a)) return true;
 

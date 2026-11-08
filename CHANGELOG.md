@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Allow strict sorting of independent physical inset properties, border strokes/images versus radii, and known grid properties with disjoint longhands. Preserve real shorthand, reset and logical-property conflicts, with conservative fallback for unknown family extensions.
+
 ## 0.4.1 — 2026-11-08
 
 - Rename safety modes to `strict` (default) and `loose`. Keep `conservative` as an alias for `strict` and `structural` as an alias for `loose` in the API, CLI and TypeScript types. Sorting behavior is unchanged; existing configurations continue to work.
