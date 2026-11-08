@@ -33,7 +33,7 @@ import {
     splitGroups as defaultSplitGroups
 } from "./presets/default.mjs";
 import { validateGroups, validateOrder } from "./configuration.mjs";
-import { sortWithPropertyConstraints } from "./property-conflicts.mjs";
+import { sortWithPropertyConstraints, propertyNamesConflict } from "./property-conflicts.mjs";
 
 // These directives execute, control evaluation, or load modules at this position.
 // In particular, hoisting @use over @forward can configure a module too late.
@@ -277,6 +277,31 @@ export function createSorter(
         return boundary;
     }
 
+    // A nested CSS block can emit declarations at the enclosing selector (media,
+    // supports, &) or at an overlapping selector. Keep conflicting declarations
+    // on their original side without trying to prove selector disjointness.
+    function emittedProperties(node) {
+        if (["mixin", "function"].includes(adapter.directive(node))) return [];
+        const property = adapter.propertyName(node);
+        if (property !== null) return [property];
+        return (adapter.children(node) ?? []).flatMap(emittedProperties);
+    }
+
+    function declarationCrossings(segment) {
+        const declarations = segment.map(unit => adapter.propertyName(unit.node));
+        const blocks = segment.map((unit, i) => (declarations[i] === null ? unit.nodes.flatMap(emittedProperties) : []));
+        const edges = [];
+        for (let i = 0; i < segment.length; i++) {
+            if (!blocks[i].length) continue;
+            for (let j = 0; j < segment.length; j++) {
+                if (declarations[j] !== null && blocks[i].some(name => propertyNamesConflict(name, declarations[j]))) {
+                    edges.push([Math.min(i, j), Math.max(i, j)]);
+                }
+            }
+        }
+        return edges;
+    }
+
     /**
      * @param {object} container
      * @param {boolean} shouldSort
@@ -300,7 +325,12 @@ export function createSorter(
                     const segment = units.slice(start, i);
                     const sorted =
                         safety === "strict" ?
-                            sortWithPropertyConstraints(segment, compare, adapter.propertyName)
+                            sortWithPropertyConstraints(
+                                segment,
+                                compare,
+                                adapter.propertyName,
+                                declarationCrossings(segment)
+                            )
                         :   segment.sort((a, b) => compare(a.node, b.node));
                     units.splice(start, sorted.length, ...sorted);
                     start = i + 1;

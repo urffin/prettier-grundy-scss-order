@@ -99,6 +99,12 @@ function namesConflict(first, second) {
     return false;
 }
 
+/** Compare raw property names, including aliases, resets and opaque syntax. */
+export function propertyNamesConflict(first, second) {
+    const prepare = raw => ({ raw, name: raw.startsWith("--") ? raw : normalize(raw) });
+    return namesConflict(prepare(first), prepare(second));
+}
+
 // Candidate indexes only discard pairs that cannot conflict. The predicate above
 // remains authoritative, including exceptions such as all/direction and custom names.
 function prefixes(name) {
@@ -223,9 +229,10 @@ function buildConstraints(names, successors, incoming) {
  * @param {T[]} units
  * @param {(a: object, b: object) => number} compare
  * @param {(node: object) => string | null} propertyName
+ * @param {Array<[number, number]>} [additionalEdges] Forward dependencies across nested CSS blocks.
  * @returns {T[]}
  */
-export function sortWithPropertyConstraints(units, compare, propertyName) {
+export function sortWithPropertyConstraints(units, compare, propertyName, additionalEdges = []) {
     const names = units.map(unit => {
         const raw = propertyName(unit.node);
         // Preserve the original name for custom-property detection: removing a
@@ -235,6 +242,10 @@ export function sortWithPropertyConstraints(units, compare, propertyName) {
     const successors = units.map(() => []);
     const incoming = units.map(() => 0);
     buildConstraints(names, successors, incoming);
+    for (const [before, after] of additionalEdges) {
+        successors[before].push(after);
+        incoming[after]++;
+    }
     const sorted = [];
     while (sorted.length < units.length) {
         let best = -1;

@@ -51,11 +51,11 @@ test("Core sorts a foreign AST, preserving property dependencies and nested trav
     const root = block("root", [decl("z-index"), decl("margin-top"), nested, decl("margin"), decl("color")]);
     const sort = createSorter(options, adapter);
     sort(root);
-    assert.equal(labels(root), ["color", "margin-top", "margin", "z-index", ".nested"]);
+    assert.equal(labels(root), ["margin-top", "margin", "z-index", ".nested", "color"]);
     assert.equal(labels(nested), ["color", "z-index"]);
     assert.ok(root.finished && nested.finished);
     sort(root);
-    assert.equal(labels(root), ["color", "margin-top", "margin", "z-index", ".nested"]);
+    assert.equal(labels(root), ["margin-top", "margin", "z-index", ".nested", "color"]);
 });
 
 test("Core preserves execution boundaries and their enclosing blocks through the adapter", () => {

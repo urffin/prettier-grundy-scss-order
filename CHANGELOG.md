@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- In strict mode, preserve declarations on their original side of nested rules and CSS blocks (including media queries) when their emitted properties conflict. Independent declarations remain sortable across blocks, and loose retains configured reordering.
+
 ## 0.4.2 — 2026-11-08
 
 - Allow strict sorting of independent physical inset properties, border strokes/images versus radii, and known grid properties with disjoint longhands. Preserve real shorthand, reset and logical-property conflicts, with conservative fallback for unknown family extensions.

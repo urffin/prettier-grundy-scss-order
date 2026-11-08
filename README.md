@@ -200,7 +200,9 @@ This intentionally changes earlier formatting that hoisted assignments, conditio
 
 In `strict` mode, presets, group criteria, alphabetical/exact ordering, and blank-line settings apply within each sortable segment. They cannot override execution boundaries or property conflicts. Boundary groups still affect spacing. Conservative checks can prevent harmless moves too, especially for enclosing blocks and the `border`/`grid` families. Select `loose` explicitly when configured ordering should take priority.
 
-The sorter does not evaluate Sass or prove equivalence for arbitrary stylesheets. Side effects hidden in function calls and general cascade dependencies between ordinary nested rules or CSS at-rules still require further analysis.
+In `strict`, declarations retain their original side of nested rules and CSS blocks such as `@media` when the block can emit a conflicting property. This includes shorthand resets, logical properties and dynamic names. Independent declarations may still cross the block; its contents are sorted recursively. Selector overlap is treated conservatively, so even disjoint selectors may restrict a conflicting declaration. `loose` permits configured reordering across these blocks.
+
+The sorter does not evaluate Sass or prove equivalence for arbitrary stylesheets. Side effects hidden in function calls and cascade dependencies between two sibling rules or CSS blocks still require further analysis.
 
 ## Comments
 
