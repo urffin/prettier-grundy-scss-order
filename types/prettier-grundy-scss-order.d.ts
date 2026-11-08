@@ -19,8 +19,8 @@ declare module "prettier-grundy-scss-order" {
         | "comment";
 
     export interface PrettierGrundyScssOptions {
-        /** Defaults to conservative. Structural allows reordering that may change SCSS behavior. */
-        grundyScssSorterSafety?: "conservative" | "structural";
+        /** Defaults to strict. Loose allows reordering that may change SCSS behavior. Legacy names remain aliases. */
+        grundyScssSorterSafety?: "strict" | "loose" | "conservative" | "structural";
         /** Explicit value overrides the preset; otherwise inherits preset/default. */
         grundyScssSorterWithRoot?: boolean;
         /** Explicit false also overrides a preset that enables splitting. */

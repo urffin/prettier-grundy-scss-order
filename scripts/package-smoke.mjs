@@ -9,7 +9,7 @@ assert.equal(pkg.version, process.env.SCSS_PACKAGE_VERSION);
 assert.ok(defaultPreset.groups.decl);
 const source = ".a { /* leading */ margin-top: 1px; margin: 0; // tail\n color: red; }";
 for (const preset of Object.keys(presets)) {
-    for (const safety of ["conservative", "structural"]) {
+    for (const safety of ["strict", "loose", "conservative", "structural"]) {
         const options = {
             parser: "scss",
             plugins: [plugin],
@@ -20,7 +20,10 @@ for (const preset of Object.keys(presets)) {
         const output = await prettier.format(source, options);
         assert.equal(await prettier.format(output, options), output);
         assert.ok(output.includes("/* leading */") && output.includes("// tail"));
-        assert.equal(output.indexOf("margin-top:") < output.indexOf("margin:"), safety === "conservative");
+        assert.equal(
+            output.indexOf("margin-top:") < output.indexOf("margin:"),
+            safety === "strict" || safety === "conservative"
+        );
     }
 }
 const rootSource = ".z { color: red; } .a { color: blue; }";

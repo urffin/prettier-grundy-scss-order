@@ -61,7 +61,7 @@ The default order is:
 @use → @extend → CSS custom properties → Sass variables → @if → declarations → @include → @mixin → nested rules
 ```
 
-Declarations inside the `decl` group are sorted alphabetically. By default, conflict constraints and execution boundaries limit reordering at the root level and inside nested rules. Explicitly select `structural` mode to allow your configured order across these boundaries.
+Declarations inside the `decl` group are sorted alphabetically. By default, conflict constraints and execution boundaries limit reordering at the root level and inside nested rules. Explicitly select `loose` mode to allow your configured order across these boundaries.
 
 ## Configuration
 
@@ -97,7 +97,7 @@ export default {
 
 ### Upgrading to 0.4.0
 
-Invalid configuration now produces errors: check preset and group names, group JSON, node types and criteria, and provide `oneOf` for `order: "exact"`. Options follow explicit value → preset → default. With `csscomb`, `csscomb-yandex`, `csscomb-zen` or `pepelsbey`, omitted `grundyScssSorterWithRoot` now inherits `false`; set it explicitly to `true` to preserve the previous root-sorting behavior. Without a preset it remains `true`. Explicit `grundyScssSorterSplitGroups: false` overrides the `pepelsbey` preset's `true`. The default safety mode remains `conservative`; `structural` remains an explicit choice. See [the changelog](./CHANGELOG.md) for details.
+Invalid configuration now produces errors: check preset and group names, group JSON, node types and criteria, and provide `oneOf` for `order: "exact"`. Options follow explicit value → preset → default. With `csscomb`, `csscomb-yandex`, `csscomb-zen` or `pepelsbey`, omitted `grundyScssSorterWithRoot` now inherits `false`; set it explicitly to `true` to preserve the previous root-sorting behavior. Without a preset it remains `true`. Explicit `grundyScssSorterSplitGroups: false` overrides the `pepelsbey` preset's `true`. The default safety mode remains `strict`; `loose` remains an explicit choice. See [the changelog](./CHANGELOG.md) for details.
 
 ### Supported matrix
 
@@ -135,7 +135,7 @@ Invalid JSON, non-object groups, unknown criteria or node types, wrong field typ
 
 Statements matching no listed group retain their relative order after the configured groups, subject to the safety mode. Unknown at-rules use `type: "atrule"`. Comments stay attached to statements and are not independently sorted.
 
-This changes two formerly silent behaviors: misspelled configuration now fails, and omitted root sorting respects the preset. Explicit `structural` mode remains available.
+This changes two formerly silent behaviors: misspelled configuration now fails, and omitted root sorting respects the preset. Explicit `loose` mode remains available.
 
 ## Built-in groups
 
@@ -170,19 +170,19 @@ Supported values for `type`: `use`, `extend`, `mixin`, `include`, `if`, `else`, 
 
 ## Safety mode
 
-`grundyScssSorterSafety` accepts `"conservative"` (default) or `"structural"`. A preset or custom group alone never changes the mode.
+`grundyScssSorterSafety` accepts `"strict"` (default) or `"loose"`. The old names `"conservative"` and `"structural"` remain supported aliases for `"strict"` and `"loose"`, respectively, including in CLI options. Existing configurations need no changes. A preset or custom group alone never changes the mode. Strict mode enforces the library's known constraints; it does not guarantee semantic equivalence for arbitrary SCSS.
 
 ```js
 export default {
     plugins: ["prettier-grundy-scss-order"],
-    grundyScssSorterSafety: "structural",
+    grundyScssSorterSafety: "loose",
     grundyScssSorterGroupsOrder: ["$variable", "decl", "@include", "rule"]
 };
 ```
 
-`structural` applies configured ordering without execution boundaries or property conflict constraints. It can move variables, calls, conditions, and modules, and reorder shorthand/longhand properties. The caller is responsible for the resulting SCSS behavior. Both modes keep comments attached, preserve complete `if`/`else` chains, terminate line comments, and honor `prettier-ignore`. Root sorting and group spacing options work in both modes. Invalid mode names are rejected.
+`loose` applies configured ordering without execution boundaries or property conflict constraints. It can move variables, calls, conditions, and modules, and reorder shorthand/longhand properties. The caller is responsible for the resulting SCSS behavior. Both modes keep comments attached, preserve complete `if`/`else` chains, terminate line comments, and honor `prettier-ignore`. Root sorting and group spacing options work in both modes. Invalid mode names are rejected.
 
-The following conflict and execution protections describe `conservative` mode.
+The following conflict and execution protections describe `strict` mode.
 
 ## Conflicting properties
 
@@ -198,7 +198,7 @@ Enclosing blocks containing these operations also stay in place, and each `@if`/
 
 This intentionally changes earlier formatting that hoisted assignments, conditions, or module loads. In particular, `@forward` and `@use` are never regrouped: their order can affect module configuration and emitted CSS. Invalid module placement is left in place for Sass to diagnose.
 
-In `conservative` mode, presets, group criteria, alphabetical/exact ordering, and blank-line settings apply within each sortable segment. They cannot override execution boundaries or property conflicts. Boundary groups still affect spacing. Conservative checks can prevent harmless moves too, especially for enclosing blocks and the `border`/`grid` families. Select `structural` explicitly when configured ordering should take priority.
+In `strict` mode, presets, group criteria, alphabetical/exact ordering, and blank-line settings apply within each sortable segment. They cannot override execution boundaries or property conflicts. Boundary groups still affect spacing. Conservative checks can prevent harmless moves too, especially for enclosing blocks and the `border`/`grid` families. Select `loose` explicitly when configured ordering should take priority.
 
 The sorter does not evaluate Sass or prove equivalence for arbitrary stylesheets. Side effects hidden in function calls and general cascade dependencies between ordinary nested rules or CSS at-rules still require further analysis.
 

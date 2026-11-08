@@ -84,6 +84,6 @@ export async function resolveConfiguration(options) {
         order: explicitOrder?.length ? explicitOrder : (preset?.order ?? defaults.order),
         withRoot: options.grundyScssSorterWithRoot ?? preset?.withRoot ?? defaults.withRoot,
         splitGroups: options.grundyScssSorterSplitGroup ?? preset?.splitGroups ?? defaults.splitGroups,
-        safety: options.grundyScssSorterSafety ?? "conservative"
+        safety: options.grundyScssSorterSafety ?? "strict"
     };
 }

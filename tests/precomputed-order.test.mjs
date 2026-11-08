@@ -3,7 +3,7 @@ import plugin from "../src/index.mjs";
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 
-for (const safety of ["conservative", "structural"]) {
+for (const safety of ["strict", "loose"]) {
     test(`Precomputed priorities preserve first matches and duplicate ranks in ${safety}`, async () => {
         const config = {
             parser: "scss",

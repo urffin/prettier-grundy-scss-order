@@ -98,9 +98,9 @@ test("Custom groups replace a whole definition, including preset and default def
     assert.ok(presetOverride.indexOf("color:") < presetOverride.indexOf("z-index:"));
     const resolved = await resolveConfiguration({
         grundyScssSorterPreset: "pepelsbey",
-        grundyScssSorterSafety: "structural"
+        grundyScssSorterSafety: "loose"
     });
-    assert.is(resolved.safety, "structural");
+    assert.is(resolved.safety, "loose");
 });
 
 test("Empty catch-all groups, empty exact lists and duplicate ranks remain configurable", async () => {
@@ -123,7 +123,7 @@ test("Group names matching Object prototype keys are ordinary own group names", 
 test("Unmatched directives remain stable after configured groups", async () => {
     const output = await format(".a { @unknown z; color: red; @unknown a; }", {
         grundyScssSorterGroupsOrder: ["decl"],
-        grundyScssSorterSafety: "structural"
+        grundyScssSorterSafety: "loose"
     });
     assert.ok(output.indexOf("color:") < output.indexOf("@unknown z"));
     assert.ok(output.indexOf("@unknown z") < output.indexOf("@unknown a"));

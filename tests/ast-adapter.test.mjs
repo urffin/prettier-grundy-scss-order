@@ -64,7 +64,7 @@ test("Core preserves execution boundaries and their enclosing blocks through the
     createSorter(options, adapter)(root);
     assert.equal(labels(root), ["z-index", ".effects", "color"]);
     assert.equal(labels(nested), ["z-index", "include", "color"]);
-    createSorter({ ...options, safety: "structural" }, adapter)(root);
+    createSorter({ ...options, safety: "loose" }, adapter)(root);
     assert.equal(labels(root), ["color", "z-index", ".effects"]);
     assert.equal(labels(nested), ["color", "z-index", "include"]);
 });
@@ -79,7 +79,7 @@ test("Core keeps branch comments, ignored subtrees and group spacing on a foreig
     const ignore = comment("prettier-ignore");
     const footer = comment("footer");
     const root = block("root", [first, between, second, heading, value, ignore, ignored, footer]);
-    const sort = createSorter({ ...options, safety: "structural", splitGroups: true }, adapter);
+    const sort = createSorter({ ...options, safety: "loose", splitGroups: true }, adapter);
     sort(root);
     assert.equal(root.items, [heading, value, first, between, second, ignore, ignored, footer]);
     assert.equal(first.leading, "\n\n\n");

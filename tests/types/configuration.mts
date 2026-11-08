@@ -12,10 +12,15 @@ const options: PrettierGrundyScssOptions = {
     grundyScssSorterPreset: "pepelsbey",
     grundyScssSorterGroups: JSON.stringify(groups),
     grundyScssSorterWithRoot: false,
-    grundyScssSorterSafety: "structural"
+    grundyScssSorterSafety: "loose"
 };
 const accepted: Plugin = plugin;
 void [options, accepted, presets.csscomb];
+
+const modes: PrettierGrundyScssOptions["grundyScssSorterSafety"][] = ["strict", "loose", "conservative", "structural"];
+// @ts-expect-error Unknown safety modes are rejected.
+const badSafety: PrettierGrundyScssOptions = { grundyScssSorterSafety: "off" };
+void [modes, badSafety];
 
 // @ts-expect-error Exact ordering needs its list.
 const noList: GroupCriteria = { order: "exact" };

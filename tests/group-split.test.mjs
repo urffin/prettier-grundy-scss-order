@@ -171,7 +171,7 @@ test("Should split items inside group", async () => {
 });
 
 test("Should normalize whitespace-only blank lines on the first pass in both safety modes", async () => {
-    for (const safety of ["conservative", "structural"]) {
+    for (const safety of ["strict", "loose"]) {
         const options = {
             parser: "scss",
             plugins: [path.resolve(fileURLToPath(import.meta.url), "../../src/index.mjs")],

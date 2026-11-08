@@ -29,14 +29,16 @@ export const options = {
     grundyScssSorterSafety: {
         type: "choice",
         category: "grundy-scss-declaration-sorter",
-        description: "Preserve semantic ordering, or explicitly allow configured ordering with structural protection only",
-        default: "conservative",
+        description: "Apply strict ordering constraints, or allow configured ordering in loose mode",
+        default: "strict",
         choices: [
-            { value: "conservative", description: "Preserve execution boundaries and conflicting property order" },
+            { value: "strict", description: "Preserve execution boundaries and conflicting property order" },
             {
-                value: "structural",
+                value: "loose",
                 description: "Allow configured ordering; preserve comments, if/else chains and prettier-ignore"
-            }
+            },
+            { value: "conservative", description: "Compatibility alias for strict" },
+            { value: "structural", description: "Compatibility alias for loose" }
         ]
     },
     grundyScssSorterWithRoot: {

@@ -11,7 +11,7 @@ const scenarios = [
 ];
 const rows = [];
 for (const [scenario, declarations] of scenarios) {
-    for (const safety of ["conservative", "structural"]) {
+    for (const safety of ["strict", "loose"]) {
         const samples = [];
         for (let round = 0; round < 8; round++) {
             const tree = scss.parse(`.a {${declarations}}`);

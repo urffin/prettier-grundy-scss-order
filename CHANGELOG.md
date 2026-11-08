@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Rename safety modes to `strict` (default) and `loose`. Keep `conservative` as an alias for `strict` and `structural` as an alias for `loose` in the API, CLI and TypeScript types. Sorting behavior is unchanged; existing configurations continue to work.
+
 ## 0.4.0 — 2026-11-08
 
 ### Upgrading from 0.3.x

@@ -229,7 +229,7 @@ function splitGroupsInternal(units, groupMap, groups, adapter) {
  * @param {boolean} [options.withRoot=false] - Whether to sort at root level
  * @param {boolean} [options.splitGroups=false] - Whether to add empty lines between groups
  * @param {Groups} [options.presetGroups] - Groups from preset
- * @param {"conservative" | "structural"} [options.safety="conservative"] - Ordering protection
+ * @param {"strict" | "loose" | "conservative" | "structural"} [options.safety="strict"] - Ordering protection (legacy aliases accepted)
  * @param {AstAdapter} adapter
  * @returns {(root: object) => void}
  */
@@ -240,11 +240,13 @@ export function createSorter(
         withRoot = defaultWithRoot,
         splitGroups = defaultSplitGroups,
         presetGroups,
-        safety = "conservative"
+        safety = "strict"
     } = {},
     adapter
 ) {
-    if (safety !== "conservative" && safety !== "structural") {
+    if (safety === "conservative") safety = "strict";
+    if (safety === "structural") safety = "loose";
+    if (safety !== "strict" && safety !== "loose") {
         throw new Error(`Unknown SCSS sorter safety mode: ${safety}`);
     }
     validateGroups(groups);
@@ -293,11 +295,11 @@ export function createSorter(
                 if (
                     i === units.length ||
                     units[i].ignored ||
-                    (safety === "conservative" && units[i].nodes.some(hasExecutionBoundary))
+                    (safety === "strict" && units[i].nodes.some(hasExecutionBoundary))
                 ) {
                     const segment = units.slice(start, i);
                     const sorted =
-                        safety === "conservative" ?
+                        safety === "strict" ?
                             sortWithPropertyConstraints(segment, compare, adapter.propertyName)
                         :   segment.sort((a, b) => compare(a.node, b.node));
                     units.splice(start, sorted.length, ...sorted);
