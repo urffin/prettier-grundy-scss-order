@@ -110,6 +110,24 @@ test("A reused sorter reads changed node metadata on each invocation", () => {
     assert.equal(labels(root), ["z-index", "zz-last"]);
 });
 
+test("A reused sorter invalidates nested property caches after edits and between trees", () => {
+    const nested = block(".nested", [decl("color")]);
+    const root = block("root", [nested, decl("color")]);
+    const sort = createSorter(options, adapter);
+    sort(root);
+    assert.equal(labels(root), [".nested", "color"]);
+    nested.items = [decl("width")];
+    sort(root);
+    assert.equal(labels(root), ["color", ".nested"]);
+    nested.items = [decl("color")];
+    root.items.reverse();
+    sort(root);
+    assert.equal(labels(root), [".nested", "color"]);
+    const other = block("other", [block(".other", [decl("color")]), decl("color")]);
+    sort(other);
+    assert.equal(labels(other), [".other", "color"]);
+});
+
 test("PostCSS adapter preserves identities, parents, source locations and line-comment termination", () => {
     const root = scss.parse(".a { z-index: 1; // tail\n color: red; }");
     const rule = root.first;

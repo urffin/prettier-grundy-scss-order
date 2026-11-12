@@ -33,7 +33,7 @@ import {
     splitGroups as defaultSplitGroups
 } from "./presets/default.mjs";
 import { validateGroups, validateOrder } from "./configuration.mjs";
-import { sortWithPropertyConstraints, propertyNamesConflict } from "./property-conflicts.mjs";
+import { sortWithPropertyConstraints, createPropertyConflictChecker } from "./property-conflicts.mjs";
 
 // These directives execute, control evaluation, or load modules at this position.
 // In particular, hoisting @use over @forward can configure a module too late.
@@ -259,6 +259,8 @@ export function createSorter(
     const compiledGroups = compileGroups(groups, order);
     /** @type {WeakMap<ChildNode, boolean>} */
     let executionBoundaries = new WeakMap();
+    let emitted;
+    let propertyNamesConflict;
 
     /**
      * Assignments and directives may change values or emit CSS at this exact point.
@@ -281,20 +283,34 @@ export function createSorter(
     // supports, &) or at an overlapping selector. Keep conflicting declarations
     // on their original side without trying to prove selector disjointness.
     function emittedProperties(node) {
+        if (emitted.has(node)) return emitted.get(node);
         if (["mixin", "function"].includes(adapter.directive(node))) return [];
         const property = adapter.propertyName(node);
         if (property !== null) return [property];
-        return (adapter.children(node) ?? []).flatMap(emittedProperties);
+        const properties = new Set();
+        for (const child of adapter.children(node) ?? []) {
+            for (const name of emittedProperties(child)) properties.add(name);
+        }
+        const result = [...properties];
+        emitted.set(node, result);
+        return result;
     }
 
     function declarationCrossings(segment) {
+        if (!segment.some(unit => adapter.children(unit.node))) return [];
         const declarations = segment.map(unit => adapter.propertyName(unit.node));
-        const blocks = segment.map((unit, i) => (declarations[i] === null ? unit.nodes.flatMap(emittedProperties) : []));
+        const positions = [];
+        for (let i = 0; i < declarations.length; i++) if (declarations[i] !== null) positions.push(i);
+        if (!positions.length) return [];
+        emitted ??= new WeakMap();
+        propertyNamesConflict ??= createPropertyConflictChecker();
         const edges = [];
         for (let i = 0; i < segment.length; i++) {
-            if (!blocks[i].length) continue;
-            for (let j = 0; j < segment.length; j++) {
-                if (declarations[j] !== null && blocks[i].some(name => propertyNamesConflict(name, declarations[j]))) {
+            if (declarations[i] !== null) continue;
+            const properties = segment[i].nodes.flatMap(emittedProperties);
+            if (!properties.length) continue;
+            for (const j of positions) {
+                if (properties.some(name => propertyNamesConflict(name, declarations[j]))) {
                     edges.push([Math.min(i, j), Math.max(i, j)]);
                 }
             }
@@ -356,6 +372,8 @@ export function createSorter(
     return root => {
         // A plugin instance may process another tree, or a tree edited by its caller.
         executionBoundaries = new WeakMap();
+        emitted = undefined;
+        propertyNamesConflict = undefined;
         sortContainer(root, withRoot);
     };
 }

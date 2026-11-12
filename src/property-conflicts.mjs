@@ -99,10 +99,20 @@ function namesConflict(first, second) {
     return false;
 }
 
-/** Compare raw property names, including aliases, resets and opaque syntax. */
-export function propertyNamesConflict(first, second) {
-    const prepare = raw => ({ raw, name: raw.startsWith("--") ? raw : normalize(raw) });
-    return namesConflict(prepare(first), prepare(second));
+/** Cache names and repeated pairs for one tree traversal, including negative results. */
+export function createPropertyConflictChecker() {
+    const names = new Map();
+    const pairs = new Map();
+    function prepare(raw) {
+        if (!names.has(raw)) names.set(raw, { raw, name: raw.startsWith("--") ? raw : normalize(raw) });
+        return names.get(raw);
+    }
+    return (first, second) => {
+        if (!pairs.has(first)) pairs.set(first, new Map());
+        const matches = pairs.get(first);
+        if (!matches.has(second)) matches.set(second, namesConflict(prepare(first), prepare(second)));
+        return matches.get(second);
+    };
 }
 
 // Candidate indexes only discard pairs that cannot conflict. The predicate above

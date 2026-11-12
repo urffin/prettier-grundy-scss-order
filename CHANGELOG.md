@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Cache nested-block property sets and property-conflict checks within each strict sorting pass, skipping collection when no declaration can cross a block. Sorting results and loose behavior are unchanged.
+
 - In strict mode, preserve declarations on their original side of nested rules and CSS blocks (including media queries) when their emitted properties conflict. Independent declarations remain sortable across blocks, and loose retains configured reordering.
 
 ## 0.4.2 — 2026-11-08
