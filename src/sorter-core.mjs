@@ -361,12 +361,11 @@ export function createSorter(
                     adapter.setBefore(first, "\n" + adapter.before(first));
                 }
             }
-            const reordered = new Array(children.length);
-            let position = 0;
+            const reordered = [];
             for (const unit of units) {
-                for (const node of unit.nodes) reordered[position++] = node;
+                for (const node of unit.nodes) reordered.push(node);
             }
-            for (const node of footer) reordered[position++] = node;
+            for (const node of footer) reordered.push(node);
             adapter.replaceChildren(container, reordered);
             adapter.finishContainer(container);
         }

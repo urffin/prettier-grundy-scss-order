@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Avoid argument-limit errors when writing back very wide sorting segments; rebuild child lists in one preallocated array without spread or an intermediate flattened array.
+- Avoid argument-limit errors when writing back very wide sorting segments; rebuild child lists directly without spread or an intermediate flattened array.
 
 ## 0.4.3 — 2026-11-12
 
