@@ -149,4 +149,15 @@ test("PostCSS adapter preserves identities, parents, source locations and line-c
     assert.equal(postcssAdapter.children(scss.parse(".empty {} ").first), []);
 });
 
+test("Wide loose segments avoid argument limits and retain node identities and footer", () => {
+    const values = Array.from({ length: 150_000 }, (_, i) => decl(`p-${String(150_000 - i).padStart(6, "0")}`));
+    const footer = comment("footer");
+    const root = block("root", values.concat(footer));
+    createSorter({ ...options, safety: "loose" }, adapter)(root);
+    assert.is(root.items.length, values.length + 1);
+    assert.is(root.items[0], values.at(-1));
+    assert.is(root.items.at(-2), values[0]);
+    assert.is(root.items.at(-1), footer);
+});
+
 test.run();

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Avoid argument-limit errors when writing back very wide sorting segments; rebuild child lists in one preallocated array without spread or an intermediate flattened array.
+
 ## 0.4.3 — 2026-11-12
 
 Strict mode now preserves the original side of a declaration relative to a nested CSS block that can write a conflicting property. For example, `@media (...) { color: red; } color: blue;` keeps that order, preserving the final blue color when the query matches. Formatting may differ from 0.4.2 where declarations were hoisted across such blocks. Independent declarations can still move; `loose` and its `structural` alias continue to honor configured reordering. This does not add selector-overlap analysis or change the ordering policy between two sibling rules.

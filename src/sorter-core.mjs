@@ -350,7 +350,7 @@ export function createSorter(
                                 declarationCrossings(segment)
                             )
                         :   segment.sort((a, b) => compare(a.node, b.node));
-                    units.splice(start, sorted.length, ...sorted);
+                    for (let j = 0; j < sorted.length; j++) units[start + j] = sorted[j];
                     start = i + 1;
                 }
             }
@@ -361,7 +361,13 @@ export function createSorter(
                     adapter.setBefore(first, "\n" + adapter.before(first));
                 }
             }
-            adapter.replaceChildren(container, [...units.flatMap(unit => unit.nodes), ...footer]);
+            const reordered = new Array(children.length);
+            let position = 0;
+            for (const unit of units) {
+                for (const node of unit.nodes) reordered[position++] = node;
+            }
+            for (const node of footer) reordered[position++] = node;
+            adapter.replaceChildren(container, reordered);
             adapter.finishContainer(container);
         }
         for (const unit of units) {
