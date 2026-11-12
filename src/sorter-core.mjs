@@ -187,10 +187,12 @@ function collectUnits(nodes, adapter) {
         const ignored = pending.some(comment => adapter.commentText(comment).trim() === "prettier-ignore");
         // Comments between branches must not break the if/else association.
         if (adapter.directive(node) === "else" && previous && adapter.directive(previous.node) === "if") {
-            previous.nodes.push(...pending, node);
+            for (const comment of pending) previous.nodes.push(comment);
+            previous.nodes.push(node);
             previous.ignored ||= ignored;
         } else {
-            units.push({ node, nodes: [...pending, node], ignored });
+            pending.push(node);
+            units.push({ node, nodes: pending, ignored });
         }
         pending = [];
     }
