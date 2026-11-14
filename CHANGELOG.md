@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- In strict mode, skip conflict checks and redundant edges already implied by dependency paths inside the dense fallback. Keep the short and sparse paths, with bounded temporary ancestor storage and the direct fallback for unusually wide segments. Sorting behavior, configuration and loose mode are unchanged.
+
 ## 0.4.5 — 2026-11-14
 
 - Use a priority queue for large strict sorting segments, with original positions breaking equal-priority ties. Short segments keep linear selection to avoid heap overhead. Dependency construction and sorting results are unchanged.

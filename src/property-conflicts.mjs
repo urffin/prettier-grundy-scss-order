@@ -168,6 +168,43 @@ function addDirectConstraints(names, successors, incoming, start = 0) {
     }
 }
 
+function addDenseConstraints(names, successors, incoming, start) {
+    const words = Math.ceil(names.length / 32);
+    // Bound temporary reachability storage; unusually wide segments retain the
+    // direct fallback. Short and sparse segments never allocate this buffer.
+    if (names.length * words * 4 > 8 * 1024 * 1024) {
+        addDirectConstraints(names, successors, incoming, start);
+        return;
+    }
+    const bits = new Uint32Array(names.length * words);
+    const ancestors = names.map((_, i) => bits.subarray(i * words, (i + 1) * words));
+    // Existing edges point forwards and only cover the indexed prefix. Source
+    // order therefore completes each ancestor set before propagating it.
+    for (let i = 0; i < start; i++) {
+        for (const j of successors[i]) {
+            const covered = ancestors[j];
+            covered[i >>> 5] |= 1 << (i & 31);
+            for (let k = 0; k < words; k++) covered[k] |= ancestors[i][k];
+        }
+    }
+    for (let j = start; j < names.length; j++) {
+        const covered = ancestors[j];
+        // A later predecessor can already imply an earlier dependency. Keep
+        // that path instead of testing and allocating its redundant edge.
+        for (let i = j - 1; i >= 0; i--) {
+            const word = i >>> 5,
+                bit = 1 << (i & 31);
+            if (covered[word] & bit) continue;
+            if (namesConflict(names[i], names[j])) {
+                successors[i].push(j);
+                incoming[j]++;
+                covered[word] |= bit;
+                for (let k = 0; k < words; k++) covered[k] |= ancestors[i][k];
+            }
+        }
+    }
+}
+
 function buildConstraints(names, successors, incoming) {
     // Index construction costs more than a few direct comparisons. Keep short
     // segments simple; the index pays off on larger declaration blocks.
@@ -209,7 +246,7 @@ function buildConstraints(names, successors, incoming) {
         // Dense families and broad resets leave little work to discard. Avoid
         // paying for candidate sets as well as nearly all pair comparisons.
         if (j >= 32 && candidates.size * 2 >= j) {
-            addDirectConstraints(names, successors, incoming, j);
+            addDenseConstraints(names, successors, incoming, j);
             return;
         }
         for (const i of candidates) {
