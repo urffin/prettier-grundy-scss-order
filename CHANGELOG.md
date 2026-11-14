@@ -1,8 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.4.4 — 2026-11-14
 
 - Avoid argument-limit errors when writing back very wide sorting segments; rebuild child lists directly without spread or an intermediate flattened array.
+- Reuse pending comment arrays when collecting sortable units, preserving comments, `if`/`else` chains and `prettier-ignore`. Sorting behavior and configuration are unchanged. Performance effects vary by workload; this release makes no general speed or memory-reduction guarantee.
 
 ## 0.4.3 — 2026-11-12
 
