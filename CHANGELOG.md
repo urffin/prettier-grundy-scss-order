@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.5 — 2026-11-14
 
 - Use a priority queue for large strict sorting segments, with original positions breaking equal-priority ties. Short segments keep linear selection to avoid heap overhead. Dependency construction and sorting results are unchanged.
 
