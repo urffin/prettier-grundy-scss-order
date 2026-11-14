@@ -1,0 +1,2 @@
+@use "modules/counter" as *;
+.a { width: next(); height: $value * 1px; }

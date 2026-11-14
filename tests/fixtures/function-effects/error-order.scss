@@ -1,0 +1,10 @@
+$n: 0;
+@function tick() {
+  $n: $n + 1 !global;
+  @return $n * 1px;
+}
+@function require-ready() {
+  @if $n == 0 { @error "counter has not advanced"; }
+  @return $n * 1px;
+}
+.a { width: tick(); height: require-ready(); }

@@ -1,0 +1,7 @@
+$n: 0;
+@function tick() {
+  $n: $n + 1 !global;
+  @return $n * 1px;
+}
+@function current() { @return $n * 1px; }
+.a { width: tick(); height: current(); }

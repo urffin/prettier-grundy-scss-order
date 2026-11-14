@@ -1,0 +1,2 @@
+@use "modules/api";
+.a { width: api.next(); height: api.$value * 1px; }

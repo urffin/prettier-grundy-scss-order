@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 1,
+  "note": "Authored research examples, not occurrences claimed in the pinned real corpus. CSS projection compares only these controlled examples; it is not a general cascade-equivalence proof.",
+  "cases": [
+    {
+      "id": "direct-counter",
+      "kind": "effect",
+      "file": "direct-counter.scss",
+      "options": {}
+    },
+    {
+      "id": "state-read",
+      "kind": "effect",
+      "file": "state-read.scss",
+      "options": {}
+    },
+    {
+      "id": "reader-function",
+      "kind": "effect",
+      "file": "reader-function.scss",
+      "options": {}
+    },
+    {
+      "id": "indirect-call",
+      "kind": "effect",
+      "file": "indirect-call.scss",
+      "options": {}
+    },
+    {
+      "id": "default-argument",
+      "kind": "effect",
+      "file": "default-argument.scss",
+      "options": {}
+    },
+    {
+      "id": "hyphen-underscore",
+      "kind": "effect",
+      "file": "hyphen-underscore.scss",
+      "options": {}
+    },
+    {
+      "id": "escaped-name",
+      "kind": "effect",
+      "file": "escaped-name.scss",
+      "options": {}
+    },
+    {
+      "id": "fully-escaped-name",
+      "kind": "effect",
+      "file": "fully-escaped-name.scss",
+      "options": {}
+    },
+    {
+      "id": "scoped-shadowing",
+      "kind": "effect",
+      "file": "scoped-shadowing.scss",
+      "options": {}
+    },
+    {
+      "id": "nested-argument",
+      "kind": "effect",
+      "file": "nested-argument.scss",
+      "options": {}
+    },
+    {
+      "id": "module-call",
+      "kind": "effect",
+      "file": "module-call.scss",
+      "options": {}
+    },
+    {
+      "id": "forwarded-call",
+      "kind": "effect",
+      "file": "forwarded-call.scss",
+      "options": {}
+    },
+    {
+      "id": "module-wrapper",
+      "kind": "effect",
+      "file": "module-wrapper.scss",
+      "options": {}
+    },
+    {
+      "id": "star-import",
+      "kind": "effect",
+      "file": "star-import.scss",
+      "options": {}
+    },
+    {
+      "id": "dynamic-call",
+      "kind": "effect",
+      "file": "dynamic-call.scss",
+      "options": {}
+    },
+    {
+      "id": "nested-rule",
+      "kind": "effect",
+      "file": "nested-rule.scss",
+      "options": {}
+    },
+    {
+      "id": "media-condition",
+      "kind": "effect",
+      "file": "media-condition.scss",
+      "options": {}
+    },
+    {
+      "id": "selector-interpolation",
+      "kind": "effect",
+      "file": "selector-interpolation.scss",
+      "options": {}
+    },
+    {
+      "id": "value-interpolation",
+      "kind": "effect",
+      "file": "value-interpolation.scss",
+      "options": {}
+    },
+    {
+      "id": "custom-property-interpolation",
+      "kind": "effect",
+      "file": "custom-property-interpolation.scss",
+      "options": {}
+    },
+    {
+      "id": "root-rule-order",
+      "kind": "effect",
+      "file": "root-rule-order.scss",
+      "options": {
+        "grundyScssSorterGroups": {
+          "rule": {
+            "type": "rule",
+            "order": "alphabetical"
+          }
+        }
+      }
+    },
+    {
+      "id": "error-order",
+      "kind": "effect",
+      "file": "error-order.scss",
+      "options": {}
+    },
+    {
+      "id": "diagnostic-order",
+      "kind": "diagnostic",
+      "file": "diagnostic-order.scss",
+      "options": {}
+    },
+    {
+      "id": "pure-local",
+      "kind": "control",
+      "file": "pure-local.scss",
+      "options": {}
+    },
+    {
+      "id": "read-only-global",
+      "kind": "control",
+      "file": "read-only-global.scss",
+      "options": {}
+    },
+    {
+      "id": "local-reassignment",
+      "kind": "control",
+      "file": "local-reassignment.scss",
+      "options": {}
+    },
+    {
+      "id": "pure-builtins",
+      "kind": "control",
+      "file": "pure-builtins.scss",
+      "options": {}
+    },
+    {
+      "id": "css-functions",
+      "kind": "control",
+      "file": "css-functions.scss",
+      "options": {}
+    },
+    {
+      "id": "quoted-call",
+      "kind": "control",
+      "file": "quoted-call.scss",
+      "options": {}
+    },
+    {
+      "id": "raw-custom-function",
+      "kind": "control",
+      "file": "raw-custom-function.scss",
+      "options": {}
+    },
+    {
+      "id": "url-call-text",
+      "kind": "control",
+      "file": "url-call-text.scss",
+      "options": {}
+    }
+  ]
+}

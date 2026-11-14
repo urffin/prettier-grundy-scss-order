@@ -1,0 +1,2 @@
+@function local($value) { $value: $value + 1; @return $value * 1px; }
+.a { width: local(1); height: local(2); }

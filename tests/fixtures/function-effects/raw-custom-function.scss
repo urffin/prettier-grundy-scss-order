@@ -1,0 +1,6 @@
+$n: 0;
+@function tick() {
+  $n: $n + 1 !global;
+  @return $n * 1px;
+}
+.a { height: $n * 1px; --token: tick(); width: 2px; }

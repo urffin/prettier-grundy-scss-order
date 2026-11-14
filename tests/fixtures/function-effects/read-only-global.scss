@@ -1,0 +1,3 @@
+$size: 3px;
+@function size() { @return $size; }
+.a { width: size(); height: size(); }

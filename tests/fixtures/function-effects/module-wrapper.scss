@@ -1,0 +1,3 @@
+@use "modules/counter";
+@function wrapped() { @return counter.next(); }
+.a { width: wrapped(); height: counter.$value * 1px; }

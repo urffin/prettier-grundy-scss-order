@@ -1,0 +1,8 @@
+@use "sass:meta" as inspect;
+$n: 0;
+@function tick() {
+  $n: $n + 1 !global;
+  @return $n * 1px;
+}
+$callback: inspect.get-function("tick");
+.a { width: inspect.call($callback); height: $n * 1px; }

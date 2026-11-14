@@ -1,0 +1,6 @@
+$n: 0;
+@function t() {
+  $n: $n + 1 !global;
+  @return $n * 1px;
+}
+.a { width: \74(); height: $n * 1px; }

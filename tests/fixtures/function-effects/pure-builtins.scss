@@ -1,0 +1,3 @@
+@use "sass:math";
+@use "sass:map";
+.a { width: math.div(4px, 2); height: map.get((small: 3px), small); }

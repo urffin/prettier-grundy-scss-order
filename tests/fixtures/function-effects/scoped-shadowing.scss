@@ -1,0 +1,10 @@
+$n: 0;
+@function tick() {
+  $n: $n + 1 !global;
+  @return $n * 1px;
+}
+.scope {
+  @function tick() { @return 99px; }
+  width: tick();
+}
+.a { width: tick(); height: $n * 1px; }

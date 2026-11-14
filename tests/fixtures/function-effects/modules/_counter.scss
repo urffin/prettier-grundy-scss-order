@@ -1,0 +1,5 @@
+$value: 0;
+@function next() {
+  $value: $value + 1 !global;
+  @return $value * 1px;
+}

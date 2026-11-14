@@ -204,6 +204,8 @@ Supported values for `type`: `use`, `extend`, `mixin`, `include`, `if`, `else`, 
 
 `grundyScssSorterSafety` accepts `"strict"` (default) or `"loose"`. The old names `"conservative"` and `"structural"` remain supported aliases for `"strict"` and `"loose"`, respectively, including in CLI options. Existing configurations need no changes. A preset or custom group alone never changes the mode. Strict mode enforces the library's known constraints; it does not guarantee semantic equivalence for arbitrary SCSS.
 
+> **Warning:** Even in `strict`, reordering calls to Sass functions that change state, for example through `!global`, can change generated CSS or cause a compilation error. Prefer explicit Sass assignments or mixin calls for these effects, or protect the enclosing style rule with `prettier-ignore`. Ignoring only a nested declaration may not protect its parent. Ordinary groups do not recognize function calls or create execution boundaries.
+
 ```js
 export default {
     plugins: ["prettier-grundy-scss-order"],
@@ -235,6 +237,8 @@ In `strict` mode, presets, group criteria, alphabetical/exact ordering, and blan
 In `strict`, declarations retain their original side of nested rules and CSS blocks such as `@media` when the block can emit a conflicting property. This includes shorthand resets, logical properties and dynamic names. Independent declarations may still cross the block; its contents are sorted recursively. Selector overlap is treated conservatively, so even disjoint selectors may restrict a conflicting declaration. `loose` permits configured reordering across these blocks.
 
 The sorter does not evaluate Sass or prove equivalence for arbitrary stylesheets. Side effects hidden in function calls and cascade dependencies between two sibling rules or CSS blocks still require further analysis.
+
+Stateful function calls in values, interpolations, selectors or at-rule parameters are currently not execution boundaries. Explicit Sass assignments or `prettier-ignore` on the enclosing style rule can preserve known evaluation order. See the [reproducible function-effect research and policy comparison](tests/fixtures/function-effects/README.md).
 
 ## Comments
 

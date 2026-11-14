@@ -1,0 +1,7 @@
+$n: 0;
+@function tick() {
+  $n: $n + 1 !global;
+  @return $n * 1px;
+}
+.z { width: tick(); }
+.a { height: $n * 1px; }

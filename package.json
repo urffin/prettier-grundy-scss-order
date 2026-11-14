@@ -20,6 +20,7 @@
         "test:package": "node scripts/test-package.mjs",
         "test:corpus": "node scripts/test-corpus.mjs",
         "corpus:update": "node scripts/update-corpus.mjs",
+        "research:function-effects": "node scripts/research-function-effects.mjs",
         "benchmark": "node scripts/benchmark.mjs"
     },
     "repository": {

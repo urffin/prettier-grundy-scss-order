@@ -1,3 +1,4 @@
 tests/fixtures/corpus/** text eol=lf
 tests/fixtures/corpus/real/** -whitespace
 tests/fixtures/corpus/regressions/comment-separators/input.scss -whitespace
+tests/fixtures/function-effects/** text eol=lf

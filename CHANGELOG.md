@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add reproducible Sass function side-effect research, compilation comparisons and experimental boundary policies. Document the current strict limitation and existing manual workarounds; production sorting behavior and configuration are unchanged.
+
 - Add 15 SCSS regression fixtures with strict Sass invariants and explicit loose outcomes, plus a pinned 152-file CSS/SCSS corpus from four projects. Benchmark four whole-file project batches in both modes and metrics, record input provenance/hashes, and provide an explicit committed-source refresh command for evolving site styles. Check real-file invariants in CI and upload a separate corpus report. Sorting behavior and configuration are unchanged.
 
 - Extend the informational benchmark with cold-process memory snapshots for both safety modes and sort/format operations, including Git-revision comparisons. Record raw snapshots, per-process deltas, byte statistics and process maxRSS in JSON schema version 2 and CI summaries/artifacts. Timing workers remain separate from forced GC. Sorting behavior and configuration are unchanged.

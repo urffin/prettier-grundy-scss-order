@@ -1,0 +1,6 @@
+$n: 0;
+@function tick() {
+  $n: $n + 1 !global;
+  @return $n * 1px;
+}
+.a { .child-#{tick()} { color: red; } width: $n * 1px; }

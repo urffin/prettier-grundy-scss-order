@@ -1,0 +1,6 @@
+$n: 0;
+@function next-id() {
+  $n: $n + 1 !global;
+  @return $n * 1px;
+}
+.a { width: next_id(); height: $n * 1px; }
