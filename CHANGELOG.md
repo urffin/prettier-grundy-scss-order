@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Expand the informational benchmark with nested media queries, deep rules, comments and if/else chains. Measure both safety modes and the full formatting pipeline in sequential isolated processes, with optional Git-revision comparisons using the same dependencies. Save raw samples, output hashes and GitHub Actions reports.
+
 ## 0.4.4 — 2026-11-14
 
 - Avoid argument-limit errors when writing back very wide sorting segments; rebuild child lists directly without spread or an intermediate flattened array.

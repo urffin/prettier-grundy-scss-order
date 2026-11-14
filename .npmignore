@@ -6,4 +6,5 @@ example
 .editorconfig
 tests
 scripts
+benchmark-results.json
 *.test.mjs

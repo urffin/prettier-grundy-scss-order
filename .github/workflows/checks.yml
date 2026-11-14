@@ -47,4 +47,10 @@ jobs:
                   node-version: "24"
                   cache: npm
             - run: npm ci
-            - run: npm run benchmark
+            - run: npm run benchmark -- --output benchmark-results.json
+            - uses: actions/upload-artifact@v7
+              with:
+                  name: benchmark-results
+                  path: benchmark-results.json
+                  if-no-files-found: error
+                  retention-days: 14

@@ -105,7 +105,26 @@ The CI matrix covers current patch releases of Node.js 22, 24 and 26 with Pretti
 
 Pushes and pull requests run runtime tests, `npm run test:types`, and `npm run test:package`. The package check installs the actual tarball in a temporary consumer project and verifies public exports, all presets, both safety modes, configuration, comments, idempotence and the installed declarations. Release publishing waits for the same reusable checks.
 
-Run `npm ci`, `npm test`, `npm run test:types`, and `npm run test:package` locally. The package check needs registry access. `npm run benchmark` reports medians for sorter preparation and ordering, excluding parsing and printing; CI records these in the job summary without timing thresholds. Development checks use Sass and TypeScript as dev dependencies; neither is added to the published runtime dependencies.
+Run `npm ci`, `npm test`, `npm run test:types`, and `npm run test:package` locally. The package check needs registry access. Development checks use Sass and TypeScript as dev dependencies; neither is added to the published runtime dependencies.
+
+### Benchmark
+
+`npm run benchmark` covers seven synthetic scenarios: 100/1000 independent declarations, 500 conflicting declarations, nested media queries, 35 nested rules, leading/trailing/footer comments, and commented if/else chains. Both `strict` and `loose` run by default. `sort` measures sorter construction and ordering on a prepared AST, excluding parsing and serialization; `format` measures the complete `prettier.format` pipeline.
+
+Each version/safety/measurement runs in its own sequential Node.js process: two processes per combination, three warmups and nine samples per scenario in each process. No worker loads two code versions. Process rounds alternate version order during comparisons. Reports contain medians, quartiles, raw samples, process IDs, runtime/package versions, Git revisions and output hashes. These synthetic timings describe the measured machine and workload; a small difference is not a general speed guarantee.
+
+```sh
+npm run benchmark -- --output benchmark-results.json
+npm run benchmark -- --compare v0.4.3 --output benchmark-results.json
+npm run benchmark -- --scenario comments --safety strict --measurement format
+npm run benchmark -- --help
+```
+
+In Windows PowerShell, use `npm.cmd run benchmark -- ...` if the `npm.ps1` shim consumes the `--` separator. Direct invocation also works, for example `node scripts/benchmark.mjs --scenario comments` (no separator needed).
+
+`--compare` takes a locally available Git commit or tag (fetch it first if needed). It snapshots runtime sources into a temporary directory and uses the current checkout's installed dependencies and Node.js for both versions. This compares code, not historical dependency trees; no historical install scripts run and the checkout is untouched. Comparisons require safety-mode support (0.3.0 or later). Output differences appear as `outputMatches: false` and do not invalidate the timing run. Negative `changePercent` means the current checkout is faster. `--warmup`, `--samples`, and `--processes` override the defaults; very short runs are useful for checking the harness, not drawing performance conclusions.
+
+CI runs the current version, writes a job summary and uploads `benchmark-results.json` as an artifact for 14 days. Timing values have no pass/fail thresholds; execution errors still fail the job. The report and benchmark scripts are excluded from the npm package.
 
 ## Presets
 
