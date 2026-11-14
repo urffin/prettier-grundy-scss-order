@@ -231,6 +231,59 @@ function buildConstraints(names, successors, incoming) {
     }
 }
 
+// Min-heap of available source positions. The position is the tie-breaker even
+// when an earlier statement becomes available after a later one was enqueued.
+class AvailableQueue {
+    constructor(units, compare, incoming) {
+        this.units = units;
+        this.compare = compare;
+        this.heap = [];
+        for (let i = 0; i < incoming.length; i++) if (incoming[i] === 0) this.heap.push(i);
+        for (let i = Math.floor(this.heap.length / 2) - 1; i >= 0; i--) this.siftDown(i);
+    }
+
+    before(first, second) {
+        const order = this.compare(this.units[first].node, this.units[second].node);
+        return order < 0 || (!(order > 0) && first < second);
+    }
+
+    siftDown(position) {
+        const heap = this.heap;
+        const value = heap[position];
+        while (position * 2 + 1 < heap.length) {
+            let child = position * 2 + 1;
+            if (child + 1 < heap.length && this.before(heap[child + 1], heap[child])) child++;
+            if (!this.before(heap[child], value)) break;
+            heap[position] = heap[child];
+            position = child;
+        }
+        heap[position] = value;
+    }
+
+    push(value) {
+        const heap = this.heap;
+        let position = heap.length;
+        heap.push(value);
+        while (position > 0) {
+            const parent = Math.floor((position - 1) / 2);
+            if (!this.before(value, heap[parent])) break;
+            heap[position] = heap[parent];
+            position = parent;
+        }
+        heap[position] = value;
+    }
+
+    pop() {
+        const first = this.heap[0];
+        const last = this.heap.pop();
+        if (this.heap.length) {
+            this.heap[0] = last;
+            this.siftDown(0);
+        }
+        return first;
+    }
+}
+
 /**
  * Stable topological ordering: original conflicting pairs are hard constraints;
  * the configured comparer chooses between currently unconstrained statements.
@@ -243,6 +296,7 @@ function buildConstraints(names, successors, incoming) {
  * @returns {T[]}
  */
 export function sortWithPropertyConstraints(units, compare, propertyName, additionalEdges = []) {
+    if (units.length < 2) return units.slice();
     const names = units.map(unit => {
         const raw = propertyName(unit.node);
         // Preserve the original name for custom-property detection: removing a
@@ -256,17 +310,26 @@ export function sortWithPropertyConstraints(units, compare, propertyName, additi
         successors[before].push(after);
         incoming[after]++;
     }
+    // Most real SCSS segments are short. Scanning a few positions costs less
+    // than maintaining a heap; larger segments avoid quadratic selection.
+    const available = units.length < 16 ? null : new AvailableQueue(units, compare, incoming);
     const sorted = [];
     while (sorted.length < units.length) {
         let best = -1;
-        for (let i = 0; i < units.length; i++) {
-            if (incoming[i] !== 0) continue;
-            if (best === -1 || compare(units[i].node, units[best].node) < 0) best = i;
+        if (available) best = available.pop();
+        else {
+            for (let i = 0; i < units.length; i++) {
+                if (incoming[i] !== 0) continue;
+                if (best === -1 || compare(units[i].node, units[best].node) < 0) best = i;
+            }
         }
         // Edges always point forwards in the original input, so there is no cycle.
         sorted.push(units[best]);
         incoming[best] = -1;
-        for (const next of successors[best]) incoming[next]--;
+        for (const next of successors[best]) {
+            incoming[next]--;
+            if (available && incoming[next] === 0) available.push(next);
+        }
     }
     return sorted;
 }
