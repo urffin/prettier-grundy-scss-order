@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.6 — 2026-11-14
 
 - In strict mode, skip conflict checks and redundant edges already implied by dependency paths inside the dense fallback. Keep the short and sparse paths, with bounded temporary ancestor storage and the direct fallback for unusually wide segments. Sorting behavior, configuration and loose mode are unchanged.
 
