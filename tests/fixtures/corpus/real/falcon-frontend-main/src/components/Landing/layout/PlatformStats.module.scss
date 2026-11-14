@@ -1,0 +1,130 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.platform_stats {
+
+
+  background: url("/images/landing/platformstats/bg-mobile.png") no-repeat center bottom;
+  padding-bottom: 312px;
+  background-size: 857px 355px;
+  @include mediaFrom($tablet) {
+    margin-bottom: 35px;
+    background: url("/images/landing/platformstats/bg-tablet.png") no-repeat center top 204px;
+    background-size: 1255px 759px;
+  }
+  @include media($tablet) {
+    [lang="es"] & {
+      background-position-y: 244px;
+    }
+  }
+
+  @include mediaFrom($laptopL) {
+    padding-bottom: 0;
+    min-height: 830px;
+    background: url("/images/landing/platformstats/bg-laptop.png") no-repeat center top -150px;
+    background-size: 1919px 1161px;
+  }
+  @include mediaFrom($desktop) {
+    padding-bottom: 0;
+    min-height: 830px;
+    background: url("/images/landing/platformstats/bg-desktop.png") no-repeat center top -130px;
+    background-size: 1919px 1161px;
+  }  
+
+  &__container {
+    margin: 59px auto 0 auto;
+    width: 225px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    @include mediaFrom($tablet) {
+      margin: 81px auto 0 auto;
+      gap: 16px;
+    }
+    @include media($tablet) {
+      [lang="es"] & {
+        margin: 81px auto 0 auto;
+      }
+    }
+
+    @include mediaFrom($laptopL) {
+      width: 735px;
+      margin-top: 42px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      column-gap: 60px;
+      row-gap: 33px;
+    }
+  }
+
+  &__item {
+    display: grid;
+    column-gap: 14px;
+    row-gap: 10px;
+    grid-template-columns: 48px auto;
+    grid-template-areas:
+            "icon title"
+            "icon sub";
+    @include mediaFrom($tablet) {
+      column-gap: 18px;
+      row-gap: 16px;
+    }
+    @include mediaFrom($laptopL) {
+      column-gap: 14px;
+      row-gap: 14px;
+    }
+  }
+
+  &__title {
+    grid-area: title;
+
+    font-family: "Arame";
+    font-style: normal;
+    font-weight: 250;
+    font-size: 24px;
+    line-height: 39px;
+
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    color: #ffffff;
+    @include mediaFrom($tablet) {
+      font-size: 32px;
+      line-height: 39px;
+    }
+    @include mediaFrom($laptopL) {
+      font-size: 32px;
+      line-height: 39px;
+    }
+  }
+
+  &__icon {
+    grid-area: icon;
+  }
+
+  &__sub {
+    grid-area: sub;
+
+    font-family: "Arame";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    color: var(--color-green);
+
+    @include mediaTo($laptopL) {
+      line-height: 16px;
+    }
+  }
+}
+

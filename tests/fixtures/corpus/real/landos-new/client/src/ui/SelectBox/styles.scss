@@ -1,0 +1,45 @@
+.selectBox {
+  box-sizing: border-box;
+  border-radius: 20px;
+  background: #e6e6e6;
+  color: #b6b6b6;
+  padding: 0 15px;
+  font-size: 14px;
+  overflow: hidden;
+  position: relative;
+  margin: 5px 0;
+}
+
+.selectBox, .selectBox select { 
+  width: 100%;
+  color: #7b7b7b;
+}
+
+select:focus { outline: none; }
+
+.selectBox select {
+  height: 40px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  -webkit-appearance: none; 
+}
+
+@-moz-document url-prefix(){
+  .selectBox select { width: 110%; }
+}
+
+.downArrow {
+  position: absolute;
+  width: 16px;
+  top: 14px;
+  right: 15px;
+  font-size: 24px;
+  pointer-events: none;
+}
+
+ select::-ms-expand { display: none; }
+
+_:-o-prefocus, .selector {
+  .selectBox { background: none; }
+  }

@@ -1,0 +1,171 @@
+@import "./variables";
+@import "./_mixins.scss";
+
+:root {
+    --color-white: #ffffff;
+    --color-green: #bf9649;
+    --color-black: #060917;
+
+    --width-main: 1920px;
+    --modal-bg: #414141;
+}
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+    font-family: "Arame", sans-serif;
+    background-color: var(--color-black);
+    color: #ffffff;
+    height: 100%;
+}
+
+body.mobile-menu-open {
+    overflow: hidden;
+}
+
+.disabled {
+    opacity: 0.3;
+}
+
+#__next {
+    height: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: "collonse";
+    src: url("/fonts/collonse.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("/fonts/Inter-Regular.ttf") format("truetype");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "Exter-Regular";
+    src: url("/fonts/Exter/Exter Regular.ttf") format("truetype"),
+         url("/fonts/Exter/Exter Regular.woff2") format("woff2"),
+         url("/fonts/Exter/Exter Regular.woff") format("woff");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "Exter-Regular";
+    src: url("/fonts/Exter/Exter Thin.ttf") format("truetype");
+    font-weight: 250;
+}
+
+@font-face {
+    font-family: "Arame";
+    src: url("/fonts/Arame/Arame.ttf") format("ttf"),
+         url("/fonts/Arame/Arame.svg") format("svg"),
+         url("/fonts/Arame/Arame.woff2") format("woff2"),
+         url("/fonts/Arame/Arame.woff") format("woff");
+font-weight: 400;
+}
+
+@font-face {
+    font-family: "Arame";
+    src: url("/fonts/Arame/Arame-Thin.ttf") format("truetype");
+    font-weight: 250;
+}
+
+.font-collonse {
+    font-family: collonse, sans-serif;
+}
+
+.font-exter {
+    font-family: Exter-Regular, sans-serif;
+}
+
+.font-arame {
+    font-family: Exter-Regular, sans-serif;
+}
+
+.font-white {
+    color: var(--color-white);
+}
+.whiteSpacePre{
+    white-space: pre;
+}
+.font-green {
+    color: var(--color-green) !important;
+}
+
+.mobile-menu-overlay .left-menu {
+    margin: 0;
+    border: none;
+    background: none;
+}
+
+.copy-icon-img,
+.search-icon-img {
+    transition: all linear 0.3s;
+    cursor: pointer;
+}
+
+.copy-icon-img:hover,
+.search-icon-img:hover {
+    transform: scale(1.2);
+}
+
+*::-webkit-scrollbar {
+    width: 2px;
+    height: 7px;
+}
+
+*::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--color-green);
+    outline: none;
+}
+
+/* ticker*/
+:root {
+    --ticker-height: 56px;
+    --ticker-speed: 100s;
+}
+
+@-webkit-keyframes ticker {
+    0% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    100% {
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes ticker {
+    0% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    100% {
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%);
+    }
+}
+
+@include media($mobile) {
+
+    .main-container {
+        padding: 0 32px;
+
+        min-height: calc(100vh - 235px);
+    }
+}

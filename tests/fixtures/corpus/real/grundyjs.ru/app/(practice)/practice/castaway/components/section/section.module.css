@@ -1,0 +1,19 @@
+.section {
+    padding-left: 70px;
+    padding-right: 70px;
+}
+.smallTop {
+    padding-top: 40px;
+}
+.top {
+    padding-top: 100px;
+}
+
+.section {
+    padding-inline: clamp(16px, 5vw, 70px);
+}
+@media (max-width: 900px) {
+    .top {
+        padding-top: 56px;
+    }
+}

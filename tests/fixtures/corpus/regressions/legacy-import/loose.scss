@@ -1,0 +1,8 @@
+.invest {
+  left: 357px;
+  @include mediaFrom($desktop) {
+    left: 420px;
+  }
+}
+@import "variables";
+@import "mixins";

@@ -1,0 +1,213 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.main {
+    &__btn {
+        &_db {
+            font-weight: 400;
+            width: 91%;
+            @include mediaFrom($tablet) {
+                width: 312px;
+            }
+            @include mediaFrom($laptopL) {
+                width: 259px;
+            }
+            @include mediaFrom($desktop) {
+                width: 259px;
+            }
+        }
+        &_pres {
+            width: 282px;
+        }
+        &_light {
+            font-weight: 400;
+        }
+    }
+    &__text {
+        font-weight: lighter;
+        letter-spacing: 2px;
+        &_description {
+            font-style: normal;
+            font-weight: lighter;
+            letter-spacing: 2px;
+          &__mobileText {
+            max-width: 311px;
+              font-size: 20px;
+              margin-bottom: 12px;
+            span{
+              color: #BF9649;
+              font-family: 'Arame';
+              font-style: normal;
+              font-weight: 0;
+                font-size: 20px;
+              line-height: 120%;
+                letter-spacing: 2px;
+            }
+              @include mediaFrom($tablet) {
+                  font-size: 22px;
+                  span{
+                      font-size: 22px;
+                  }
+              }
+              &_desc {
+                  max-width: 694px;
+                  font-size: 36px;
+                  span{
+                      font-size: 36px;
+                    }
+                @include mediaFrom($desktop) {
+                    letter-spacing: 1.44px;
+                }
+              }
+          }
+            margin-top: -2px;
+           /* font-family: "Exter-Regular";
+            font-size: 10px;
+            line-height: 180%;*/
+            max-width: 405px;
+            font-family: 'Arame';
+            font-style: normal;
+            font-weight: 250;
+            font-size: 22px;
+            line-height: 120%;
+            /* or 29px */
+
+            text-align: center;
+            @include mediaFrom($tablet) {
+                max-width: 388px;
+                margin-top: 40px;
+                font-size: 19px;
+            }
+
+            @include mediaFrom($laptopL) {
+                margin-top: 40px;
+                max-width: 604px;
+                font-size: 34px;
+                font-weight: 100;;
+                letter-spacing: 0.68px;
+            }
+            @include mediaFrom($desktop) {
+                margin-top: 34px;
+                max-width: 694px;
+                font-size: 36px;
+            }
+        }
+        &_logo {
+            margin-top: 19px;
+
+            @include mediaFrom($tablet) {
+                margin-top: 32px;
+            }
+
+            @include mediaFrom($laptopL) {
+                margin-top: 43px;
+            }
+            @include mediaFrom($desktop) {
+                margin-top: 35px;
+            }
+        }
+    }
+}
+
+.next-btn {
+    margin-top: 41px;
+    display: flex;
+    justify-content: center;
+
+    &__img {
+        @include mediaFrom($tablet) {
+            height: 42px;
+            width: 24px;
+        }
+    }
+
+    @include mediaFrom($tablet) {
+        margin-top: 47px;
+
+        &__img {
+            height: 42px;
+            width: 24px;
+        }
+    }
+
+    @include mediaFrom($laptopL) {
+        margin-top: 62px;
+
+        &__img {
+            height: 40px;
+            width: 22px;
+        }
+    }
+
+    @include mediaFrom($desktop) {
+        margin-top: 56px;
+
+        &__img {
+            height: 58px;
+            width: 32px;
+        }
+    }
+}
+
+.coin {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(10%);
+    top: 20px;
+
+    animation: coin-move 1.3s ease-out infinite alternate;
+    @include mediaFrom($tablet) {
+        transform: translateX(-50%) translateY(-3%);
+        top: 58px;
+    }
+    @include mediaFrom($laptopL) {
+        transform: translateX(-50%) translateY(-3%);
+        top: 180px;
+    }
+}
+@media screen and (min-width: $desktop) {
+    .coin {
+        top: 280px;
+    }
+}
+
+@keyframes coin-move {
+    0% {
+        top: 20px
+    }
+    100% {
+        top: 20px - 46px;
+    }
+}
+
+@include mediaFrom($tablet){
+    @keyframes coin-move {
+        0% {
+            top: 58px;
+        }
+        100% {
+            top: 58px - 65px;
+        }
+    }
+}
+
+@include mediaFrom($laptopL){
+    @keyframes coin-move {
+        0% {
+            top: 180px;
+        }
+        100% {
+            top: 180px - 65px;
+        }
+    }
+}
+@include mediaFrom($desktop){
+    @keyframes coin-move {
+        0% {
+            top: 280px;
+        }
+        100% {
+            top: 280px - 65px;
+        }
+    }
+}

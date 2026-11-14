@@ -47,10 +47,18 @@ jobs:
                   node-version: "24"
                   cache: npm
             - run: npm ci
+            - name: Verify pinned real-file corpus
+              run: npm run test:corpus -- --output corpus-results.json
             - run: npm run benchmark -- --metric all --output benchmark-results.json
             - uses: actions/upload-artifact@v7
               with:
                   name: benchmark-results
                   path: benchmark-results.json
+                  if-no-files-found: error
+                  retention-days: 14
+            - uses: actions/upload-artifact@v7
+              with:
+                  name: corpus-results
+                  path: corpus-results.json
                   if-no-files-found: error
                   retention-days: 14

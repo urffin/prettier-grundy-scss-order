@@ -1,0 +1,10 @@
+$property: "color";
+.card {
+  --Tone: red;
+  --tone: green;
+  --Tone: blue;
+  #{$property}: red;
+  -webkit-transform: scale(1);
+  color: blue;
+  transform: scale(2);
+}

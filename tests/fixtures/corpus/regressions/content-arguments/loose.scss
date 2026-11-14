@@ -1,0 +1,10 @@
+@mixin wrapper {
+  color: green;
+  color: blue;
+  @content (red);
+}
+.card {
+  @include wrapper using ($tone) {
+    color: $tone;
+  }
+}

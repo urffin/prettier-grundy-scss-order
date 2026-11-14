@@ -1,0 +1,27 @@
+@import "../../styles/mixins.scss";
+
+.socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    @include mobile {
+        gap: 8px;
+        justify-content: center;
+        margin-top: 20px;
+
+        width: var(--content-width);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @include tablet {
+        gap: 12px;
+        margin-top: 36px;
+    }
+
+    @include desktop {
+        gap: 24px;
+        margin-top: 60px;
+    }
+}

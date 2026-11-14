@@ -1,0 +1,10 @@
+@import "../../../styles/var.scss";
+@import "../../../styles/mixins.scss";
+
+.section-title {
+    white-space: pre;
+
+    @include mobile {
+        white-space: unset;
+    }
+}

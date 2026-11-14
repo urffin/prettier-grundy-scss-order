@@ -1,0 +1,39 @@
+.deferred {
+    content-visibility: auto;
+    contain-intrinsic-block-size: auto var(--estimated-height, 500px);
+    scroll-margin-block-start: 24px;
+}
+.videos {
+    --estimated-height: 1640px;
+    --estimated-height-wide: 1640px;
+}
+.video {
+    --estimated-height: 850px;
+    --estimated-height-wide: 850px;
+}
+@media (min-width: 768px) {
+    .deferred {
+        contain-intrinsic-block-size: auto var(--estimated-height-wide, 250px);
+    }
+}
+@media (orientation: landscape) {
+    .video {
+        --estimated-height: 520px;
+        --estimated-height-wide: 700px;
+    }
+    .videos {
+        --estimated-height: 980px;
+        --estimated-height-wide: 980px;
+    }
+}
+@media (min-width: 1024px) and (orientation: landscape) {
+    .videos {
+        --estimated-height-wide: 520px;
+    }
+}
+@media print {
+    .deferred {
+        content-visibility: visible;
+        contain-intrinsic-block-size: none;
+    }
+}

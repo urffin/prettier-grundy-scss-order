@@ -1,0 +1,26 @@
+@import "../../styles/mixins.scss";
+
+.supported__chains {
+    padding-top: 60px - 12px;
+    display: flex;
+
+    width: var(--content-width);
+
+    @include mobile {
+        padding-top: 32px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    @include tablet {
+        gap: 0;
+    }
+
+    @include desktop {
+        gap: 32px;
+    }
+}
+
+.supported__chains_item {
+    width: 80px;
+}

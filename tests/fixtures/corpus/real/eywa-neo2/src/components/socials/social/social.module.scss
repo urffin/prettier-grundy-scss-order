@@ -1,0 +1,98 @@
+@import "../../../styles/var.scss";
+@import "../../../styles/mixins.scss";
+
+.social {
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    position: relative;
+    align-items: center;
+
+    background: linear-gradient(180deg, rgba(10, 10, 18, 0.4) 0%, rgba(10, 10, 18, 0.6) 100%);
+    backdrop-filter: blur(2px);
+    /* Note: backdrop-filter has minimal browser support */
+
+    border-radius: 12px;
+
+    @include mobile {
+        height: 48px;
+        width: 128px;
+        gap: 8px;
+    }
+
+    @include tablet {
+        width: 222px;
+        height: 96px;
+    }
+
+    @include desktop {
+        width: 172px;
+    }
+}
+
+.social__left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+
+    // background: linear-gradient(179.8deg, #53fda9 0.17%, rgba(83, 253, 169, 0) 94.01%);
+
+    border-radius: 3px 0px 0px 3px;
+    position: relative;
+}
+.social__right {
+    flex-grow: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.social__title {
+    font-family: "Exter Bold";
+    font-size: 16px;
+    line-height: 90%;
+    /* or 34px */
+
+    color: var(--bTransparent100);
+
+    @include mobile {
+        font-family: "Exter Bold";
+        font-size: 12px;
+        line-height: 90%;
+        /* identical to box height, or 11px */
+
+        /* bTransparent100 */
+
+        color: var(--bTransparent100);
+    }
+}
+.join {
+    display: flex;
+
+    font-family: "Roobert";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 8px;
+    line-height: 90%;
+    /* or 11px */
+
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+
+    gap: 15px;
+    color: rgba(white, 0.4);
+}
+
+.connect {
+    // color: $accent;
+
+    @include mobile {
+        font-size: 12px;
+
+        letter-spacing: 0.1em;
+    }
+}

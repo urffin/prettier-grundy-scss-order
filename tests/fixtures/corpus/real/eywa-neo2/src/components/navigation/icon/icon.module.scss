@@ -1,0 +1,105 @@
+@import "../../../styles/var.scss";
+
+$navigation-icon-color: #000; //$primary;
+
+.navigation__icon {
+    width: 35px;
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+}
+
+.navigation__icon_carousel {
+    position: relative;
+    left: -9984px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: $navigation-icon-color;
+    color: $navigation-icon-color;
+    box-shadow: 9984px 0 0 0 $navigation-icon-color, 9999px 0 0 0 $navigation-icon-color,
+        10014px 0 0 0 $navigation-icon-color;
+    animation: dot-carousel 1.5s infinite linear;
+}
+
+.navigation__icon:hover .navigation__icon_carousel {
+    background-color: $navigation-icon-color;
+    color: $navigation-icon-color;
+    box-shadow: 9999px 0 0 2px $navigation-icon-color, 9999px 0 0 2px $navigation-icon-color,
+        9999px 0 0 2px $navigation-icon-color;
+    animation: dot-stretching 0.5s ease-in;
+}
+
+@keyframes dot-carousel {
+    0% {
+        box-shadow: 9984px 0 0 -1px $navigation-icon-color, 9999px 0 0 1px $navigation-icon-color,
+            10014px 0 0 -1px $navigation-icon-color;
+    }
+
+    50% {
+        box-shadow: 10014px 0 0 -1px $navigation-icon-color, 9984px 0 0 -1px $navigation-icon-color,
+            9999px 0 0 1px $navigation-icon-color;
+    }
+    100% {
+        box-shadow: 9999px 0 0 1px $navigation-icon-color, 10014px 0 0 -1px $navigation-icon-color,
+            9984px 0 0 -1px $navigation-icon-color;
+    }
+}
+
+@keyframes dot-stretching {
+    0% {
+        box-shadow: 9984px 0 0 -1px $navigation-icon-color, 9999px 0 0 1px $navigation-icon-color,
+            10014px 0 0 -1px $navigation-icon-color;
+    }
+    100% {
+        box-shadow: 9999px 0 0 2px $navigation-icon-color, 9999px 0 0 2px $navigation-icon-color,
+            9999px 0 0 2px $navigation-icon-color;
+    }
+}
+
+@keyframes dot-stretching-before {
+    0% {
+        transform: translate(0) scale(0.7, 0.7);
+    }
+    50%,
+    60% {
+        transform: translate(-20px) scale(1, 1);
+    }
+    100% {
+        transform: translate(0) scale(0.7, 0.7);
+    }
+}
+
+@keyframes dot-stretching-after {
+    0% {
+        transform: translate(0) scale(0.7, 0.7);
+    }
+    50%,
+    60% {
+        transform: translate(20px) scale(1, 1);
+    }
+    100% {
+        transform: translate(0) scale(0.7, 0.7);
+    }
+}
+
+.news {
+    &_bg {
+        transition: opacity .5s linear;
+        opacity: 1;
+
+        &_hover {
+            transition: opacity .5s linear;
+            opacity: 0;
+        }
+    }
+    &:hover {
+        &_bg {
+            opacity: 0;
+    
+            &_hover {
+                opacity: 1;
+            }
+        }
+    }
+}

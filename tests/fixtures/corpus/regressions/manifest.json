@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "oracle": {
+    "version": "0.4.6",
+    "revision": "0012ba57a2e800d9af734f537a5724291bec5422",
+    "note": "Default-mode characterization outputs; strict CSS invariants checked separately. CI never regenerates expected files."
+  },
+  "fixtures": [
+    {
+      "id": "legacy-import",
+      "entry": "legacy-import/input.scss",
+      "expected": {
+        "strict": "legacy-import/strict.scss",
+        "loose": "legacy-import/loose.scss"
+      },
+      "origin": {
+        "kind": "adapted",
+        "project": "falcon-frontend-main",
+        "files": [
+          "src/components/Landing/layout/plan/card/Details.module.scss"
+        ],
+        "note": "Reduced and rewritten as a closed example; real benchmark snapshots remain whole files."
+      },
+      "features": [
+        "legacy-import",
+        "variables",
+        "mixins"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": false
+    },
+    {
+      "id": "comment-separators",
+      "entry": "comment-separators/input.scss",
+      "expected": {
+        "strict": "comment-separators/strict.scss",
+        "loose": "comment-separators/loose.scss"
+      },
+      "origin": {
+        "kind": "adapted",
+        "project": "landos-new",
+        "files": [
+          "client/src/pages/Welcome/styles.scss"
+        ],
+        "note": "Reduced and rewritten as a closed example; real benchmark snapshots remain whole files."
+      },
+      "features": [
+        "comments",
+        "group-separators"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "responsive-content",
+      "entry": "responsive-content/input.scss",
+      "expected": {
+        "strict": "responsive-content/strict.scss",
+        "loose": "responsive-content/loose.scss"
+      },
+      "origin": {
+        "kind": "adapted",
+        "project": "eywa-neo2",
+        "files": [
+          "src/styles/mixins.scss"
+        ],
+        "note": "Reduced and rewritten as a closed example; real benchmark snapshots remain whole files."
+      },
+      "features": [
+        "mixins",
+        "content",
+        "media",
+        "variables"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "nested-media",
+      "entry": "nested-media/input.scss",
+      "expected": {
+        "strict": "nested-media/strict.scss",
+        "loose": "nested-media/loose.scss"
+      },
+      "origin": {
+        "kind": "adapted",
+        "project": "landos-new",
+        "files": [
+          "client/src/pages/Statistic/styles.scss"
+        ],
+        "note": "Reduced and rewritten as a closed example; real benchmark snapshots remain whole files."
+      },
+      "features": [
+        "media",
+        "nested-rules",
+        "conflicts"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "site-layout",
+      "entry": "site-layout/input.scss",
+      "expected": {
+        "strict": "site-layout/strict.scss",
+        "loose": "site-layout/loose.scss"
+      },
+      "origin": {
+        "kind": "adapted",
+        "project": "grundyjs.ru",
+        "files": [
+          "components/so/SoInfo.module.scss"
+        ],
+        "note": "Reduced and rewritten as a closed example; real benchmark snapshots remain whole files."
+      },
+      "features": [
+        "independent-properties",
+        "physical-inset"
+      ],
+      "strictCSS": "projection",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "nested-properties",
+      "entry": "nested-properties/input.scss",
+      "expected": {
+        "strict": "nested-properties/strict.scss",
+        "loose": "nested-properties/loose.scss"
+      },
+      "origin": {
+        "kind": "authored",
+        "reason": "Nested property blocks and narrower border/grid independence need explicit coverage."
+      },
+      "features": [
+        "nested-properties",
+        "independent-properties",
+        "grid",
+        "border"
+      ],
+      "strictCSS": "projection",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "use-forward",
+      "entry": "use-forward/input.scss",
+      "expected": {
+        "strict": "use-forward/strict.scss",
+        "loose": "use-forward/loose.scss"
+      },
+      "origin": {
+        "kind": "authored",
+        "reason": "@use/@forward are absent from the original 101-file SCSS inventory."
+      },
+      "features": [
+        "use",
+        "forward",
+        "modules"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": false
+    },
+    {
+      "id": "module-reassignment",
+      "entry": "module-reassignment/input.scss",
+      "expected": {
+        "strict": "module-reassignment/strict.scss",
+        "loose": "module-reassignment/loose.scss"
+      },
+      "origin": {
+        "kind": "authored",
+        "reason": "Exercise namespaced assignments and module state across rules."
+      },
+      "features": [
+        "use",
+        "modules",
+        "variables"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "content-arguments",
+      "entry": "content-arguments/input.scss",
+      "expected": {
+        "strict": "content-arguments/strict.scss",
+        "loose": "content-arguments/loose.scss"
+      },
+      "origin": {
+        "kind": "authored",
+        "reason": "Exercise @content arguments and a using callback beyond the simple real mixins."
+      },
+      "features": [
+        "mixins",
+        "content",
+        "using"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "if-else-chain",
+      "entry": "if-else-chain/input.scss",
+      "expected": {
+        "strict": "if-else-chain/strict.scss",
+        "loose": "if-else-chain/loose.scss"
+      },
+      "origin": {
+        "kind": "authored",
+        "reason": "Preserve comments and cascade around a complete conditional chain."
+      },
+      "features": [
+        "if-else",
+        "comments"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "loops",
+      "entry": "loops/input.scss",
+      "expected": {
+        "strict": "loops/strict.scss",
+        "loose": "loops/loose.scss"
+      },
+      "origin": {
+        "kind": "authored",
+        "reason": "The original SCSS inventory contains no loops."
+      },
+      "features": [
+        "for",
+        "each",
+        "while",
+        "interpolation",
+        "variables"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "function-default-global",
+      "entry": "function-default-global/input.scss",
+      "expected": {
+        "strict": "function-default-global/strict.scss",
+        "loose": "function-default-global/loose.scss"
+      },
+      "origin": {
+        "kind": "authored",
+        "reason": "Combine a module function, !default and a mixin !global side effect."
+      },
+      "features": [
+        "functions",
+        "default",
+        "global",
+        "variables",
+        "mixins",
+        "use"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "interpolation-custom-vendor",
+      "entry": "interpolation-custom-vendor/input.scss",
+      "expected": {
+        "strict": "interpolation-custom-vendor/strict.scss",
+        "loose": "interpolation-custom-vendor/loose.scss"
+      },
+      "origin": {
+        "kind": "authored",
+        "reason": "Opaque interpolation, case-sensitive custom names and vendor fallbacks."
+      },
+      "features": [
+        "interpolation",
+        "custom-properties",
+        "vendor-properties",
+        "conflicts"
+      ],
+      "strictCSS": "projection",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "property-conflicts",
+      "entry": "property-conflicts/input.scss",
+      "expected": {
+        "strict": "property-conflicts/strict.scss",
+        "loose": "property-conflicts/loose.scss"
+      },
+      "origin": {
+        "kind": "authored",
+        "reason": "Controlled shorthand/logical/reset cascades in separate rules."
+      },
+      "features": [
+        "conflicts",
+        "logical-properties",
+        "shorthands",
+        "all"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "ignore-keyframes",
+      "entry": "ignore-keyframes/input.scss",
+      "expected": {
+        "strict": "ignore-keyframes/strict.scss",
+        "loose": "ignore-keyframes/loose.scss"
+      },
+      "origin": {
+        "kind": "authored",
+        "reason": "Percentage keyframes and verbatim ignore subtrees also cover parser migration blockers."
+      },
+      "features": [
+        "ignore",
+        "keyframes",
+        "nested-rules",
+        "comments"
+      ],
+      "strictCSS": "exact",
+      "defaultLooseCompiles": true,
+      "verbatim": [
+        "@keyframes orbit{0%{opacity:0}100%{opacity:1}}",
+        "&:hover {color:red;color:blue}"
+      ]
+    }
+  ]
+}

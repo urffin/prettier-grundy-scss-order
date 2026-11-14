@@ -1,0 +1,52 @@
+@import "../../../../styles/_variables.scss";
+@import "../../../../styles/_mixins.scss";
+
+.hc {
+  width: 100%;
+
+  z-index: 50;
+  position: fixed;
+  top: 0;
+  transition: 0.5s;
+
+  height: 92px;
+  @include mediaFrom($laptopL) {
+    height: 100px;
+  }
+}
+
+.scrolling {
+  transform: translateY(-117px);
+}
+
+.sb {
+  height: 92px;
+  @include mediaFrom($laptopL) {
+    height: 96px;
+  }
+}
+
+@media screen and (min-width: var(--screen-width-laptopL)) {
+  .hc {
+    height: 110px;
+  }
+
+  .sb {
+    height: 96px;
+
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 1px -1px 19px 1px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 1px -1px 19px 1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 1px -1px 19px 1px rgba(0, 0, 0, 0.75);
+  }
+}
+
+@media screen and (min-width: var(--screen-width-desktop)) {
+  .hc {
+    height: 117px;
+  }
+
+  .sb {
+    height: 96px;
+  }
+}

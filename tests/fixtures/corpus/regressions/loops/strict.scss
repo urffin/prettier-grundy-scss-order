@@ -1,0 +1,19 @@
+.grid {
+  @for $i from 1 through 2 {
+    &--#{$i} {
+      color: red;
+    }
+  }
+  @each $side, $space in (left: 1px, right: 2px) {
+    .#{$side} {
+      margin-#{$side}: $space;
+    }
+  }
+  $n: 0;
+  @while $n < 2 {
+    $n: $n + 1;
+    .item-#{$n} {
+      z-index: $n;
+    }
+  }
+}

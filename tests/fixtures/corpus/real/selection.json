@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "projects": [
+    {
+      "id": "grundyjs.ru",
+      "origin": {
+        "kind": "local-git",
+        "repository": "grundyjs.ru"
+      },
+      "roots": [
+        "app",
+        "components",
+        "styles"
+      ]
+    },
+    {
+      "id": "landos-new",
+      "origin": {
+        "kind": "local-git",
+        "repository": "landos-new"
+      },
+      "paths": [
+        "client/src/pages/AddIEO/styles.scss",
+        "client/src/pages/Contact/styles.scss",
+        "client/src/pages/Launchpad/X-Quant/styles.scss",
+        "client/src/pages/Launchpad/styles.scss",
+        "client/src/pages/Security/styles.scss",
+        "client/src/pages/Statistic/styles.scss",
+        "client/src/pages/Welcome/sass/_variables.scss",
+        "client/src/pages/Welcome/sass/glide.core.scss",
+        "client/src/pages/Welcome/sass/glide.theme.scss",
+        "client/src/pages/Welcome/styles.scss",
+        "client/src/ui/Button/styles.scss",
+        "client/src/ui/Checkbox/styles.scss",
+        "client/src/ui/ImageUpload/styles.scss",
+        "client/src/ui/Input/styles.scss",
+        "client/src/ui/MapPicker/styles.scss",
+        "client/src/ui/PasswordInput/styles.scss",
+        "client/src/ui/SelectBox/styles.scss",
+        "client/src/ui/TelSelector/styles.scss",
+        "client/src/ui/TextArea/styles.scss"
+      ]
+    },
+    {
+      "id": "falcon-frontend-main",
+      "origin": {
+        "kind": "local-git",
+        "repository": "falcon-frontend-main"
+      },
+      "paths": [
+        "src/components/App/components/dashboard/Card/Card.module.scss",
+        "src/components/App/components/dashboard/UserTable.module.scss",
+        "src/components/App/components/dashboard/activePlansList/activePlansList.module.scss",
+        "src/components/App/components/dashboard/modalDashboard/modalDashboard.module.scss",
+        "src/components/App/layout/ConnectBox/ConnectBox.module.scss",
+        "src/components/App/layout/DashboardFooter/DashboardFooter.module.scss",
+        "src/components/App/layout/LeftMenu/LeftMenu.module.scss",
+        "src/components/App/layout/TimingProfit/TimingProfit.module.scss",
+        "src/components/App/layout/TopBar/TopBar.module.scss",
+        "src/components/App/views/DashboardView.module.scss",
+        "src/components/App/views/MyPlansView.module.scss",
+        "src/components/App/views/ProfileView.module.scss",
+        "src/components/App/views/UserHistoryView.module.scss",
+        "src/components/App/views/UserTeamView.module.scss",
+        "src/components/Common/Buttons/BaseButton/BaseButton.module.scss",
+        "src/components/Common/Buttons/ButtonCard/ButtonCard.module.scss",
+        "src/components/Common/Buttons/WalletConnectButton/WalletConnectButton.module.scss",
+        "src/components/Common/select/select.module.scss",
+        "src/components/Landing/components/BackgroundLines.module.scss",
+        "src/components/Landing/components/DisclaimerModal.module.scss",
+        "src/components/Landing/components/Header/HeaderContainer.module.scss",
+        "src/components/Landing/components/LocaleButton.module.scss",
+        "src/components/Landing/components/MobileMenu.module.scss",
+        "src/components/Landing/components/features/FeatureThree.module.scss",
+        "src/components/Landing/layout/FooterBgLaptop.module.scss",
+        "src/components/Landing/layout/GuideButtons.module.scss",
+        "src/components/Landing/layout/Main.module.scss",
+        "src/components/Landing/layout/PlatformStats.module.scss",
+        "src/components/Landing/layout/ProfitDistribution.module.scss",
+        "src/components/Landing/layout/plan/card/Details.module.scss",
+        "src/components/Landing/layout/plan/desktop/PlanOne.module.scss",
+        "src/components/Landing/layout/plan/desktop/PlanThree.module.scss",
+        "src/components/Landing/layout/plan/desktop/PlanTwo.module.scss",
+        "src/styles/_mixins.scss",
+        "src/styles/_variables.scss",
+        "src/styles/globals.scss"
+      ]
+    },
+    {
+      "id": "eywa-neo2",
+      "origin": {
+        "kind": "local-git",
+        "repository": "eywa-neo2"
+      },
+      "paths": [
+        "src/components/button/button.module.scss",
+        "src/components/content/common/common-content.module.scss",
+        "src/components/content/footer/footer-content.module.scss",
+        "src/components/content/grants/grants-content.module.scss",
+        "src/components/content/header/header-content.module.scss",
+        "src/components/content/news/news.module.scss",
+        "src/components/content/paradigm/paradigm-content.module.scss",
+        "src/components/content/partners/partners-content.module.scss",
+        "src/components/content/problem/problem-content.module.scss",
+        "src/components/content/products/products-content.module.scss",
+        "src/components/content/social/social-content.module.scss",
+        "src/components/content/solutions/solutions-content.module.scss",
+        "src/components/content/supported-chains/supported-chains-content.module.scss",
+        "src/components/faq/faq.module.scss",
+        "src/components/footer/footer-col/footer-col.module.scss",
+        "src/components/footer/footer-social/footer-social.module.scss",
+        "src/components/footer/footer.module.scss",
+        "src/components/grants/grants.module.scss",
+        "src/components/logo-item/logo-item.module.scss",
+        "src/components/menu/menu.module.scss",
+        "src/components/navigation/icon/icon.module.scss",
+        "src/components/navigation/navigation.module.scss",
+        "src/components/news/new.module.scss",
+        "src/components/news/news.module.scss",
+        "src/components/paradigm/item/item.module.scss",
+        "src/components/paradigm/paradigm.module.scss",
+        "src/components/partners/partners.module.scss",
+        "src/components/problems/problem/problem.module.scss",
+        "src/components/problems/problems.module.scss",
+        "src/components/products/product/product.module.scss",
+        "src/components/products/products.module.scss",
+        "src/components/section-block/section-block.module.scss",
+        "src/components/section-block/section-date/section-date.module.scss",
+        "src/components/section-block/section-title/section-title.module.scss",
+        "src/components/socials/social/social.module.scss",
+        "src/components/socials/socials.module.scss",
+        "src/components/solutions/solution/solution.module.scss",
+        "src/components/solutions/solutions.module.scss",
+        "src/components/subtitle/subtitle.module.scss",
+        "src/components/supported-chains/supported-chains.module.scss",
+        "src/styles/Home2.module.scss",
+        "src/styles/globals.scss",
+        "src/styles/mixins.scss",
+        "src/styles/var.scss"
+      ]
+    }
+  ]
+}

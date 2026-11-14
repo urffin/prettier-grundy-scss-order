@@ -1,0 +1,44 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.lb {
+  margin-right: 42px;
+  margin-left: 39px;
+
+  @include mediaFrom($laptopL){
+    [lang="es"] & {
+      margin-right: 23px;
+      margin-left: 20px;
+    }
+  }
+  align-self: end;
+  padding-bottom: 37px;
+  display: flex;
+  align-items: center;
+
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 12px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-green);
+}
+
+.lb:hover {
+  cursor: pointer;
+}
+
+@media screen and (min-width: 1920px) {
+  .lb {
+    margin-left: 47px;
+
+    [lang="es"] & {
+      margin-left: 20px;
+    }
+
+    font-size: 16px;
+    padding-bottom: 0;
+    align-self: center;
+  }
+}

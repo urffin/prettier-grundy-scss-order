@@ -1,0 +1,48 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.btn {
+    &_pdf, &_invest{
+        width: 252px;
+        @include mediaFrom($tablet) {
+            width: 230px;
+            [lang="es"] & {
+                width: 310px;
+            }
+        }
+        @include mediaFrom($laptopL) {
+            width: 252px;
+
+            [lang="es"] & {
+                width: 310px;
+            }
+        }
+    }
+    &_video{
+        width: 246px;
+        @include mediaFrom($tablet) {
+            width: 225px;
+            [lang="es"] & {
+                width: 310px;
+            }
+        }
+        @include mediaFrom($laptopL) {
+            width: 246px;
+        }
+    }
+}
+
+.color {
+   color: #BF9649;
+    @include mediaFrom($tablet) {
+        color: #BF9649;
+    }
+}
+
+.size {
+    width: 292px;
+
+    @include mediaFrom($tablet) {
+        width: 221px;
+    }
+}

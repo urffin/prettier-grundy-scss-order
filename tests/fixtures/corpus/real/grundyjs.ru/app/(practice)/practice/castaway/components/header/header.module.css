@@ -1,0 +1,16 @@
+.header {
+    padding: 26px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+@media (max-width: 1439px) {
+    .header {
+        padding: 12px 20px;
+    }
+}
+
+.header {
+    position: relative;
+    gap: 16px;
+}

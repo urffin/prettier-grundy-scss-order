@@ -1,0 +1,32 @@
+@import '../../styles/mixins.scss';
+
+.item {
+    width: 108px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    &:hover {
+        background: linear-gradient(180deg, #101011cc 0%, rgba(16, 16, 17, 0.267357) 62.99%, rgba(16, 16, 17, 0) 101.07%);
+        backdrop-filter: blur(2px);
+        /* Note: backdrop-filter has minimal browser support */
+
+        border-radius: 8px;
+    }
+
+    @include mobile {
+        width: 88px;
+    }
+}
+
+.icon {
+    width: 100px;
+}
+
+.title {
+    margin-top: 8px;
+}

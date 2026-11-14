@@ -1,0 +1,23 @@
+@import "../../styles/var.scss";
+@import "../../styles/mixins.scss";
+
+.news {
+    display: flex;
+    gap: 12px;
+
+    width: max-content;
+    @include useTransition;
+}
+
+.news_wrap {
+    overflow-x: scroll;
+    max-width: 100vw;
+    scroll-behavior: smooth;
+    padding-bottom: 8px;
+}
+
+.news_wrap2 {
+    margin-top: 23px;
+    overflow: hidden;
+    height: 72px;
+}

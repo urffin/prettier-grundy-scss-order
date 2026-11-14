@@ -1,0 +1,32 @@
+@import "./variables";
+
+@mixin mediaFrom($size){
+    @media screen and (min-width: $size){
+        @content;
+    }
+}
+
+@mixin mediaTo($size){
+    @media screen and (max-width: ($size - 1)){
+        @content;
+    }
+}
+
+@mixin media($size) {
+    @if($size == $mobile) {
+        @include mediaTo($tablet) { @content; }
+    } 
+    @else if ($size == $tablet) {
+        @media screen and (min-width: $tablet) and (max-width: ($laptopL - 1)) {
+            @content;
+        }
+    }
+    @else if ($size == $laptopL){
+        @media screen and (min-width: $laptopL) and (max-width: ($desktop - 1)) {
+            @content;
+        }
+    }
+    @else if ($size == $desktop){
+        @include mediaFrom($desktop) { @content; }
+    }
+}

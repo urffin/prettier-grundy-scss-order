@@ -1,0 +1,107 @@
+@import "../../styles/var.scss";
+@import "../../styles/mixins.scss";
+
+.paradigm {
+    @include mobile {
+        max-width: $content-width-mobile-max;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.paradigm__title-container {
+    padding-left: 44px;
+    padding-top: 96px;
+    padding-bottom: 144px;
+    display: flex;
+    gap: 40px;
+}
+
+.paradigm__title {
+
+    @include mobile {
+        text-align: center;
+    }
+}
+
+.paradigm__items {
+    display: flex;
+    margin-bottom: 160px;
+
+    @include mobile {
+        flex-direction: column;
+        padding: 0;
+        margin-bottom: 0;
+    }
+    @include tablet {
+        column-gap: 45px;
+    }
+
+    @include desktop {
+        column-gap: 192px;
+    }
+}
+
+.paradigm__bgBacker {
+    position: absolute;
+    transform: translateY(-35%);
+    z-index: -1;
+}
+
+.backer__icons {
+    display: flex;
+    flex-wrap: wrap;
+
+    @include mobile {
+        justify-content: center;
+    }
+    @include tablet{
+        column-gap: 10px;
+        justify-content: space-between;
+        row-gap: 36px;
+        margin-top: 36px;
+    }
+    @include desktop {
+        margin-top: 54px;
+        column-gap: 8px;
+        justify-content: center;
+        row-gap: 60px;
+    }
+}
+
+.backer__icons_title{
+    text-align: center;
+    justify-content: center;
+}
+
+.product__items {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.item_text {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    @include mobile {
+        // left: 50%;
+        // transform: translateX(-50%);
+        position: static;
+    }
+
+    @include tablet {
+
+    }
+
+    @include desktop {
+        white-space: nowrap;
+    }
+}
+
+.item_text_last.item_text_last {
+    @include mobile {
+        margin-bottom: 80px;
+    }
+}

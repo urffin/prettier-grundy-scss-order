@@ -1,0 +1,70 @@
+@import "../../../styles/var.scss";
+@import "../../../styles/mixins.scss";
+
+.news-content {
+    z-index: 1;
+    margin-bottom: 120px;
+
+    @include mobile {
+        margin-bottom: 51px;
+    }
+}
+
+.caption {
+    width: var(--content-width);
+    margin-left: auto;
+    margin-right: auto;
+    & > div {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        @include mobile {
+            justify-content: center;
+        }
+    }
+}
+.news_cap {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+
+    & > span {
+        font-family: "Exter Bold";
+        font-size: 32px;
+        line-height: 120%;
+        /* or 38px */
+
+        display: flex;
+        align-items: center;
+        letter-spacing: 0.01em;
+    }
+}
+.btns {
+    display: flex;
+    gap: 37px;
+
+    @media (hover: none) {
+        display: none;
+    }
+}
+.flip {
+    transform: scaleX(-1);
+}
+
+.btn {
+    path {
+        @include useTransition;
+    }
+    &:hover:not(.disabled) {
+        cursor: pointer;
+        path {
+            stroke: var(--cfPrimaryHover);
+        }
+    }
+}
+.btn.disabled {
+    path {
+        stroke: var(--bTransparent40);
+    }
+}

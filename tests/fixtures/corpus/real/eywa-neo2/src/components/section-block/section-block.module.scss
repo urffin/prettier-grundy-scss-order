@@ -1,0 +1,38 @@
+@import '../../styles/var.scss';
+@import '../../styles/mixins.scss';
+
+.section-block {
+    position: relative;
+}
+.section-block_common {
+    background: linear-gradient(180deg, rgba(#101011, .8) 0%, rgba(16, 16, 17, 0.267357) 62.99%, rgba(0, 0, 0, 0) 100%);
+    backdrop-filter: blur(10px);
+    /* Note: backdrop-filter has minimal browser support */
+
+    // border-radius: 6px;
+    // border: 1px solid transparent;
+
+    border-image: linear-gradient(to bottom, #632bff, rgba(0, 0, 0, 0)) 1;
+    border-left: .5px solid;
+    border-right: .5px solid;
+    border-top: .5px solid;
+
+    @include mobile {
+        backdrop-filter: blur(4px);
+    }
+}
+
+.section-block__caption {
+    display: flex;
+
+    @include mobile {
+        flex-direction: column;
+        gap: 16px;
+        max-width: $content-width-mobile-max;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 14px;
+        padding-right: 14px;
+        text-align: center;
+    }
+}

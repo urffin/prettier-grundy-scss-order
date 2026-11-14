@@ -1,0 +1,73 @@
+@import "../../../styles/var.scss";
+@import "../../../styles/mixins.scss";
+
+.social-content {
+    width: var(--content-width);
+    margin-top: 160px;
+    @include mobile {
+        margin-top: 24px;
+
+        max-width: $content-width-mobile;
+        width: calc(100% - 20px);
+    }
+}
+
+.contact {
+    color: $bTransparent40;
+    display: flex;
+    align-items: center;
+
+    @include mobile {
+        flex-wrap: wrap;
+    }
+}
+
+.contact_title {
+    @include tablet {
+        margin-right: 32px;
+    }
+    @include desktop {
+        margin-right: 64px;
+    }
+}
+
+.title {
+    @include mobile {
+        padding: 0 6px;
+    }
+    width: var(--content-width);
+    & > div {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        @include mobile {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+}
+
+.email,
+.tg {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+
+    a {
+        color: var(--cfPrimary);
+    }
+}
+
+.email {
+    @include mobile {
+        margin-right: 20px;
+    }
+
+    @include tablet {
+        margin-right: 20px;
+    }
+    @include desktop {
+        margin-right: 40px;
+    }
+}

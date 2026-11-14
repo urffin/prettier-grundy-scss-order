@@ -1,0 +1,73 @@
+@import "../../styles/var.scss";
+@import "../../styles/mixins.scss";
+
+.button {
+    background-color: transparent;
+    border: none;
+    display: flex;
+    position: relative;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.button_align_center {
+    align-items: center;
+    justify-content: center;
+}
+.button_primary {
+    &:hover {
+        &::before {
+            transform: scale(1.02);
+            background-color: var(--cfPrimaryHover);
+        }
+    }
+    &:active {
+        &::before {
+            transform: scale(0.98);
+        }
+    }
+    &::before {
+        content: "";
+        background-color: var(--cfPrimary);
+        border-radius: 8px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        z-index: -1;
+    }
+}
+
+.button_secondary {
+    padding: 12px 16px;
+
+    flex-direction: column;
+    &:hover {
+        color: var(--cfSecondaryVariant);
+        &::before {
+            transform: scale(1.02);
+        }
+    }
+    &:active {
+        &::before {
+            transform: scale(0.98);
+        }
+    }
+
+    &::before {
+        content: "";
+        border: 1px solid var(--cfSecondary);
+        border-radius: 8px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 1;
+    }
+
+    width: 140px;
+    height: 52px;
+}

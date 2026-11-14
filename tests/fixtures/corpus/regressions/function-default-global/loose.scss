@@ -1,0 +1,16 @@
+@use "sass:math";
+$size: null;
+$counter: 0;
+@mixin bump {
+  $counter: $counter + 1 !global;
+}
+.card {
+  $size: 3px !default;
+  min-width: $size;
+  width: measure(2);
+  z-index: $counter;
+  @include bump;
+}
+@function measure($factor) {
+  @return math.div(12px, $factor);
+}

@@ -109,9 +109,9 @@ Run `npm ci`, `npm test`, `npm run test:types`, and `npm run test:package` local
 
 ### Benchmark
 
-`npm run benchmark` covers seven synthetic scenarios: 100/1000 independent declarations, 500 conflicting declarations, nested media queries, 35 nested rules, leading/trailing/footer comments, and commented if/else chains. Both `strict` and `loose` run by default. `sort` measures sorter construction and ordering on a prepared AST, excluding parsing and serialization; `format` measures the complete `prettier.format` pipeline.
+`npm run benchmark` covers seven synthetic scenarios (independent/conflicting declarations, nested blocks, comments and if/else chains) and four real-file batches: `real-grundyjs`, `real-landos`, `real-falcon`, `real-eywa`. The pinned corpus contains 152 whole files, including 51 CSS and two SCSS files from the evolving grundyjs.ru styles. Each file is processed separately; measurements cover the entire project batch. Both `strict` and `loose` run by default. `sort` measures sorter construction and ordering on prepared ASTs, excluding parsing and serialization; `format` measures the complete `prettier.format` pipeline. Results for all files remain live through the final memory snapshot.
 
-By default `--metric all` measures time and memory in separate sequential processes. Timing uses two processes per version/safety/measurement, with three warmups and nine samples per scenario in each process. Timing workers do not force GC. No worker loads two code versions. Process rounds alternate version order during comparisons. Reports contain medians, quartiles, raw samples, process IDs and time origins (`timeOriginMs`, to distinguish reused PIDs), runtime/package versions, Git revisions and output hashes. These synthetic measurements describe the measured machine and workload; a small difference is not a general speed or memory guarantee.
+By default `--metric all` measures time and memory in separate sequential processes. Timing uses two processes per version/safety/measurement, with three warmups and nine samples per scenario in each process. Timing workers do not force GC. No worker loads two code versions. Process rounds alternate version order during comparisons. Reports contain medians, quartiles, raw samples, process IDs and time origins (`timeOriginMs`, to distinguish reused PIDs), runtime/package versions, Git revisions and output hashes. These measurements describe the measured machine and workload; a small difference is not a general speed or memory guarantee.
 
 Memory uses three fresh processes per **version/safety/measurement/scenario**, one cold operation each, without warmups. Each worker runs with `--expose-gc`: two GC calls before the baseline snapshot and two after the operation. The result AST/string remains live through the final snapshot; hashing and AST serialization happen afterwards. For `sort`, the input AST is prepared before the baseline; `format` includes the entire formatting pipeline. Separate processes per scenario prevent an earlier scenario from contributing to `maxRSS`.
 
@@ -119,6 +119,7 @@ Memory uses three fresh processes per **version/safety/measurement/scenario**, o
 npm run benchmark -- --output benchmark-results.json
 npm run benchmark -- --compare v0.4.3 --output benchmark-results.json
 npm run benchmark -- --scenario comments --safety strict --measurement format
+npm run benchmark -- --scenario real-grundyjs --output benchmark-results.json
 npm run benchmark -- --metric memory --compare v0.4.5 --memory-processes 3 --output benchmark-results.json
 npm run benchmark -- --metric time --scenario independent-1000
 npm run benchmark -- --help
@@ -132,7 +133,11 @@ JSON **schema version 2** keeps timing data in `rows`/`workers` and adds `memory
 
 Memory fields are `rss`, `heapTotal`, `heapUsed`, `external`, `arrayBuffers` and `maxRSS`, all in **bytes**. `arrayBuffers` is already included in `external`; do not add them together. Node's `maxRSS` is converted from KiB to bytes and records the process high-water mark through the final snapshot, including startup, imports, input preparation and GC. These snapshots are not allocation counts or exact heap peaks, and maxRSS is not an operation-only peak. See the [Node.js memory APIs](https://nodejs.org/docs/latest-v22.x/api/process.html#processmemoryusage) and [resource usage](https://nodejs.org/docs/latest-v22.x/api/process.html#processresourceusage).
 
-CI runs both metrics for the current version, writes time and memory tables (memory displayed in MiB) and uploads the combined `benchmark-results.json` as an artifact for 14 days. Values have no pass/fail thresholds; execution errors still fail the job. The report and benchmark scripts are excluded from the npm package.
+JSON `inputs` identifies synthetic/real scenarios, file counts, bytes and input hashes. Real batches also record the source commit, corpus digest and individual file hashes; hashes include file boundaries. Compare performance only with the same inputs. The default 11 scenarios produce 44 timing and 44 memory rows per comparison, with statistics for each selected version.
+
+CI runs both metrics for the current version, writes time and memory tables (memory displayed in MiB) and uploads the combined `benchmark-results.json` as an artifact for 14 days. Values have no pass/fail thresholds; execution errors still fail the job. The report, corpus and benchmark scripts are excluded from the npm package.
+
+`npm test` includes 15 SCSS regression fixtures across all presets and modes. `npm run test:corpus -- --output corpus-results.json` verifies snapshot hashes, idempotence, comments and AST inventory on all real files (3040 cases); CI saves its separate report. It does not compile standalone application files or prove general CSS equivalence. Update evolving site inputs explicitly with `npm run corpus:update -- --project grundyjs.ru --root /path/to/grundyjs.ru --check`, then remove `--check` to refresh from committed Git styles. Working-tree edits never enter the snapshot. See [corpus provenance, regression guarantees and refresh workflow](tests/fixtures/corpus/README.md).
 
 ## Presets
 

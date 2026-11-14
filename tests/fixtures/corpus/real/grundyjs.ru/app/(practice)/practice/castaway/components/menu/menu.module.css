@@ -1,0 +1,42 @@
+.button {
+    display: none;
+    color: white;
+    padding: 8px 12px;
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+}
+.button:focus-visible,
+.menu a:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+}
+.menu {
+    margin: 0;
+    position: fixed;
+    inset: 16px 16px auto auto;
+    width: min(320px, calc(100vw - 32px));
+    padding: 16px;
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    background: #191919;
+    color: white;
+}
+@media (max-width: 1023px) {
+    .desktop {
+        display: none;
+    }
+    .button {
+        display: block;
+    }
+}
+@media (min-width: 1024px) {
+    .menu {
+        display: none;
+    }
+}
+.close {
+    display: block;
+    margin-left: auto;
+    padding: 4px 8px;
+    color: var(--primary);
+}

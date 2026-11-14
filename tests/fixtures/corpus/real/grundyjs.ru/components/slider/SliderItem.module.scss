@@ -1,0 +1,7 @@
+.sliderItem {
+    grid-area: 1/1;
+    justify-self: center;
+}
+.sliderItem * {
+    user-select: none;
+}

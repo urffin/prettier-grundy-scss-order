@@ -1,0 +1,341 @@
+/* Stand-only controls and logo comparisons. Shared classes keep their site styles. */
+.brand {
+    composes: brand from "../site/Site.module.css";
+}
+.card {
+    composes: card from "../site/Site.module.css";
+}
+.copy {
+    composes: copy from "../site/Site.module.css";
+}
+.cta {
+    composes: cta from "../site/Site.module.css";
+}
+.demo {
+    composes: demo from "../site/Site.module.css";
+}
+.desktopLinks {
+    composes: desktopLinks from "../site/Site.module.css";
+}
+.footer {
+    composes: footer from "../site/Site.module.css";
+}
+.footerBrand {
+    composes: footerBrand from "../site/Site.module.css";
+}
+.footerLogo {
+    composes: footerLogo from "../site/Site.module.css";
+}
+.footerMark {
+    composes: footerMark from "../site/Site.module.css";
+}
+.heading {
+    composes: heading from "../site/Site.module.css";
+}
+.hero {
+    composes: hero from "../site/Site.module.css";
+}
+.kicker {
+    composes: kicker from "../site/Site.module.css";
+}
+.languageSwitch {
+    composes: languageSwitch from "../site/Site.module.css";
+}
+.letterDetail {
+    composes: letterDetail from "../site/Site.module.css";
+}
+.letterGesture {
+    composes: letterGesture from "../site/Site.module.css";
+}
+.libraries {
+    composes: libraries from "../site/Site.module.css";
+}
+.logoLetter {
+    composes: logoLetter from "../site/Site.module.css";
+}
+.menuButton {
+    composes: menuButton from "../site/Site.module.css";
+}
+.minimal {
+    composes: minimal from "../site/Site.module.css";
+}
+.mobileLinks {
+    composes: mobileLinks from "../site/Site.module.css";
+}
+.mobileMenu {
+    composes: mobileMenu from "../site/Site.module.css";
+}
+.nav {
+    composes: nav from "../site/Site.module.css";
+}
+.navControls {
+    composes: navControls from "../site/Site.module.css";
+}
+.page {
+    composes: page from "../site/Site.module.css";
+}
+.paletteRibbon {
+    composes: paletteRibbon from "../site/Site.module.css";
+}
+.reactiveWordmark {
+    composes: reactiveWordmark from "../site/Site.module.css";
+}
+.ribbonRow {
+    composes: ribbonRow from "../site/Site.module.css";
+}
+.ribbonSliders {
+    composes: ribbonSliders from "../site/Site.module.css";
+}
+.ribbonToggle {
+    composes: ribbonToggle from "../site/Site.module.css";
+}
+.themeCycle {
+    composes: themeCycle from "../site/Site.module.css";
+}
+.themeSlider {
+    composes: themeSlider from "../site/Site.module.css";
+}
+.themeThumb {
+    composes: themeThumb from "../site/Site.module.css";
+}
+
+.logoStudies {
+    max-width: 1180px;
+    margin: 48px auto;
+    padding: 0 32px;
+}
+.logoStudies > p,
+.logoStudy p {
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 65ch;
+}
+.logoStudies h1 {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 650;
+    line-height: 1.15;
+}
+.logoStudy {
+    padding: 32px 0;
+    border-bottom: 1px solid var(--line);
+}
+.logoComparison {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+.logoOriginals {
+    margin-top: 48px;
+    font-size: 24px;
+    font-weight: 600;
+}
+@media (max-width: 760px) {
+    .logoComparison {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+.logoStudy h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 24px 0 8px;
+}
+.logoArtwork {
+    background: var(--surface);
+    padding: clamp(20px, 5vw, 48px);
+    border-radius: 12px;
+}
+.logoLockup {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 3vw, 28px);
+}
+.logoLockup > svg:first-child {
+    width: 64px;
+    flex: 0 0 18%;
+    max-width: 80px;
+}
+.logoLockup > svg:last-child {
+    width: min(80%, 390px);
+    min-width: 0;
+}
+.logoSizes {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 32px;
+}
+.logoSizes svg {
+    width: 100%;
+    height: 100%;
+}
+/* Keep the hover target intact while the visible tracks start expanding. */
+.switcher {
+    position: sticky;
+    top: 6px;
+    z-index: 70;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 12px 20px;
+    background: #f1f2f6;
+    color: #343747;
+    border-bottom: 1px solid #d9dbe5;
+    font-size: 12px;
+}
+.switcher a {
+    padding: 7px 10px;
+    border-radius: 5px;
+}
+.switcher a[aria-current] {
+    background: #272738;
+    color: white;
+}
+@media (max-width: 760px) {
+    .switcher {
+        gap: 4px;
+        font-size: 11px;
+    }
+    .switcher strong {
+        width: 100%;
+        text-align: center;
+    }
+    .page .accents {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 16px 20px;
+    }
+    .accentChoices > button,
+    .customAccent {
+        max-width: 100%;
+    }
+}
+
+/* Minimal foundation: one neutral layout, with interchangeable accent tokens. */
+.accents {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 20px max(32px, calc((100% - 1116px) / 2));
+    background: #fafafa;
+    border-bottom: 1px solid #e5e7eb;
+}
+.accentIntro {
+    display: grid;
+    gap: 5px;
+}
+.accentIntro > span {
+    font-size: 11px;
+    color: #697080;
+}
+.accentIntro > strong {
+    font-size: 14px;
+    font-weight: 550;
+}
+.accentChoices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.accentChoices button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    background: #fff;
+    color: #434959;
+    border: 1px solid #d8dbe3;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.accentChoices button > span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+.accentChoices button[aria-pressed="true"] {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+    color: var(--accent);
+}
+.customAccent {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: #fff;
+    border: 1px solid #d8dbe3;
+    border-radius: 6px;
+    color: #434959;
+    font-size: 12px;
+    cursor: pointer;
+}
+.customAccent input {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+.customAccent[data-selected="true"] {
+    border-color: #202438;
+    box-shadow: 0 0 0 1px #202438;
+}
+.colorValue {
+    align-self: center;
+    min-width: 8ch;
+    color: #697080;
+    font: 11px monospace;
+}
+.accentChoices button[aria-pressed="true"] {
+    color: #202438;
+}
+.accents {
+    color: #202438;
+}
+
+.accents {
+    display: grid;
+    gap: 14px;
+}
+.combinations {
+    display: grid;
+    gap: 8px;
+}
+.combinations > span {
+    font-size: 11px;
+    color: #697080;
+}
+.accentChoices button > .pairSwatch {
+    width: 18px;
+    height: 18px;
+    border: 1px solid #d8dbe3;
+}
+
+/* CSS resolves the system preference before hydration; cookies provide saved mode in SSR. */
+.page .accents,
+.page .switcher {
+    background: var(--surface);
+    color: var(--ink);
+    border-color: var(--line);
+}
+.page .accentIntro > span,
+.page .combinations > span,
+.page .colorValue {
+    color: var(--muted);
+}
+.page .accentChoices button,
+.page .customAccent {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--line);
+}
+.page .accentChoices button[aria-pressed="true"],
+.page .customAccent[data-selected="true"] {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+    color: var(--ink);
+}

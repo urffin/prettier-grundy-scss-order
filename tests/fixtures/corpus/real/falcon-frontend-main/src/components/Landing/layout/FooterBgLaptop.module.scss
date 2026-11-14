@@ -1,0 +1,92 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.bg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -2;
+    overflow: hidden;
+    background-position: center 140px;
+    @include mediaFrom($tablet) {
+        height: 676px;
+        background-position: center 140px;
+    }
+    @include mediaFrom($laptopL) {
+        height: 750px;
+        background-position: center 140px;
+    }
+}
+
+.mount {
+    background-repeat: no-repeat;
+    background-size: 100%;
+    position:absolute;
+    top: 0;
+    left:0;
+    right: 0;
+    z-index: -1;
+    @include mediaFrom($tablet) {
+        background-image: url('/images/landing/bg/footer/mount-tablet.svg');
+        height: 443px;
+        top: 160px;
+    }
+    @include mediaFrom($laptopL) {
+        background-image: url('/images/landing/bg/footer/mount.svg');
+        height: 635px;
+        top:115px;
+
+    }
+
+}
+
+.moon {
+    position:absolute;
+    top: 0;
+    left:0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    @include mediaFrom($tablet) {
+        background: url('/images/landing/bg/footer/moon_tablet.png') no-repeat;
+        background-position: center top;
+        top: -70px;
+
+    }
+    @include mediaFrom($laptopL) {
+        background: url('/images/landing/bg/footer/moon-blur.png') no-repeat;
+        background-position: center -155px;
+        top:0;
+    }
+}
+
+.palace {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    @include mediaFrom($tablet) {
+        bottom: -10px;
+        width: 100%;
+    }
+    @include mediaFrom($laptopL) {
+        bottom: -120px;
+    }
+}
+
+.birds {
+    position: absolute;
+  @include mediaFrom($tablet) {
+      top: 198px;
+      left: calc(50% - -150px);
+      transform: translateX(-50%);
+  }
+  @include mediaFrom($laptopL) {
+    top: 195px;
+    left: calc(50% - 255px);
+    transform: translateX(-50%);
+  }
+}
+
+
+

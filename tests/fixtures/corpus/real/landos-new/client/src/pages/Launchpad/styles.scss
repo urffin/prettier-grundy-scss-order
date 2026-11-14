@@ -1,0 +1,357 @@
+.wrapper-launchpad {
+  width: 1170px;
+  position: relative;
+
+  &:before {
+    content: url("/static/assets/launchpad/bg_left_binary.png");
+    width: 137px;
+    height: 100%;
+    position: absolute;
+    top: 194px;
+    left: -275px;
+  }
+
+  &:after {
+    content: url("/static/assets/launchpad/bg_right_binary.png");
+    width: 69px;
+    height: 100%;
+    position: absolute;
+    top: 79px;
+    right: -185px;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.intro-launchpad {
+  width: 100%;
+}
+
+.intro-launchpad {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 70px;
+
+  &__title {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 36px;
+    line-height: 46px;
+    text-align: center;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #151030;
+  }
+
+  &__text {
+    margin: 25px 0 30px 0;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+    letter-spacing: 0.02em;
+    color: #151030;
+
+  }
+
+  &__btn {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 19px;
+    background: #22C9FF;
+    border: 1px solid #22C9FF;
+    box-sizing: border-box;
+    border-radius: 50px;
+    color: #fff;
+    padding: 5px 25px;
+    box-shadow: 0 2px 7px 0 #0fd3ff;
+    text-decoration: none;
+
+    &:hover {
+      cursor: pointer;
+      border: 1px solid #22C9FF;
+      background: #fff;
+      color: #22C9FF;
+    }
+
+    &:active {
+      transform: scale(.99);
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 68px+40px;
+
+    &__title {
+      margin: 0 200px;
+      padding: 0 200px;
+    }
+  }
+}
+
+.bread-crumbs {
+  margin-top: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .active {
+    background: #22C9FF;
+    color: #fff;
+    box-shadow: 0px 4px 8px rgba(34, 201, 255, 0.668);
+  }
+
+  &__el {
+    border: 1px solid #22C9FF;
+    padding: 7px 25px;
+    border-right: none;
+    color: #22C9FF;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 19px;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+
+    @media (max-width: 768px) {
+      white-space: nowrap;
+      padding: 5px 12px;
+    }
+
+    &:hover {
+      background: #22C9FF;
+      color: #fff;
+      box-shadow: 0px 4px 8px rgba(34, 201, 255, 0.668);
+    }
+
+  }
+
+  &__all {
+    border-bottom-left-radius: 50px;
+    border-top-left-radius: 50px;
+    border-right: none;
+  }
+
+  &__assets {
+    border-bottom-right-radius: 50px;
+    border-top-right-radius: 50px;
+    border-right: 1px solid #22C9FF;
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 65px;
+  }
+  @media (max-width: 576px){
+    display: none;
+  }
+}
+
+.launch-projects {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 80px 0 40px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    margin: 55px 0 40px;
+  }
+
+  .project {
+    margin: 0 0 40px 0;
+
+    &-nobtn {
+      margin: 0 0 90px 0;
+    }
+
+    @media (max-width: 768px) {
+      margin-bottom: 30px;
+    }
+    
+    .button-box {
+      width: 298px;
+    }
+
+    .project-box {
+      width: 298px;
+      border: 1px solid #22C9FF;
+      border-radius: 5px;
+
+      &.empty {
+        border: none;
+      }
+
+      .img-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        height: 187px;
+        border-radius: 5px 5px 0 0;
+        border-bottom: 1px solid #22C9FF;
+        overflow: hidden;
+
+        &1 {
+          background: #FAE7FF;
+        }
+
+        &2 {
+          background: url("/static/assets/launchpad/hyperQubit_background.svg");
+        }
+
+        &3 {
+          background: #101E42;
+        }
+        
+        &4 {
+          background: url("/static/assets/launchpad/diamond-back.svg");
+        }
+
+        &__upcoming {
+          position: absolute;
+          top: 20px;
+          right: 20px;
+        }
+      }
+
+    }
+
+    .text-box {
+      &__el {
+        padding-left: 22px;
+      }
+
+      &__title {
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 28px;
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        padding: 30px 22px;
+        font-variant: small-caps;
+        color: #151030;
+        max-height: 88px;
+      }
+
+      &__text {
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 24px;
+        letter-spacing: 0.02em;
+        color: #151030;
+        padding-bottom: 20px;
+        white-space: pre;
+      }
+    }
+
+    .session-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+
+      &__upper {
+        color: #22C9FF;
+      }
+
+      &__bottom {
+        padding-right: 20px;
+      }
+
+      &__title {
+        padding-bottom: 10px;
+        font-size: 18px;
+        line-height: 22px;
+
+      }
+
+      &__status {
+        padding: 3px 10px;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        font-size: 14px;
+
+        &.gray {
+          background: #E3E7E3;
+        }
+
+        &.green {
+          background: #36AF47;
+          color: #fff;
+        }
+      }
+    }
+
+    .btn-box{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      a{
+        margin-top: 15px;
+        text-transform: capitalize;
+        text-decoration: none;
+        background: #22C9FF;
+        border: 1px solid #22C9FF;
+        box-sizing: border-box;
+        border-radius: 50px;
+        color: #fff;
+        padding: 3px 25px;
+        box-shadow: 0px 2px 7px 0px #0fd3ff;
+
+        &:hover {
+          cursor: pointer;
+          border: 1px solid #22C9FF;
+          background: #fff;
+          color: #22C9FF;
+        }
+
+        &:active {
+          transform: scale(.99);
+        }
+      }
+    }
+  }
+}
+
+
+/* Mask Group 
+
+position: absolute;
+width: 298px;
+height: 187px;
+left: 811px;
+top: 1170px;
+
+
+
+/* Rectangle 5.1 
+
+position: absolute;
+width: 298px;
+height: 187px;
+left: 811px;
+top: 1170px;
+
+background: #101E42;
+
+
+/* Rectangle 15 
+
+position: absolute;
+width: 300px;
+height: 188px;
+left: 810px;
+top: 1169px;
+
+background: #242A38;
+*/

@@ -1,5 +1,6 @@
 # Logs
 benchmark-results.json
+corpus-results.json
 logs
 *.log
 npm-debug.log*

@@ -1,0 +1,87 @@
+@import "../../../styles/var.scss";
+@import "../../../styles/mixins.scss";
+
+.common {
+    padding-top: 170px;
+    position: relative;
+    width: var(--content-width);
+
+    @include mobile {
+        max-width: $content-width-mobile;
+        // padding-left: 24px;
+        // padding-right: 24px;
+        padding-top: 96px;
+    }
+}
+
+.common__title {
+    position: relative;
+
+    margin-top: 0;
+    margin-bottom: 32px;
+
+    z-index: 1;
+    width: max-content;
+
+    @include mobile {
+        // font-size: 44px;
+        // /* or 53px */
+
+        // letter-spacing: 0.01em;
+        width: auto;
+        text-align: center;
+
+        margin-bottom: 20px;
+    }
+}
+.title-text {
+    position: relative;
+}
+
+.common__text {
+    position: relative;
+    margin-top: 60px;
+
+    font-style: normal;
+    z-index: 1;
+
+    width: max-content;
+
+    @include mobile {
+        width: auto;
+        font-size: 16px;
+        line-height: 140%;
+        text-align: center;
+    }
+}
+
+.common__scroll {
+    position: sticky;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    bottom: 50px;
+    margin-top: calc(313px - 72px - 56px - 133px);
+    margin-bottom: 50px;
+    visibility: hidden;
+
+    @include mobile {
+        margin-top: 5px;
+    }
+}
+
+.common_btn {
+    margin-top: 32px;
+    width: 228px;
+    height: 72px;
+    z-index: 1;
+    
+    @include mobile {
+        margin-top: 32px;
+        width: 197px;
+
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

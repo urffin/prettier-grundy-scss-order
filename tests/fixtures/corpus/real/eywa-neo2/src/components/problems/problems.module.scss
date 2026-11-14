@@ -1,0 +1,108 @@
+@import "../../styles/var.scss";
+@import "../../styles/mixins.scss";
+
+.problems {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+
+    @include mobile {
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+    }
+
+    @include tablet {
+        width: var(--content-width);
+        gap: 70px 90px;
+    }
+
+    @include desktop {
+        gap: 89px 367px;
+    }
+}
+
+.bg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    max-width: 933px;
+    &_wrap {
+        left: 0;
+        top: -0;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+
+    }
+}
+
+.logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    animation: rotate-logo 60s linear infinite;
+}
+
+@keyframes rotate-logo {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+@include mobile {
+    @keyframes rotate-logo {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+}
+
+@include mobile {
+    .icon {
+        width: 120px;
+    }
+    .logo_wrap_mobile {
+        position: relative;
+        width: $content-width-mobile;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 549px;
+        margin-top: -75px;
+        margin-bottom: -100px;
+        z-index: -1;
+    }
+
+    .mobile_logo {
+        position: relative;
+        animation: rotate-logo 60s linear infinite;
+    }
+    .bg_mobile {
+        position: absolute;
+        left: 50%;
+        width: 465px;
+        height: 465px;
+        background: radial-gradient(50% 47.11% at 50% 50%, #632BFF 0%, #02010400 100%);
+            /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+        border-radius: 900px;
+        transform: translateX(-50%) rotate(90deg);
+    }
+    .bg_mobile_logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}

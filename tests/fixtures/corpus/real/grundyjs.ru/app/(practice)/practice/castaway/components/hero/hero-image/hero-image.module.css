@@ -1,0 +1,33 @@
+.heroImageContainer {
+    position: relative;
+    flex-shrink: 0;
+}
+.cornerImage {
+    position: absolute;
+    top: -26px;
+    left: -26px;
+}
+
+.heroImageContainer {
+    width: min(100%, 650px);
+    flex-shrink: 1;
+}
+.photo {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+}
+@media (max-width: 900px) {
+    .cornerImage {
+        top: 0;
+        left: 0;
+    }
+}
+.heroImageContainer {
+    flex: 0 1 50%;
+}
+@media (max-width: 900px) {
+    .heroImageContainer {
+        flex: initial;
+    }
+}

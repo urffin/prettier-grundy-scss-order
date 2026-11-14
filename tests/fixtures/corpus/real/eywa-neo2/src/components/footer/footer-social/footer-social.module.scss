@@ -1,0 +1,13 @@
+@import "../../../styles/var.scss";
+
+.icon {
+    cursor: pointer;
+    path {
+        transition: all .5s linear;
+    }
+    &:hover {
+        path[fill="#632BFF"] {
+            fill: #fff;
+        }
+    }
+}

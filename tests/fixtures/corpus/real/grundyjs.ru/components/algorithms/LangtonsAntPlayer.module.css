@@ -1,0 +1,73 @@
+.player {
+    min-width: 0;
+}
+.configuration {
+    flex-basis: 100%;
+    min-width: 0;
+}
+.settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: end;
+    margin-block: 10px;
+}
+.settings label {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+    font-size: 14px;
+}
+.settings input,
+.settings select,
+.settings button {
+    min-height: 44px;
+    max-width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+}
+.settings input {
+    width: 110px;
+}
+.settings button {
+    cursor: pointer;
+}
+.note {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin-block: 10px;
+}
+.scene {
+    min-width: 0;
+}
+.canvas {
+    display: block;
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+}
+.inspection {
+    padding: 14px;
+    line-height: 1.7;
+}
+.inspection h3 {
+    font-weight: 600;
+}
+.inspection ol {
+    padding-left: 24px;
+    list-style: decimal;
+}
+.player[data-expanded="true"] .canvas {
+    width: var(--fullscreen-canvas-width, 100%);
+    height: var(--fullscreen-canvas-height, auto);
+    margin-inline: auto;
+    transform: translateY(var(--fullscreen-canvas-offset-y, 0px));
+}
+.player[data-expanded="true"] .inspection {
+    display: none;
+}

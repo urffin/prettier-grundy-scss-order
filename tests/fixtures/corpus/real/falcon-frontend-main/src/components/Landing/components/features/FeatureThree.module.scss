@@ -1,0 +1,32 @@
+.pdf {
+    position: absolute;
+    left: 612px;
+    top: 259px;
+    text-decoration: none;
+
+    font-family: "Arame";
+    font-style: normal;
+    font-weight: 250;
+    font-size: 16px;
+    line-height: 20px;
+    /* identical to box height */
+
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    [lang="ru"] & {
+        left: 555px;
+    }
+    [lang="es"] & {
+        left: 485px;
+    }    
+
+    color: #ffffff;
+    &:hover {
+        color: var(--color-green);
+    }
+
+    &__arrow{
+        margin-left: 10px;
+    }
+}

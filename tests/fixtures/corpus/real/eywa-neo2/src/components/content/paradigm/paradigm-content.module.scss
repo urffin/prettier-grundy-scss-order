@@ -1,0 +1,63 @@
+@import '../../../styles/var.scss';
+@import '../../../styles/mixins.scss';
+
+.paradigm-content {
+    width: var(--content-width);
+    z-index: 1;
+
+    @include mobile {
+        padding-top: 29px;
+        max-width: $content-width-mobile-max;
+        width: calc(100% - 20px);
+    }
+}
+
+.paradigm-content__content{
+    padding-top: 60px;
+
+    @include mobile {
+        padding-top: 32px;
+    }
+}
+.paradigm-content__bg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:0;
+    bottom: 0;
+    z-index: -1;
+
+    @include mobile {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+.backers {
+    @include mobile {
+        margin-top: 16px;
+        max-width: 100%;
+    }
+}
+.backers_blur_wrap {
+    position: absolute;
+    left:0;
+    right: 0;
+    height: 800px;
+    top: 1830px;
+    overflow-x: hidden;
+    z-index: 0;
+}
+.backers_blur {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    left: 50%;
+    top: 0;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(50% 47.11% at 50% 50%, #632BFF 0%, #02010400 100%);
+        /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+    border-radius: 900px;
+    transform: translateX(-50%) rotate(90deg);
+}

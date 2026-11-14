@@ -1,0 +1,82 @@
+@import "../../../styles/var.scss";
+@import "../../../styles/mixins.scss";
+
+.problem {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 24px;
+    justify-content: flex-end;
+    border-radius: 0;
+
+    @include mobile {
+        width: calc(100% - 20px);
+        max-width: $content-width-mobile-max;
+        min-height: 262px;
+        height: auto;
+        padding: 24px 14px;
+        justify-content: unset;
+        align-items: center;
+
+        // background: rgba(#101011, 0.45);
+        // backdrop-filter: blur(4px);
+    }
+
+    @include tablet {
+        width: 300px;
+    }
+
+    @include desktop {
+        width: 428px;
+    }
+}
+
+.problem__title {
+    @include mobile {
+        text-align: center;
+    }
+}
+
+.problem__text {
+    position: relative;
+    z-index: 1;
+
+    @include mobile {
+        text-align: center;
+    }
+}
+
+.problem__image {
+    width: 120px;
+    height: 120px;
+    img {
+        max-width: 100%;
+    }
+}
+
+.problem__bg {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+
+    @include mobile {
+        display: none;
+    }
+}
+@include mobile {
+    .problem__image {
+        order: -1;
+        text-align: center;
+    }
+}
+
+.problem_right {
+    @include desktop {
+        width: 360px;
+    }
+}

@@ -1,0 +1,132 @@
+@import "../../styles/var.scss";
+@import "../../styles/mixins.scss";
+
+.solutions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 17px;
+    margin-top: 60px;
+    position: relative;
+
+    @include mobile {
+        margin-top: 16px;
+        width: var(--content-width);
+
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@include mobile {
+    // .solutions__5,
+    // .solutions__6 {
+    //     order: 1;
+    // }
+}
+
+.solutions__image {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+
+    width: 96px;
+}
+
+.bg_left {
+    position: absolute;
+    left: 0;
+}
+
+.bg_right {
+    position: absolute;
+    right: 0;
+}
+
+.text {
+    width: 275px;
+    height: 54px;
+    font-family: "Roobert";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 130%;
+    /* or 21px */
+
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.01em;
+    font-feature-settings: "calt" off;
+
+    color: #ffffff;
+
+    position: absolute;
+    right: 311px;
+    top: -56px;
+    transform: translateY(-100%);
+
+    @include mobile {
+        position: relative;
+        top: 0;
+        right: 0;
+        display: block;
+        transform: none;
+        width: $content-width-mobile-max;
+        padding-left: 14px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 32px;
+        z-index: 1;
+    }
+}
+
+.accent {
+    // color: $accent;
+}
+
+@include mobile {
+    .blur_mobile_wrap {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -137px;
+        height: 600px;
+        overflow-x: hidden;
+    }
+    .blur_mobile {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%) rotate(90deg);
+        background: radial-gradient(50% 47.11% at 50% 50%, #632BFF 0%, #02010400 100%)
+            /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+        border-radius: 900px;
+        height: 600px;
+        width: 600px;
+    }
+}
+
+.solutions__btns {
+    display: flex;
+    gap: 38px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 48px;
+
+    @include mobile {
+        flex-direction: column;
+    }
+}
+
+.solutions__btn {
+    padding: 20px;
+    height: 52px;
+    text-align: center;
+    align-items: center;
+    width: 200px;
+    text-transform: uppercase;
+    border-radius: 8px;
+
+    span {
+        position: relative;
+    }
+}

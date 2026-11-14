@@ -1,0 +1,15 @@
+@import "../../../styles/var.scss";
+@import "../../../styles/mixins.scss";
+
+.footer-content {
+    padding-bottom: 53px;
+    padding-top: 80px;
+    width: var(--content-width);
+
+    @include mobile {
+        max-width: $content-width-mobile-max;
+        // width: calc(100% - 20px);
+        padding-left: 0;
+        padding-right: 0;
+    }
+}

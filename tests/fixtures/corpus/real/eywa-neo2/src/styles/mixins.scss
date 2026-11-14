@@ -1,0 +1,23 @@
+@import './var.scss';
+
+@mixin useTransition {
+    transition: all .3s ease-out;
+}
+
+@mixin desktop {
+    @media (min-width: $desktop-layout-width) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: ($tablet-layout-width)) {
+        @content;
+    }
+}
+
+@mixin mobile {
+    @media (max-width: ($tablet-layout-width - 1)) {
+        @content;
+    }
+}

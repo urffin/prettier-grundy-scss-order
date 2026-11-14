@@ -1,0 +1,212 @@
+.player {
+    min-width: 0;
+}
+.settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0 0 16px;
+}
+.settings label,
+.editor label {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+}
+.settings select,
+.editor select,
+.editor input,
+.editor button {
+    min-height: 44px;
+    max-width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 7px 10px;
+    background: var(--paper);
+    color: var(--ink);
+}
+.settings select {
+    min-width: 110px;
+}
+.note {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 12px 0;
+}
+.canvas {
+    width: 100%;
+    height: 340px;
+    display: block;
+}
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 14px;
+}
+.legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+.legend i {
+    width: 24px;
+    height: 4px;
+    display: inline-block;
+}
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+}
+.card {
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--algorithm-color);
+    border-radius: 8px;
+}
+.card h3 {
+    font-size: 18px;
+    font-weight: 650;
+    margin: 0 0 5px;
+}
+.scope {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 12px;
+}
+.operation {
+    min-height: 64px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 8px 0;
+}
+.result {
+    font-weight: 650;
+    line-height: 1.5;
+    min-height: 48px;
+    margin: 10px 0;
+}
+.route {
+    min-height: 24px;
+    font-size: 14px;
+}
+.row {
+    display: grid;
+    grid-template-columns: repeat(var(--nodes), minmax(0, 1fr));
+    gap: 3px;
+    margin: 12px 0;
+}
+.row span {
+    display: grid;
+    gap: 3px;
+    text-align: center;
+    padding: 7px 1px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 14px;
+}
+.row [data-target="true"] {
+    outline: 2px solid var(--algorithm-color);
+    outline-offset: -2px;
+}
+.stats {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-top: 12px;
+}
+.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: fixed;
+}
+.matrix caption {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    text-align: left;
+}
+.matrix th,
+.matrix td {
+    text-align: center;
+    border: 1px solid var(--line);
+    padding: 0;
+    height: 35px;
+}
+.matrix td button {
+    width: 100%;
+    min-height: 35px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    cursor: pointer;
+}
+.matrix button[aria-pressed="true"] {
+    outline: 2px solid var(--algorithm-color);
+    outline-offset: -2px;
+    font-weight: 700;
+}
+.matrix [data-pivot="true"] {
+    background: color-mix(in srgb, var(--algorithm-color) 16%, transparent);
+}
+.editor {
+    margin-top: 16px;
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+}
+.editor summary {
+    cursor: pointer;
+    min-height: 44px;
+    line-height: 44px;
+    font-weight: 600;
+}
+.editor form {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: end;
+    margin-top: 10px;
+}
+.editor input {
+    width: 100px;
+}
+.error {
+    color: #dc2626;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+@media (max-width: 760px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+    .operation,
+    .result {
+        min-height: 0;
+    }
+    .canvas {
+        height: 285px;
+    }
+    .matrix th,
+    .matrix td,
+    .matrix button {
+        min-height: 40px;
+        height: 40px;
+    }
+    .settings {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .settings select {
+        width: 100%;
+        min-width: 0;
+    }
+    .settings label:first-child,
+    .settings label:last-child {
+        grid-column: 1 / -1;
+    }
+}

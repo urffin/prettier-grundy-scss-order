@@ -1,0 +1,25 @@
+.mapPicker {
+  display: flex;
+  align-self: flex-start;
+  
+ 
+  label {
+    display: flex;
+    position: absolute;
+    margin: 10px 0;
+  }
+
+  .map {
+    position: relative !important;
+    width: 100%;
+    height: 250px !important;
+    top: 35px;
+
+    &> div {
+      
+    }
+
+  }
+}
+
+

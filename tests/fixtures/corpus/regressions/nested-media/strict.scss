@@ -1,0 +1,10 @@
+.card {
+  color: black;
+  @media (min-width: 600px) {
+    color: red;
+    &:hover {
+      color: pink;
+    }
+  }
+  color: blue;
+}

@@ -1,0 +1,167 @@
+@import "../../styles/var.scss";
+@import "../../styles/mixins.scss";
+
+.navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    @include mobile {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.navigation__items {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: 20px;
+    z-index: 1;
+
+    @include mobile {
+        column-gap: 8px;
+    }
+}
+.navigation__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.navigation__text,
+.navigation__icon,
+.navigation__icon path {
+    @include useTransition;
+}
+
+@include tablet {
+    .navigation__item:hover {
+        cursor: pointer;
+    }
+    .navigation__item:hover .navigation__text {
+        color: var(--cfPrimary);
+    }
+    .navigation__item:hover .navigation__icon {
+        transform: rotate(-180deg);
+        path {
+            fill: var(--cfPrimary);
+        }
+    }
+}
+
+@include mobile {
+    .navigation__item.selected {
+        cursor: pointer;
+    }
+    .navigation__item.selected .navigation__text {
+        color: var(--cfPrimary);
+    }
+
+    .navigation__item.selected .navigation__icon {
+        transform: rotate(-180deg);
+        path {
+            fill: var(--cfPrimary);
+        }
+    }
+}
+.navigation__icon {
+    position: relative;
+    top: 1px;
+    transform: rotate(0deg);
+}
+.navigation__pane_wrap {
+    visibility: hidden;
+    opacity: 0;
+    min-width: 5rem;
+    position: absolute;
+    @include useTransition;
+    left: 0;
+    top: 0;
+
+    @include mobile {
+        visibility: visible;
+        opacity: 1;
+        position: static;
+        margin-top: 29px;
+    }
+    @include tablet {
+        position: absolute;
+        padding-top: 25px;
+    }
+}
+
+.navigation__pane {
+    padding: 16px 24px 20px 16px;
+    background: rgba(25, 21, 43, 0.5);
+    backdrop-filter: blur(36px);
+    /* Note: backdrop-filter has minimal browser support */
+
+    border-radius: 6px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+
+    &:hover {
+        cursor: auto;
+    }
+
+    @include mobile {
+        margin-top: 16px;
+        padding: 0 0 0 0;
+        background: none;
+        gap: 0;
+        backdrop-filter: none;
+
+        > img {
+            position: relative;
+            top: 12px;
+        }
+    }
+}
+
+.navigation__item:hover .navigation__pane_wrap,
+.navigation__pane_wrap:hover {
+    visibility: visible;
+    opacity: 1;
+    display: block;
+}
+
+.navigation__sub {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navigation__sub-item {
+    display: flex;
+    white-space: nowrap;
+
+    /* or 114% */
+
+    &:not(:last-child) {
+        margin-bottom: 13px;
+    }
+}
+
+.navigation__sub_wrap {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu_item {
+    @include useTransition;
+}
+
+.menu_item:hover:not(.disabled) {
+    cursor: pointer;
+    color: var(--cfPrimary);
+}
+
+.disabled {
+    color: var(--bTransparent60);
+    cursor: default;
+}

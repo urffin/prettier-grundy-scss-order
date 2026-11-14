@@ -1,0 +1,105 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/mixins";
+
+@include media($mobile) {
+  .footer {
+    margin: 0 -32px;
+    margin-top: -53px;
+    position: relative;
+    padding-top: 180px;
+    padding-bottom: 10px;
+
+    text-align: center;
+
+    z-index: 0;
+  }
+  .bg {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0px;
+    right: 0px;
+    bottom: 0;
+    background: url("/images/admin/bg/dashboard-footer-bg-mobile.png") center -45px / cover no-repeat;
+    z-index: -1;
+  }
+  .bg2 {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0px;
+    right: 0px;
+    bottom: 0;
+    background: url("/images/admin/bg/dashboard-footer-bg-bootom.svg") center 130px/contain no-repeat;
+    z-index: -1;
+  }
+  .iconList {
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+  }
+  .link {
+    fill: var(--color-white);
+    svg {
+      path {
+        fill: var(--color-white);
+      }
+    }
+
+    &:hover {
+      svg {
+        path {
+          fill: var(--color-green);
+        }
+      }
+    }
+  }
+  .copy {
+    margin-top: 11px;
+    margin-bottom: 4px;
+    font-family: 'Exter-Regular';
+    font-size: 8px;
+    line-height: 90%;
+    text-align: center;
+    color: #444874;
+  }
+}
+
+@include media($tablet) {
+  .footer {
+    margin: 0 -32px;
+    margin-top: -8px;
+    position: relative;
+    padding-top: 56px;
+    padding-bottom: 8px;
+
+    text-align: center;
+  }
+  .bg {
+    display: none;
+  }
+  .bg2 {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0px;
+    right: 0px;
+    bottom: -20px;
+    background: url("/images/admin/bg/dashboard-footer-bg-bootom-tablet.svg") center no-repeat
+  }
+  .iconList {
+    display: none;
+  }
+  .copy {
+    margin-top: 12px;
+    font-family: 'Exter-Regular';
+    font-size: 8px;
+    line-height: 90%;
+    text-align: center;
+    color: #444874;
+    margin-bottom: 12px;
+
+  }
+}

@@ -1,0 +1,21 @@
+@import "../../styles/mixins.scss";
+
+.products {
+    display: grid;
+
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+
+    @include mobile {
+        grid-template-columns: 1fr;
+    }
+    @include tablet {
+        grid-template-columns: 1fr 1fr;
+        gap: 26px;
+    }
+    @include desktop {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 80px;
+    }
+}

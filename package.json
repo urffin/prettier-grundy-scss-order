@@ -18,6 +18,8 @@
         "test": "uvu tests",
         "test:types": "tsc -p tests/types/tsconfig.json",
         "test:package": "node scripts/test-package.mjs",
+        "test:corpus": "node scripts/test-corpus.mjs",
+        "corpus:update": "node scripts/update-corpus.mjs",
         "benchmark": "node scripts/benchmark.mjs"
     },
     "repository": {

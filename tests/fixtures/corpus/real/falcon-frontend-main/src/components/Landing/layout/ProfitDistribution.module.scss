@@ -1,0 +1,289 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.profit {
+  margin-top: 11px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 34px;
+
+  position: relative;
+  @include mediaFrom($tablet) {
+    margin-top: 40px;
+    gap: 10px;
+  }
+
+  @include mediaFrom($laptopL) {
+    gap: unset;
+    margin-top: 61px;
+  }
+  @include mediaFrom($desktop) {
+    margin-top: 61px;
+    gap: unset;
+  }
+}
+
+.partner {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  background: url("/images/landing/profitdistribution/bg-mobile.svg") no-repeat center top;
+  padding-top: 30px;
+  margin-top: 16px;
+  @include mediaFrom($tablet) {
+    background: url("/images/landing/profitdistribution/bg-tablet-prof.svg") no-repeat center top;
+    margin-top: 60px;
+    padding-top: 30px;
+    gap: 24px;
+
+    background-size: auto;
+  }
+
+  @include mediaFrom($laptopL) {
+    background: url("/images/landing/profitdistribution/bg.svg") no-repeat center top;
+    margin-top: 68px;
+    padding-top: 35px;
+
+    background-size: auto;
+  }
+  @include mediaFrom($desktop) {
+    background: url("/images/landing/profitdistribution/bg.svg") no-repeat center top;
+    margin-top: 63px;
+    gap: 26px;
+  }
+
+  &__text {
+    width: 258px;
+    @include mediaFrom($laptopL) {
+      display: block;
+      width: 595px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 18px;
+      background-size: initial;
+    }
+    @include mediaFrom($desktop) {
+      width: 600px;
+      padding-top: 10px;
+    }
+    @include mediaFrom($tablet) {
+      width: 680px;
+      margin-top: 11px;
+    }
+  }
+  &__btn {
+    margin-left: auto;
+    margin-right: auto;
+    width: 211px;
+    a {
+      text-decoration: none;
+      color: black;
+    }
+    &:hover a {
+      color: var(--color-green);
+    }
+
+    @include mediaFrom($laptopL) {
+      width: 237px;
+    }
+  }
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  @include mediaFrom($laptopL) {
+    gap: 12px;
+  }
+
+  &_1 {
+    order: 1;
+    @include mediaFrom($tablet) {
+      order: unset;
+      width: 557px;
+    }
+
+    @include mediaFrom($laptopL) {
+      order: unset;
+      width: 557px;
+    }
+    @include mediaFrom($desktop) {
+      order: unset;
+      width: 666px;
+    }
+  }
+
+  &_2 {
+    order: 4;
+    @include mediaFrom($tablet) {
+      order: unset;
+      width: 240px;
+
+      position: absolute;
+      left: 0;
+      top: 118px;
+    }
+
+    @include mediaFrom($laptopL) {
+      order: unset;
+      width: 240px;
+      [lang="ru"] & {
+        width: 270px;
+      }
+      [lang="es"] & {
+        width: 270px;
+      }
+
+      position: absolute;
+      left: 139px;
+      top: 150px;
+    }
+    @include mediaFrom($desktop) {
+      order: unset;
+      width: 300px;
+
+      position: absolute;
+      left: 25px;
+      top: 176px;
+    }
+  }
+
+  &_3 {
+    order: 5;
+    @include mediaFrom($tablet) {
+      order: unset;
+      width: 240px;
+      [lang="ru"] & {
+        width: 270px;
+      }
+      [lang="es"] & {
+        width: 270px;
+      }
+
+      position: absolute;
+      right: -14px;
+      top: 118px;
+    }
+
+    @include mediaFrom($laptopL) {
+      order: unset;
+      width: 240px;
+
+      position: absolute;
+      right: 139px;
+      top: 150px;
+    }
+    @include mediaFrom($desktop) {
+      order: unset;
+      width: 300px;
+
+      position: absolute;
+      right: 20px;
+      top: 175px;
+    }
+  }
+
+  &_4 {
+    margin-top: -265px;
+    order: 3;
+    @include mediaFrom($tablet) {
+      margin-top: 0;
+      order: unset;
+      width: 417px;
+    }
+
+    @include mediaFrom($laptopL) {
+      margin-top: 0;
+      order: unset;
+      width: 417px;
+    }
+    @include mediaFrom($desktop) {
+      margin-top: 0;
+      order: unset;
+      width: 493px;
+    }
+  }
+
+  &_img {
+    order: 2;
+    margin-top: -24px;
+    @include mediaFrom($tablet) {
+      margin-top: initial;
+      order: unset;
+    }
+
+    @include mediaFrom($laptopL) {
+      order: unset;
+    }
+  }
+}
+.glow {
+  position: absolute;
+  top: -29%;
+  left: -215%;
+  z-index: -1;
+  @include mediaFrom($laptopL) {
+    position: absolute;
+    top: -175px;
+    left: 0;
+  }
+  @include mediaFrom($tablet) {
+    position: absolute;
+    top: -175px;
+    left: 0;
+  }
+}
+.title {
+  font-family: "Arame";
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 18px;
+  line-height: 14px;
+  @include mediaFrom($tablet) {
+    text-align: unset;
+    font-size: 18px;
+  }
+}
+.widthIncluds {
+  width: 336px;
+  [lang="ru"] & {
+    width: 265px;
+  }
+}
+.desc {
+  margin: 0 auto;
+  max-width: 336px;
+  font-size: 12px;
+  line-height: 180%;
+  font-family: "Exter-Regular";
+
+  [lang="ru"] & {
+    font-family: "Inter";
+  }
+
+  text-align: center;
+  @include mediaFrom($tablet) {
+    max-width: unset;
+    font-size: 12px;
+    text-align: unset;
+    margin: 0;
+  }
+  @include mediaFrom($laptopL) {
+    max-width: unset;
+    font-size: 14px;
+    text-align: unset;
+    margin: 0 auto;
+  }
+  @include mediaFrom($desktop) {
+    max-width: 666px;
+    font-size: 16px;
+    text-align: unset;
+    margin: 0 auto;
+  }
+}

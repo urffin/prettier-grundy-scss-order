@@ -1,0 +1,21 @@
+.light {
+    position: absolute;
+    top: 5205px;
+
+    &_left {
+        left: calc(50% - 634px);
+    }
+    &_right{
+        right: calc(50% - 630px);
+    }
+}
+.descktop {
+    position: absolute;
+    top: 5584px;
+    left: calc(50% - 631px);
+}
+.descktop_right {
+  position: absolute;
+  top: 5569px;
+  right: calc(50% - 631px);
+}

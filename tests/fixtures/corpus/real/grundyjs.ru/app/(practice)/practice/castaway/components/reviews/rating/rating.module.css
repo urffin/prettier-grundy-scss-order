@@ -1,0 +1,7 @@
+.rating {
+    height: 18px;
+
+    width: calc(18px * attr(data-rating number));
+    background-position: top left;
+    background-repeat: repeat-x;
+}

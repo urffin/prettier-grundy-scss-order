@@ -1,0 +1,12 @@
+$tablet: 768px;
+@mixin mobile {
+  @media (max-width: ($tablet - 1px)) {
+    @content;
+  }
+}
+.footer {
+  position: relative;
+  @include mobile {
+    position: static;
+  }
+}

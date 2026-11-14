@@ -1,0 +1,74 @@
+.player {
+    margin-block: 1.5rem 2rem;
+}
+.settings {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+.settings label {
+    display: grid;
+    gap: 0.3rem;
+    font-size: 0.875rem;
+}
+.settings input {
+    width: 7rem;
+}
+.settings input,
+.settings select,
+.settings button {
+    min-height: 2.75rem;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 0.5rem;
+    color: inherit;
+    background: transparent;
+}
+.boards {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.board {
+    min-width: 0;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+}
+.board h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    min-height: 3rem;
+}
+.board canvas {
+    display: block;
+    width: 100%;
+}
+.operation {
+    min-height: 5.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+.metric {
+    margin-top: 0.4rem;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+}
+.note {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin-block: 0.75rem;
+    opacity: 0.8;
+}
+@media (max-width: 779px) {
+    .boards {
+        grid-template-columns: 1fr;
+    }
+    .board h3,
+    .operation {
+        min-height: 0;
+    }
+}

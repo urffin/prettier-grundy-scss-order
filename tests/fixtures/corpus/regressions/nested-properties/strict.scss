@@ -1,0 +1,15 @@
+.font {
+  font: {
+    size: 1rem;
+    weight: 700;
+  }
+  font-size: 2rem;
+}
+.layout {
+  border-color: red;
+  border-radius: 3px;
+  grid-auto-flow: row;
+  grid-template-rows: 1fr;
+  right: 2px;
+  top: 1px;
+}

@@ -1,0 +1,84 @@
+@import "../../../styles/mixins";
+@import "../../../styles/variables";
+
+@include media($mobile) {
+    .bigCardContainer {
+        margin-bottom: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    .btnContainer{
+        width: 181px;
+
+        [lang="es"] & {
+            width: 225px;
+        }
+        margin: 48px auto 0px;
+        a{
+          text-decoration: none;
+          color: #FFFFFF;
+
+        }
+        &:hover{
+          a{
+            color: var(--color-green);
+          }
+        }
+  }
+}
+
+@include media($laptopL) {
+    .bigCardContainer {
+        display: flex;
+        flex-direction: row;
+        gap: 32px;
+        margin-bottom: 16px;
+
+        &:first-child{
+            width: 100%;
+        }
+    }
+}
+
+.listAssetsContainer {
+    display: flex;
+    flex-direction: column;
+}
+.listPlansContainer {
+    display: flex;
+    flex-direction: column;
+}
+@include media($tablet) {
+    .listContainer {
+        display: flex;
+        flex-direction: row;
+        gap: 32px;
+        margin-bottom: 16px;
+
+        .listAssetsContainer {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .listPlansContainer {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+    }
+}
+
+@include media($desktop) {
+    .bigCardContainer {
+        display: flex;
+        flex-direction: row;
+        gap: 32px;
+        margin-bottom: 16px;
+
+        &:first-child{
+            width: 100%;
+        }
+    }
+}

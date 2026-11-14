@@ -1,5 +1,6 @@
 example
 .github
+.gitattributes
 .prettierignore
 .prettierrc
 .vscode
@@ -7,4 +8,5 @@ example
 tests
 scripts
 benchmark-results.json
+corpus-results.json
 *.test.mjs

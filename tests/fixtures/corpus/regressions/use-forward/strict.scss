@@ -1,0 +1,7 @@
+@forward "tokens" with (
+  $tone: blue
+);
+@use "tokens";
+.card {
+  color: tokens.$tone;
+}

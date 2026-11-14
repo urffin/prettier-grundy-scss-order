@@ -1,0 +1,46 @@
+.contact {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  padding: 70px 0;
+
+  width: 100%;
+  display: flex;
+  overflow: hidden;
+  align-items: center;
+  flex-direction: column;
+  background-position-x: center;
+  background-image: url('/static/assets/contact-bg.png');
+  background-repeat: no-repeat;
+  justify-content: center;
+  background-position-y: 80px;
+
+  @media (max-width: 768px) {
+    padding-top: 68px + 40px;
+  }
+
+  h2 {
+    font-size: 30px;
+    margin-bottom: 40px;
+    font-weight: 300;
+    text-transform: uppercase;
+
+    @media (max-width: 768px) {
+      width: 200px;
+      text-align: center;
+    }
+  }
+
+  .mail {
+    display: flex;
+    margin-bottom: 20px;
+  }
+
+  .address {
+    display: flex;
+    color: #22C9FF;
+    margin-bottom: 50px;
+
+  }
+}

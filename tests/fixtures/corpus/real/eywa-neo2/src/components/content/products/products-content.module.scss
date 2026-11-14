@@ -1,0 +1,23 @@
+@import '../../../styles/var.scss';
+@import '../../../styles/mixins.scss';
+
+.products-content {
+    margin-top: 160px;
+    width: var(--content-width);
+
+    @include mobile {
+        width: $content-width-mobile;
+        margin-top: 56px;
+        z-index: 2;
+    }
+}
+
+.product-content__content {
+    margin-top: 64px;
+    position: relative;
+    z-index: 1;
+
+    @include mobile {
+        margin-top: 29px;
+    }
+}

@@ -1,0 +1,19 @@
+@import '../../../styles/var.scss';
+@import '../../../styles/mixins.scss';
+
+.solutions-content {
+    padding-top: 178px;
+    width: calc(var(--content-width) + 2px);
+    
+    @include mobile {
+        width: $content-width-mobile;
+        padding-top: 64px;
+    }
+}
+
+.solutions-content__caption {
+    @include mobile {
+        position: relative;
+        z-index: 1;
+    }
+}

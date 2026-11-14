@@ -1,0 +1,113 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.disclaimer {
+  &_bg {
+    --bs-backdrop-bg: var(--color-black);
+    --bs-backdrop-opacity: 1;
+  }
+  --bs-modal-bg: var(--modal-bg);
+  --bs-modal-header-border-width: 0;
+  --bs-modal-header-padding: 7px 10px 5px 10px;
+  --bs-modal-padding: 0;
+
+  margin: 16px 26px;
+
+  width: auto;
+  height: auto;
+  
+  @include mediaFrom($tablet) {
+    --bs-modal-header-padding: 28px 28px 10px 66px;
+    margin: 48px 85px;
+  }
+
+  @include mediaFrom($laptopL) {
+    --bs-modal-header-padding: 56px 56px 20px 132px;
+    margin: 95px 170px;
+  }
+}
+
+.close {
+  margin-left: auto;
+  position: fixed;
+  right: 10px;
+  top: 16px;
+  cursor: pointer;
+
+  z-index: 1;
+
+  @include mediaFrom($tablet) {
+    right: 32px;
+    top: 32px;
+  }
+
+  @include mediaFrom($laptopL) {
+    right: 64px;
+    top: 64px;
+  }
+
+  &_icon {
+    width: 16px;
+    height: 16px;
+    @include mediaFrom($laptopL) {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+
+.title.title {
+  font-family: "Collonse";
+  font-style: normal;
+  font-weight: 400;
+  line-height: 90%;
+  font-size: 16px;
+
+  @include mediaFrom($tablet) {
+    font-size: 36px;
+  }
+
+  text-transform: capitalize;
+
+  color: var(--color-green);
+}
+
+.body {
+  font-family: "Exter-Regular";
+  font-size: 14px;
+  line-height: 160%;
+
+  margin-left: 10px;
+  margin-right: 10px;
+
+  @include mediaFrom($tablet) {
+    margin-left: 66px;
+    margin-right: 66px;
+  }
+
+  @include mediaFrom($laptopL) {
+    margin-left: 132px;
+    margin-right: 132px;
+  }
+  color: #ffffff;
+}
+
+.content.content {
+  border: 0.5px solid;
+  border-bottom: none;
+  border-image: linear-gradient(180deg, rgba(191, 150, 73, 0.5) 0%, rgba(191, 150, 73, 0) 100%) 1;
+  background: linear-gradient(180deg, rgba(191, 150, 73, 0.07) 0%, rgba(191, 150, 73, 0) 100%);
+}
+
+.list {
+  margin:0;
+  padding:0;
+  list-style: none;
+}
+
+.logo {
+  @include mediaTo($tablet){
+    width: 65px;
+    height: 65px;
+  }
+}

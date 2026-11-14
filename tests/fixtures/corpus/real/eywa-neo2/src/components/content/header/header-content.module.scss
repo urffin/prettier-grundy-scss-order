@@ -1,0 +1,42 @@
+@import "../../../styles/var.scss";
+@import "../../../styles/mixins.scss";
+
+.header_bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 1066px;
+    overflow: hidden;
+
+    &_w {
+        position: absolute;
+        left: calc(50% - 865px);
+        top: 0;
+        width: 2500px;
+        height: 1066px;
+
+        @include mobile {
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+    }
+    @include mobile {
+        left: 50%;
+        width: $content-width-mobile;
+        transform: translateX(-50%);
+        height: 1429px;
+        z-index: 0;
+    }
+}
+
+.menu_placeholder {
+    height: 80px;
+    width: 100%;
+
+    @include mobile {
+        height: 56px;
+    }
+}

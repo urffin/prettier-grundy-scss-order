@@ -1,0 +1,8 @@
+@use "tokens";
+.before {
+  color: tokens.$tone;
+}
+tokens.$tone: blue;
+.after {
+  color: tokens.$tone;
+}

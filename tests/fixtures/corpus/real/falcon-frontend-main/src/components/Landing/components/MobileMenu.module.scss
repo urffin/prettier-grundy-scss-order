@@ -1,0 +1,47 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+.img {
+  margin-left: 10px;
+}
+.lb_mar {
+  color: #BF9649;
+  @include mediaFrom($tablet) {
+    font-size: 14px;
+    span {
+      margin-right: 4px;
+    }
+  }
+  @include mediaFrom($laptopL) {
+    margin-left: 80px;
+    font-size: 16px;
+  }
+}
+
+.locales {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  transform: translateX(100%);
+
+  border-radius: 6px;
+  background-color: #111;
+  padding-top: 18px;
+  padding-bottom: 10px;
+  width: 65px;
+}
+.locales__locale {
+  color: var(--color-green);
+  font-size: 12px;
+  line-height: 9px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  background-color: #161616;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.locales__locale:hover {
+  color: var(--color-green);
+  background-color: #232323;
+}

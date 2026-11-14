@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 import { memoryFields, statistics, summarizeMemory } from "../scripts/benchmark-statistics.mjs";
+import { scenarios, scenarioInfo } from "../scripts/benchmark-scenarios.mjs";
 
 const run = promisify(execFile);
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -200,10 +201,10 @@ test("Memory samples isolate every scenario and safety mode; time-only skips mem
     const report = JSON.parse(stdout);
     assert.equal(report.rows, []);
     assert.equal(report.workers, []);
-    assert.is(report.memoryRows.length, 14);
-    assert.is(report.memoryWorkers.length, 14);
-    assert.is(new Set(report.memoryWorkers.map(w => `${w.pid}:${w.timeOriginMs}`)).size, 14);
-    assert.is(new Set(report.memoryWorkers.map(w => w.scenario)).size, 7);
+    assert.is(report.memoryRows.length, scenarios.length * 2);
+    assert.is(report.memoryWorkers.length, scenarios.length * 2);
+    assert.is(new Set(report.memoryWorkers.map(w => `${w.pid}:${w.timeOriginMs}`)).size, scenarios.length * 2);
+    assert.is(new Set(report.memoryWorkers.map(w => w.scenario)).size, scenarios.length);
     assert.equal([...new Set(report.memoryWorkers.map(w => w.safety))].sort(), ["loose", "strict"]);
     for (const worker of report.memoryWorkers) {
         assert.is(worker.rows.length, 1);
@@ -287,6 +288,48 @@ test("Memory worker refuses to run without explicit GC support", async () => {
     }
     assert.ok(error && error.code !== 0);
     assert.ok(error.stderr.includes("Memory worker requires --expose-gc"));
+});
+
+test("Real-file benchmark batches preserve file boundaries and compare both metrics and revisions", async () => {
+    const { stdout } = await run(
+        process.execPath,
+        [
+            script,
+            "--compare",
+            "HEAD",
+            "--scenario",
+            "real-grundyjs",
+            "--warmup",
+            "0",
+            "--samples",
+            "1",
+            "--processes",
+            "1",
+            "--memory-processes",
+            "1"
+        ],
+        { cwd: root, windowsHide: true, maxBuffer: 8 * 1024 * 1024 }
+    );
+    const report = JSON.parse(stdout),
+        info = scenarioInfo(scenarios.find(s => s.id === "real-grundyjs"));
+    assert.equal(report.inputs, [info]);
+    assert.is(info.kind, "real");
+    assert.ok(info.files > 2 && info.corpus.files.some(f => f.path.endsWith(".css")));
+    assert.ok(info.corpus.files.some(f => f.path.endsWith(".scss")));
+    assert.is(info.corpus.files.length, info.files);
+    assert.is(report.workers.length, 8);
+    assert.is(report.memoryWorkers.length, 8);
+    assert.is(new Set([...report.workers, ...report.memoryWorkers].map(w => `${w.pid}:${w.timeOriginMs}`)).size, 16);
+    for (const worker of [...report.workers, ...report.memoryWorkers]) {
+        assert.is(worker.rows.length, 1);
+        assert.is(worker.rows[0].inputHash, info.inputHash);
+        assert.is(worker.rows[0].fileCount, info.files);
+        const timed = report.workers.find(
+            w => w.safety === worker.safety && w.measurement === worker.measurement && w.target === worker.target
+        );
+        assert.is(worker.rows[0].outputHash, timed.rows[0].outputHash);
+    }
+    for (const row of [...report.rows, ...report.memoryRows]) assert.ok(row.outputMatches);
 });
 
 test.run();

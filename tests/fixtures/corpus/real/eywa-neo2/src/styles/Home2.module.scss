@@ -1,0 +1,90 @@
+@import "./var.scss";
+@import "./mixins.scss";
+
+.main {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    column-gap: 99vw;
+    z-index: 0;
+    overflow-x: hidden;
+
+    background-image: url('/images/main-bg.jpg');
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.blur_right_wrap {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 4500px;
+    bottom: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.blur_right1 {
+    position: absolute;
+    width: 1440px;
+    height: 1440px;
+    left: 50%;
+    top: 420px;
+    transform: translateX(-50%);
+    background: radial-gradient(42.32% 42.44% at 50% 50%, #4210CE 0%, rgba(0, 0, 0, 0) 100%);
+    border-radius: 900px;
+}
+
+.blur_left1 {
+    position: absolute;
+    width: 1740px;
+    height: 1740px;
+    background: radial-gradient(42.32% 42.44% at 50% 50%, #4210CE 0%, rgba(0, 0, 0, 0) 100%);
+    top: 2800px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.blur_right2 {
+    position: absolute;
+    width: 1440px;
+    height: 1440px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 2000px;
+
+    background: radial-gradient(42.32% 42.44% at 50% 50%, #4210CE 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.blur_left2 {
+    position: absolute;
+    width: 1440px;
+    height: 1440px;
+    bottom: 0;
+    left: 50%;
+    background: radial-gradient(42.32% 42.44% at 50% 50%, #4210CE 0%, rgba(0, 0, 0, 0) 100%);
+    transform: translate(-90%, 50%);
+}
+.blur_back {
+    position: absolute;
+    top:0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1910px;
+    height: 450px;
+    background: radial-gradient(50% 50% at 50% 50%, #4210CE 0%, rgba(66, 16, 206, 0) 100%);
+
+    &_wrap {
+        position: absolute;
+        right: 0;
+        left: 0;
+        top: 1622px;
+        height: 500px;
+        overflow: hidden;
+        z-index: -1;
+    }
+}

@@ -1,0 +1,131 @@
+@import "../../styles/var.scss";
+@import "../../styles/mixins.scss";
+
+.faq {
+}
+
+.faq__caption {
+    font-family: "Exter Bold";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 120%;
+    /* or 29px */
+
+    letter-spacing: 0.01em;
+
+    color: #ffffff;
+
+    @include mobile {
+        font-size: 18px;
+    }
+}
+
+.faq__section {
+    padding: 36px 56px;
+    transition: all 0.5s linear;
+    position: relative;
+    overflow: hidden;
+
+    @include mobile {
+        padding-top: 32px;
+        padding-left: 14px;
+        padding-right: 14px;
+        width: calc(100% - 20px);
+        max-width: $content-width-mobile-max;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+.faq__section.active {
+    padding: 56px;
+    @include mobile {
+        padding-top: 32px;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+}
+
+.faq__button {
+    cursor: pointer;
+    position: absolute;
+    right: 16px;
+    top: 0;
+    @include mobile {
+        top: 16px;
+        right: 14px;
+    }
+}
+.faq__content {
+    margin-top: 0;
+    overflow: hidden;
+    transition: all 0.5s linear;
+
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 130%;
+    /* or 21px */
+
+    letter-spacing: -0.01em;
+    font-feature-settings: "calt" off;
+
+    // &_wrap {
+    //     transition-duration: .5s;
+    //     transition-timing-function: linear;
+    // }
+}
+
+.faq__section.active .faq__content {
+    margin-top: 32px;
+}
+.faq_items {
+    display: flex;
+    gap: 80px;
+    margin-top: 50px;
+    justify-content: space-between;
+
+    @include mobile {
+        flex-direction: column;
+        margin-top: 32px;
+        gap: 32px;
+    }
+}
+.faq_item {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.faq__bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+}
+
+.faq_link {
+    // color: $accent;
+}
+
+.list {
+    display: flex;
+    gap: 65px;
+    padding: 0;
+    margin: 0;
+    list-style-position: inside;
+
+    ::marker {
+        // color: $accent;
+    }
+
+    li {
+        width: 308px;
+    }
+
+    @include mobile {
+        display: block;
+    }
+}
+.fee {
+    margin-top: 48px;
+}

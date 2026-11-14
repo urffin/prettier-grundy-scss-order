@@ -1,0 +1,62 @@
+@import "../../../styles/var.scss";
+@import "../../../styles/mixins.scss";
+
+.problem-content__wrap {
+    // height: 300vh;
+    @include mobile {
+        width: $content-width-mobile;
+        z-index: 1;
+    }
+}
+.problem-content {
+    margin-top: 160px;
+    position: sticky;
+    z-index: 0;
+    top: 0;
+    @include mobile {
+        margin-top: 32px;
+
+    }
+}
+.problem-content__caption {
+    width: var(--content-width);
+    margin: auto;
+}
+
+.problem-content__content {
+    margin-top: 60px;
+
+    @include mobile {
+        margin-top: 24px;
+    }
+}
+
+.problems__logo {
+    min-height: 960px;
+    height: 100vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+}
+
+.mobile_blur {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(50% 47.11% at 50% 50%, #632BFF 0%, #02010400 100%);
+        /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+    border-radius: 900px;
+    transform: translateX(-50%) rotate(90deg);
+}
+.mobile_blur_wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -120px;
+    height: 600px;
+    overflow-x: hidden;
+    z-index: -1;
+}

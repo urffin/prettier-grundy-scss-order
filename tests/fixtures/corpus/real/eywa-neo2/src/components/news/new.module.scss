@@ -1,0 +1,21 @@
+@import "../../styles/var.scss";
+@import "../../styles/mixins.scss";
+
+
+.new {
+    background: linear-gradient(180deg, rgba(10, 10, 18, 0.4) 0%, rgba(10, 10, 18, 0.6) 100%);
+    backdrop-filter: blur(2px);
+    /* Note: backdrop-filter has minimal browser support */
+
+    border-radius: 12px;
+
+    width: 180px;
+    height: 72px;
+
+    padding: 8px 16px 12px;
+}
+
+.date {
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 4px;
+}

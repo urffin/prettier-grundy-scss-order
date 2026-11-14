@@ -1,0 +1,71 @@
+@import "../../../styles/mixins.scss";
+
+.paradigm-item {
+    @include mobile {
+        text-align: center;
+    }
+}
+
+.paradigm-item__text {
+    font-style: normal;
+
+    position: relative;
+
+    @include mobile {
+        // font-family: 'Exter Bold';
+        margin-top: 24px;
+        margin-bottom: 48px;
+        // font-size: 18px;
+        width: var(--content-width);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @include tablet {
+        margin-top: 32px;
+    }
+    @include desktop {
+        margin-top: 55px;
+        height: 48px;
+    }
+}
+
+.paradigm-item__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+
+    img {
+        max-width: 100%;
+    }
+    @include mobile {
+        width: 160px;
+        height: 158px;
+        border-radius: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    @include desktop {
+        width: 240px;
+        height: 160px;
+    }
+
+    @include tablet {
+        width: 200px;
+        height: auto;    
+    }
+}
+.paradigm-item__icon_bg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+
+    @include mobile {
+        position: static;
+        transform: none;
+    }
+}

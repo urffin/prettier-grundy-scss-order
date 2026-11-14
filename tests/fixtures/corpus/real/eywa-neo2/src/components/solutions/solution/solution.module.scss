@@ -1,0 +1,89 @@
+@import "../../../styles/var.scss";
+@import "../../../styles/mixins.scss";
+
+.solution {
+    padding: 0 20px 34px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+
+    font-family: "Roobert";
+    font-style: normal;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 130%;
+    /* or 21px */
+
+    letter-spacing: -0.01em;
+    font-feature-settings: "calt" off;
+
+    color: #ffffff;
+
+    background: linear-gradient(180deg, rgba(16, 16, 17, 0.8*0.2) 0%, rgba(16, 16, 17, 0.48*0.2) 100%);
+    backdrop-filter: blur(2px);
+    /* Note: backdrop-filter has minimal browser support */
+    
+    border-radius: 12px;
+
+    @include mobile {
+        max-width: $content-width-mobile-max;
+        width: calc(100% - 20px);
+        // height: 228px;
+        min-height: auto;
+        padding: 42px 0px 0px 14%;
+
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @include tablet {
+        height: 298px;
+        width: 336px;
+    
+    }
+
+    @include desktop {
+        height: 298px;
+        width: 276px;
+    
+    }
+}
+
+.solution__caption {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    margin-bottom: 23px;
+
+    @include mobile {
+        margin-top: 128px - 42px;
+    }
+}
+
+.solution__text {
+    height: 84px;
+}
+
+.solution__date {
+    padding: 0;
+    visibility: hidden;
+}
+.solution__title {
+    font-size: 24px;
+    display: inline-block;
+
+    @include mobile {
+        font-size: 22px;
+    }
+}
+
+.solution__bg {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+}

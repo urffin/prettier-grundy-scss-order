@@ -1,0 +1,49 @@
+@import "../../../styles/var.scss";
+@import "../../../styles/mixins.scss";
+
+.grants {
+    padding-top: 200px;
+    display: flex;
+    flex-direction: column;
+
+    @include mobile {
+        padding-top: 80px;
+    }
+}
+
+.grants-caption {
+    width: var(--content-width);
+    margin-left: auto;
+    margin-right: auto;
+    
+    & > div {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    @include mobile {
+        max-width: $content-width-mobile-max;
+        width: calc(100% - 20px);
+    }
+}
+
+.btns {
+    display: flex;
+    gap: 37px;
+    @media (hover:none) {
+        display: none;
+    }
+}
+.flip {
+    transform: scaleX(-1);
+}
+
+.btn {
+    cursor: pointer;
+}
+.btn.disabled {
+    path {
+        stroke: rgba(255, 255, 255, 0.4);
+    }
+}

@@ -1,0 +1,41 @@
+.password {
+  width: 100%;
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+}
+
+.passwordInput {
+  display: flex;
+  width: 100%;
+  margin: 5px 0;
+  height: 40px;
+  font-size: 14px;
+  border: none;
+  outline: none;
+  color: #7b7b7b;
+  padding: 0 15px;
+  border-radius: 20px;
+  background: #e6e6e6;
+
+  &::placeholder {
+    color: #b6b6b6;
+  }
+
+}
+
+.passwordShow {
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  height: 16px;
+  right: 15px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: .8em;
+
+  img {
+    width: 25px;
+    fill: #ceaf6e;
+  }
+}

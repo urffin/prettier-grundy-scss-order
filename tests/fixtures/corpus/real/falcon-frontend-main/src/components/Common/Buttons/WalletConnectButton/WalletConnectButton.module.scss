@@ -1,0 +1,45 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/mixins";
+
+@include media($mobile){
+  .btn {
+    width: 140px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Exter-Regular';
+    font-size: 12px;
+    background: rgba(191, 150, 73, 0.07);
+    border: 0.5px solid #BF9649;
+    line-height: 22px;
+    border-radius: 95px;
+    color: #FFFFFF;
+    cursor: pointer;
+    .btnSafari{
+      line-height: normal;
+    }
+    &.disconect{
+      background: rgba(25, 255, 17, 0.04);
+      border: 0.5px solid #19FF11;
+    }
+  }
+}
+
+@include media($tablet){
+  .btn {
+    width: 138px;
+  }
+}
+
+@include media($laptopL){
+  .btn {
+    width: 140px;
+  }
+}
+
+@include media($desktop){
+  .btn {
+    width: 140px;
+  }
+}

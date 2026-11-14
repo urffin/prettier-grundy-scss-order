@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { cpus } from "node:os";
-import { scenarios } from "./benchmark-scenarios.mjs";
+import { scenarios, scenarioSources, scenarioText } from "./benchmark-scenarios.mjs";
 const config = JSON.parse(process.argv[2]);
 const metric = config.metric ?? "time";
 if (!["time", "memory"].includes(metric)) throw new Error("Unknown benchmark metric");
@@ -44,7 +44,8 @@ async function metadata() {
 const memoryMetadata = metric === "memory" ? await metadata() : undefined;
 if (metric === "memory") {
     const scenario = selected[0];
-    let result = config.measurement === "sort" ? scss.parse(scenario.source) : undefined;
+    const sources = scenarioSources(scenario);
+    let result = config.measurement === "sort" ? sources.map(f => scss.parse(f.source)) : undefined;
     const collect = () => {
         global.gc();
         global.gc();
@@ -52,49 +53,86 @@ if (metric === "memory") {
     const snapshot = () => ({ ...process.memoryUsage(), maxRSS: process.resourceUsage().maxRSS * 1024 });
     collect();
     const before = snapshot();
-    if (result) grundyPropSorter({ safety }).OnceExit(result);
-    else
-        result = await prettier.format(scenario.source, {
-            parser: "scss",
-            plugins: [plugin],
-            grundyScssSorterSafety: safety
-        });
+    if (result) for (const tree of result) grundyPropSorter({ safety }).OnceExit(tree);
+    else {
+        result = [];
+        for (const file of sources)
+            result.push(
+                await prettier.format(file.source, {
+                    parser: "scss",
+                    plugins: [plugin],
+                    grundyScssSorterSafety: safety
+                })
+            );
+    }
     const after = snapshot();
     collect();
     const afterGC = snapshot();
     // Keep the result live through afterGC. Hashing and AST serialization occur
     // afterwards, so their allocations do not enter the snapshots/high-water mark.
-    const output = typeof result === "string" ? result : result.toString(scss.stringify);
+    const output = scenarioText(
+        scenario,
+        sources,
+        result.map(r => (typeof r === "string" ? r : r.toString(scss.stringify)))
+    );
     rows.push({
         scenario: scenario.id,
-        inputHash: createHash("sha256").update(scenario.source).digest("hex"),
+        fileCount: sources.length,
+        inputHash: createHash("sha256")
+            .update(
+                scenarioText(
+                    scenario,
+                    sources,
+                    sources.map(f => f.source)
+                )
+            )
+            .digest("hex"),
         outputHash: createHash("sha256").update(output).digest("hex"),
         snapshots: { before, after, afterGC }
     });
 } else
     for (const scenario of selected) {
+        const sources = scenarioSources(scenario);
         const samplesMs = [];
         let result;
         for (let round = 0; round < config.warmup + config.samples; round++) {
-            const tree = config.measurement === "sort" ? scss.parse(scenario.source) : undefined;
+            const trees = config.measurement === "sort" ? sources.map(f => scss.parse(f.source)) : undefined;
             const start = performance.now();
-            if (tree) {
-                grundyPropSorter({ safety }).OnceExit(tree);
-                result = tree;
-            } else
-                result = await prettier.format(scenario.source, {
-                    parser: "scss",
-                    plugins: [plugin],
-                    grundyScssSorterSafety: safety
-                });
+            if (trees) {
+                for (const tree of trees) grundyPropSorter({ safety }).OnceExit(tree);
+                result = trees;
+            } else {
+                result = [];
+                for (const file of sources)
+                    result.push(
+                        await prettier.format(file.source, {
+                            parser: "scss",
+                            plugins: [plugin],
+                            grundyScssSorterSafety: safety
+                        })
+                    );
+            }
             const elapsed = performance.now() - start;
             if (round >= config.warmup) samplesMs.push(elapsed);
         }
         // Serialization/hashing is outside the timed section.
-        const output = typeof result === "string" ? result : result.toString(scss.stringify);
+        const output = scenarioText(
+            scenario,
+            sources,
+            result.map(r => (typeof r === "string" ? r : r.toString(scss.stringify)))
+        );
         rows.push({
             scenario: scenario.id,
-            inputHash: createHash("sha256").update(scenario.source).digest("hex"),
+            fileCount: sources.length,
+            inputHash: createHash("sha256")
+                .update(
+                    scenarioText(
+                        scenario,
+                        sources,
+                        sources.map(f => f.source)
+                    )
+                )
+                .digest("hex"),
             outputHash: createHash("sha256").update(output).digest("hex"),
             samplesMs
         });

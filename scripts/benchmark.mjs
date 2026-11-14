@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, readFile, writeFile, symlink, rm, appendFile } from "no
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { scenarios } from "./benchmark-scenarios.mjs";
+import { scenarios, scenarioInfo } from "./benchmark-scenarios.mjs";
 import { statistics, summarizeMemory } from "./benchmark-statistics.mjs";
 
 const run = promisify(execFile);
@@ -239,7 +239,7 @@ try {
                 isolation:
                     "One version/safety/measurement/scenario per fresh sequential --expose-gc process, after all timing workers",
                 gc: "Two synchronous GC calls before baseline and two after the operation; none between before and after",
-                input: "Sort AST prepared before baseline; format includes parsing and printing",
+                input: "Sort ASTs prepared before baseline; format includes parsing and printing; real scenarios process batches of separate whole files",
                 retention: "Result AST/string remains live through afterGC; serialization and hashing follow all snapshots",
                 peak: "maxRSS through afterGC includes startup, imports, input preparation and GC; not an operation-only peak",
                 caveats:
@@ -259,6 +259,7 @@ try {
             }))
         ),
         runtime: (workers[0] ?? memoryWorkers[0]).runtime,
+        inputs: selected.map(scenarioInfo),
         rows,
         workers,
         memoryRows,

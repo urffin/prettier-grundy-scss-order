@@ -1,0 +1,17 @@
+@import "../../styles/mixins.scss";
+
+.partners {
+    padding-top: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 36px 8px;
+
+    width: var(--content-width);
+
+    @include mobile {
+        padding-top: 32px;
+        gap: 36px 4px;
+        justify-content: center;
+    }
+}

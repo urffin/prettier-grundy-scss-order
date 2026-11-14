@@ -1,0 +1,152 @@
+.player {
+    min-width: 0;
+}
+.settings {
+    display: grid;
+    grid-template-columns: minmax(160px, 2fr) 1fr 1fr;
+    gap: 12px;
+    margin-block: 16px;
+}
+.settings label,
+.editor label {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+    font-size: 14px;
+}
+.settings select,
+.editor :is(select, input) {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+}
+.scene {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: center;
+}
+.canvas {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    border-radius: 8px;
+}
+.matrix {
+    min-width: 0;
+    overflow-x: auto;
+    padding: 3px;
+}
+.matrix table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: center;
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+}
+.matrix caption {
+    text-align: left;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+.matrix :is(th, td) {
+    padding: 0;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+}
+.matrix th {
+    min-width: 28px;
+}
+.matrix td button {
+    display: block;
+    width: 100%;
+    min-width: 40px;
+    border: 0;
+    border-radius: 0;
+    padding: 4px;
+    font: inherit;
+    background: transparent;
+}
+.matrix [data-pivot="true"] {
+    background: color-mix(in srgb, #fbbf24 16%, var(--paper));
+}
+.matrix [data-changed="true"] {
+    background: color-mix(in srgb, #34d399 22%, var(--paper));
+    font-weight: 700;
+}
+.matrix button[aria-pressed="true"] {
+    outline: 2px solid var(--link);
+    outline-offset: -4px;
+}
+.operation {
+    min-height: 3.2em;
+    margin-block: 12px;
+    line-height: 1.6;
+}
+.formula {
+    margin-block: 12px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    font-variant-numeric: tabular-nums;
+}
+.note {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65;
+    margin-block: 12px;
+}
+.changes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-block: 12px;
+    font-size: 14px;
+}
+.result {
+    margin-block: 14px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+.editor {
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+    margin-top: 16px;
+}
+.editor summary {
+    padding-block: 10px;
+    min-height: 44px;
+    cursor: pointer;
+}
+.editor form {
+    display: grid;
+    grid-template-columns: minmax(120px, 2fr) 1fr auto;
+    gap: 10px;
+    align-items: end;
+}
+@media (max-width: 700px) {
+    .scene {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+    .canvas {
+        max-width: 450px;
+        margin-inline: auto;
+    }
+}
+@media (max-width: 640px) {
+    .settings,
+    .editor form {
+        grid-template-columns: 1fr 1fr;
+    }
+    .settings label:first-child,
+    .editor button {
+        grid-column: 1 / -1;
+    }
+}

@@ -1,0 +1,119 @@
+.player {
+    min-width: 0;
+}
+.settings {
+    display: grid;
+    grid-template-columns: minmax(180px, 2fr) 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.settings label,
+.editor label {
+    display: grid;
+    gap: 5px;
+    font-size: 14px;
+}
+.settings select,
+.editor :is(input, select) {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+}
+.canvas {
+    display: block;
+    width: 100%;
+    max-width: 760px;
+    margin-inline: auto;
+    border-radius: 8px;
+    background: var(--canvas-background);
+}
+.phase {
+    font-size: 14px;
+    font-weight: 600;
+    margin-block: 10px;
+}
+.operation {
+    min-height: 3.5em;
+    margin-block: 12px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+.table {
+    overflow-x: auto;
+    margin-block: 12px;
+}
+.table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+.table :is(th, td) {
+    padding: 8px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+}
+.table tr[data-active="true"] {
+    background: var(--surface);
+    font-weight: 600;
+}
+.distances {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-block: 12px;
+}
+.distances div {
+    display: flex;
+    gap: 6px;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-variant-numeric: tabular-nums;
+}
+.distances dt {
+    font-weight: 600;
+}
+.note {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-block: 10px;
+}
+.result {
+    font-weight: 600;
+    margin-block: 12px;
+}
+.editor {
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+}
+.editor summary {
+    min-height: 44px;
+    cursor: pointer;
+    padding-block: 10px;
+}
+.editor form {
+    display: grid;
+    grid-template-columns: minmax(120px, 2fr) 1fr auto;
+    gap: 10px;
+    align-items: end;
+}
+@media (max-width: 640px) {
+    .settings {
+        grid-template-columns: 1fr 1fr;
+    }
+    .settings label:first-child {
+        grid-column: 1/-1;
+    }
+    .editor form {
+        grid-template-columns: 1fr 1fr;
+    }
+    .editor button {
+        grid-column: 1/-1;
+    }
+}

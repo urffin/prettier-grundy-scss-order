@@ -1,0 +1,16 @@
+$state: 2;
+.card {
+  @if $state == 1 {
+    color: red;
+  }
+  // between branches
+  @else if $state == 2 {
+    color: blue;
+  }
+  // final branch
+  @else {
+    color: green;
+  }
+  color: black;
+  color: white;
+}

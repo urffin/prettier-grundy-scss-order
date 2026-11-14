@@ -1,0 +1,378 @@
+@import "./var.scss";
+@import "./mixins.scss";
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Roobert, Arial, Helvetica, sans-serif;
+  background-color: #201835;
+  min-height: 100vh;
+  color: white;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "Roobert";
+  font-weight: 400;
+  src: url("/fonts/Roobert-Regular.otf");
+}
+
+@font-face {
+  font-family: "Roobert";
+  font-weight: 300;
+  src: url("/fonts/Roobert-Light.otf");
+}
+
+@font-face {
+  font-family: "Roobert";
+  font-weight: 700;
+  src: url("/fonts/Roobert-Bold.otf");
+}
+
+@font-face {
+  font-family: "Roobert";
+  font-weight: 500;
+  src: url("/fonts/Roobert-Medium.otf");
+}
+@font-face {
+  font-family: "Roobert";
+  font-weight: 600;
+  src: url("/fonts/Roobert-SemiBold.otf");
+}
+
+@font-face {
+  font-family: "Alone In Space";
+  src: url("/fonts/Alone in Space.ttf"), url("/fonts/Alone in Space.otf");
+}
+
+@font-face {
+  font-family: "Arame-Thin";
+  src: url("/fonts/Arame-Thin.otf");
+}
+
+@font-face {
+  font-family: "Exter Bold";
+  src: url("/fonts/Exter Bold.ttf");
+}
+
+@font-face {
+  font-family: "Exter Semi Bold";
+  src: url("/fonts/Exter Semi Bold.ttf");
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+@include mobile {
+  .hide-mobile.hide-mobile {
+    display: none;
+  }
+}
+@include tablet {
+  .hide-tablet {
+    display: none;
+  }
+}
+@include desktop {
+  .hide-desktop {
+    display: none;
+  }
+}
+
+@keyframes spinner-spin {
+  from {
+    transform: rotate(30deg);
+  }
+  to {
+    transform: rotate(389deg);
+  }
+}
+
+@include mobile {
+  .heading1 {
+    font-family: "Exter Bold";
+    font-size: 36px;
+    line-height: 120%;
+
+    color: var(--bTransparent100);
+  }
+
+  .heading2 {
+    /* Mobile Headings/heading2 */
+
+    font-family: "Exter Bold";
+    font-size: 24px;
+    line-height: 120%;
+    /* identical to box height, or 29px */
+
+    letter-spacing: 0.01em;
+
+    color: var(--bTransparent100);
+  }
+
+  .heading3 {
+    /* Mobile Headings/heading3 */
+
+    font-family: "Exter Bold";
+    font-size: 20px;
+    line-height: 140%;
+    /* identical to box height, or 28px */
+
+    letter-spacing: 0.02em;
+
+    color: var(--bTransparent100);
+  }
+}
+
+@include tablet {
+  .heading1 {
+    /* Tablet Headings/tHeading1 */
+
+    font-family: "Exter Bold";
+    font-size: 40px;
+    line-height: 120%;
+    /* identical to box height, or 48px */
+
+    color: var(--bTransparent100);
+
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .heading2 {
+    font-family: "Exter Bold";
+    font-size: 36px;
+    line-height: 120%;
+    /* or 43px */
+
+    letter-spacing: 0.01em;
+
+    color: var(--bTransparent100);
+  }
+
+  .heading3 {
+    font-family: "Exter Bold";
+    font-size: 24px;
+    line-height: 140%;
+    /* identical to box height, or 34px */
+
+    letter-spacing: 0.02em;
+
+    color: var(--bTransparent100);
+  }
+}
+
+@include desktop {
+  .heading1 {
+    /* Desktop Headings/heading1 */
+    font-family: "Exter Bold";
+    font-size: 64px;
+    line-height: 120%;
+    /* identical to box height, or 77px */
+
+    color: var(--bTransparent100);
+  }
+
+  .heading2 {
+    /* Desktop Headings/heading2 */
+
+    font-family: "Exter Bold";
+    font-size: 48px;
+    line-height: 120%;
+    /* identical to box height, or 58px */
+
+    letter-spacing: 0.01em;
+
+    color: var(--bTransparent100);
+  }
+  .heading25 {
+    font-family: "Exter Bold";
+    font-size: 32px;
+    line-height: 120%;
+    /* or 38px */
+
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.01em;
+
+    /* bTransparent100 */
+
+    color: var(--bTransparent100);
+  }
+
+  .heading3 {
+    /* Desktop Headings/heading3 */
+
+    font-family: "Exter Bold";
+    font-size: 24px;
+    line-height: 140%;
+    /* identical to box height, or 34px */
+
+    letter-spacing: 0.02em;
+
+    color: var(--bTransparent100);
+  }
+}
+
+.p20-medium {
+  /* Paragraph/20_Medium */
+
+  font-family: "Roobert";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 120%;
+  /* identical to box height, or 24px */
+
+  letter-spacing: 0.01em;
+
+  color: var(--bTransparent100);
+}
+
+.p16-regular {
+  /* Paragraph/16_Regular */
+
+  font-family: "Roobert";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 140%;
+  /* or 22px */
+
+  color: var(--bTransparent100);
+}
+
+.p14-medium {
+  /* Paragraph/14_Medium */
+
+  font-family: "Roobert";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  /* identical to box height, or 171% */
+
+  font-feature-settings: "calt" off;
+
+  color: var(--bTransparent100);
+}
+
+.p14-regular {
+  /* Paragraph/14_Regular */
+
+  font-family: "Roobert";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  /* identical to box height, or 129% */
+
+  font-feature-settings: "calt" off;
+
+  color: var(--bTransparent100);
+}
+
+.p14-regular-caps {
+  /* Paragraph/14_Regular_Caps */
+
+  font-family: "Roobert";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+  /* identical to box height, or 171% */
+
+  text-transform: uppercase;
+  font-feature-settings: "calt" off;
+
+  color: var(--bTransparent100);
+}
+
+.p12-medium-caps {
+  /* Paragraph/12_Medium_Caps */
+
+  font-family: "Roobert";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 12px;
+  /* identical to box height, or 100% */
+
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-feature-settings: "calt" off;
+
+  color: var(--bTransparent100);
+}
+
+.p12-regular {
+  /* Paragraph/12_Regular */
+
+  font-family: "Roobert";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  letter-spacing: -0.01em;
+  font-feature-settings: "calt" off;
+
+  color: var(--bTransparent100);
+}
+
+.p10-medium {
+  /* Paragraph/10_Medium */
+
+  font-family: "Roobert";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 16px;
+  /* identical to box height, or 160% */
+
+  letter-spacing: -0.01em;
+  font-feature-settings: "calt" off;
+
+  color: var(--bTransparent100);
+}
+
+:root {
+  --cfPrimary: #{$cfPrimary};
+  --cfPrimaryHover: #{$cfPrimaryHover};
+  --cfSecondary: #{$cfSecondary};
+  --cfSecondaryVariant: #{$cfSecondaryVariant};
+
+  --bTransparent100: #{$bTransparent100};
+  --bTransparent60: #{$bTransparent60};
+  --bTransparent40: #{$bTransparent40};
+
+  --bgMenu: #{$bgMenu};
+}
+
+@include mobile {
+  :root {
+    --content-width: #{$mobile-content-width};
+  }
+}
+
+@include tablet {
+  :root {
+    --content-width: #{$tablet-content-width};
+  }
+}
+
+@include desktop {
+  :root {
+    --content-width: #{$desktop-content-width};
+  }
+}

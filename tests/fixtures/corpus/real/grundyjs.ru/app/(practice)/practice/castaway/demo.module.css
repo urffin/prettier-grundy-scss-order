@@ -1,0 +1,25 @@
+.notice {
+    margin: 16px 20px 0;
+    padding: 16px 20px;
+    border: 1px solid #118da8;
+    border-radius: 8px;
+    background: #102b31;
+    font-size: 14px;
+    line-height: 1.6;
+}
+.notice strong {
+    font-size: 16px;
+}
+.notice p {
+    color: #d4e2e5;
+}
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    margin-top: 8px;
+}
+.links a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}

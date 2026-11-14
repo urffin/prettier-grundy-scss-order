@@ -1,0 +1,142 @@
+@import "../../../../../styles/variables";
+@import "../../../../../styles/mixins";
+
+.invest {
+    position: absolute;
+    left: 357px;
+    top: 47px;
+
+    width: 184px;
+    height: 48px;
+
+    @include mediaFrom($desktop) {
+        left: 420px;
+    }
+}
+.text-top {
+    vertical-align: text-top;
+    font-size: 8px;
+    margin-left: -6px;
+    &_st {
+        margin-left: 0px;
+    }
+}
+
+.bottomStat {
+    position: absolute;
+    top: 376px;
+    left: 71px;
+    white-space: nowrap;
+
+    @include mediaFrom($desktop) {
+        top: 396px;
+    }
+}
+
+.stat-header {
+    font-family: "Exter-Regular", serif;
+    font-size: 12px;
+    line-height: 180%;
+    white-space: nowrap;
+
+    [lang="ru"] & {
+        font-family: Inter;
+    }
+
+    &.time {
+        color: #ffffff;
+        opacity: 0.4;
+    }
+
+    &__name {
+        font-family: "Exter-Regular", serif;
+
+        [lang="ru"] & {
+            font-family: Inter;
+        }
+    
+
+        font-size: 14px;
+        line-height: 180%;
+        color: #ffffff;
+
+        margin-bottom: -5px;
+        white-space: nowrap;
+    }
+
+    &__container {
+        position: absolute;
+    }
+}
+
+.stat-table {
+    position: absolute;
+    top: 235px;
+    left: 356px;
+    width: 184px;
+    height: 115px;
+    z-index: -1;
+    pointer-events: none;
+
+    @include mediaFrom($desktop) {
+        top: 255px;
+        left: 420px;
+    }
+}
+.stat-line {
+    position: absolute;
+    height: 0px;
+
+    opacity: 0.1;
+    border: 1px solid #ffffff;
+
+    &-1 {
+        top: 0;
+    }
+    &-2 {
+        top: 54px;
+    }
+    &-3 {
+        top: 108px;
+    }
+    &-4 {
+        top: 9px;
+    }
+    &-5 {
+        top: 63px;
+    }
+
+    &-h {
+        width: 184px;
+        right: 0;
+    }
+    &-v {
+        height: 36px;
+        right: 140px;
+    }
+}
+
+.percent {
+    left: 415px;
+    top: 244px;
+
+    @include mediaFrom($desktop) {
+        left: 480px;
+        top: 263px;
+    }
+}
+.time {
+    left: 415px;
+    top: 297px;
+
+    @include mediaFrom($desktop) {
+        left: 480px;
+        top: 318px;
+    }
+}
+.subtitle {
+    margin-top: 20px;
+    @include mediaFrom($desktop) {
+        margin-top: 0;
+    }
+}

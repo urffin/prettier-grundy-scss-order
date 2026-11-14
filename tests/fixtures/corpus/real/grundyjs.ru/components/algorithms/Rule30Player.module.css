@@ -1,0 +1,108 @@
+.player,
+.configuration,
+.scene {
+    min-width: 0;
+}
+.configuration {
+    flex-basis: 100%;
+}
+.settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: end;
+    margin-block: 10px;
+}
+.settings label {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+    font-size: 14px;
+}
+.settings input,
+.settings button,
+.rules button {
+    min-height: 44px;
+    max-width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+}
+.settings input {
+    width: 105px;
+}
+.settings .row {
+    width: min(100%, 580px);
+    font-family: monospace;
+}
+.settings .rowLabel {
+    flex: 1 1 240px;
+}
+.settings .rowLabel input {
+    width: 100%;
+}
+.settings button,
+.rules button {
+    cursor: pointer;
+}
+.rules {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 6px;
+    margin-block: 12px;
+}
+.rules button {
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    padding: 8px 2px;
+    font-family: monospace;
+    font-size: 14px;
+}
+.rules button[aria-pressed="true"] {
+    border-color: var(--ink);
+}
+.bit {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border: 1px solid var(--line);
+    background: #faf6ec;
+}
+.bit[data-black="true"] {
+    background: #202438;
+}
+.note {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin-block: 10px;
+}
+.canvas {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+.inspection {
+    padding: 12px 0;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+.player[data-expanded="true"] .canvas {
+    width: var(--fullscreen-canvas-width, 100%);
+    height: var(--fullscreen-canvas-height, auto);
+    margin-inline: auto;
+    transform: translateY(var(--fullscreen-canvas-offset-y, 0px));
+}
+.player[data-expanded="true"] .inspection {
+    display: none;
+}
+@media (max-width: 540px) {
+    .rules {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}

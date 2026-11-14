@@ -1,0 +1,71 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/mixins";
+
+@include media($laptopL) {
+    .walletContainer {
+        display: flex;
+        gap: 61px;
+        margin-right: 34px;
+        .walletTextIconPair {
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .walletText {
+            font-family: "Exter-Regular", serif;
+            font-size: 14px;
+            line-height: 44px;
+            margin: 2px 0 0 0;
+        }
+    }
+}
+
+@include media($tablet) {
+    .walletContainer {
+        display: flex;
+        gap: 32px;
+        margin-right: 34px;
+        .walletTextIconPair {
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .walletText {
+            font-family: "Exter-Regular", serif;
+            font-size: 14px;
+            line-height: 44px;
+            margin: 2px 0 0 0;
+            max-width: 136px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    .btn_tablet {
+        width: 172px;
+    }
+}
+
+@include media($desktop) {
+    .walletContainer {
+        display: flex;
+        gap: 61px;
+        margin-right: 34px;
+        .walletTextIconPair {
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .walletText {
+            font-family: "Exter-Regular", serif;
+            font-size: 16px;
+            line-height: 44px;
+            margin: 2px 0 0 0;
+        }
+    }
+}
