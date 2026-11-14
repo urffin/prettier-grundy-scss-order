@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Extend the informational benchmark with cold-process memory snapshots for both safety modes and sort/format operations, including Git-revision comparisons. Record raw snapshots, per-process deltas, byte statistics and process maxRSS in JSON schema version 2 and CI summaries/artifacts. Timing workers remain separate from forced GC. Sorting behavior and configuration are unchanged.
+
 ## 0.4.6 — 2026-11-14
 
 - In strict mode, skip conflict checks and redundant edges already implied by dependency paths inside the dense fallback. Keep the short and sparse paths, with bounded temporary ancestor storage and the direct fallback for unusually wide segments. Sorting behavior, configuration and loose mode are unchanged.

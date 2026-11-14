@@ -111,20 +111,28 @@ Run `npm ci`, `npm test`, `npm run test:types`, and `npm run test:package` local
 
 `npm run benchmark` covers seven synthetic scenarios: 100/1000 independent declarations, 500 conflicting declarations, nested media queries, 35 nested rules, leading/trailing/footer comments, and commented if/else chains. Both `strict` and `loose` run by default. `sort` measures sorter construction and ordering on a prepared AST, excluding parsing and serialization; `format` measures the complete `prettier.format` pipeline.
 
-Each version/safety/measurement runs in its own sequential Node.js process: two processes per combination, three warmups and nine samples per scenario in each process. No worker loads two code versions. Process rounds alternate version order during comparisons. Reports contain medians, quartiles, raw samples, process IDs, runtime/package versions, Git revisions and output hashes. These synthetic timings describe the measured machine and workload; a small difference is not a general speed guarantee.
+By default `--metric all` measures time and memory in separate sequential processes. Timing uses two processes per version/safety/measurement, with three warmups and nine samples per scenario in each process. Timing workers do not force GC. No worker loads two code versions. Process rounds alternate version order during comparisons. Reports contain medians, quartiles, raw samples, process IDs and time origins (`timeOriginMs`, to distinguish reused PIDs), runtime/package versions, Git revisions and output hashes. These synthetic measurements describe the measured machine and workload; a small difference is not a general speed or memory guarantee.
+
+Memory uses three fresh processes per **version/safety/measurement/scenario**, one cold operation each, without warmups. Each worker runs with `--expose-gc`: two GC calls before the baseline snapshot and two after the operation. The result AST/string remains live through the final snapshot; hashing and AST serialization happen afterwards. For `sort`, the input AST is prepared before the baseline; `format` includes the entire formatting pipeline. Separate processes per scenario prevent an earlier scenario from contributing to `maxRSS`.
 
 ```sh
 npm run benchmark -- --output benchmark-results.json
 npm run benchmark -- --compare v0.4.3 --output benchmark-results.json
 npm run benchmark -- --scenario comments --safety strict --measurement format
+npm run benchmark -- --metric memory --compare v0.4.5 --memory-processes 3 --output benchmark-results.json
+npm run benchmark -- --metric time --scenario independent-1000
 npm run benchmark -- --help
 ```
 
 In Windows PowerShell, use `npm.cmd run benchmark -- ...` if the `npm.ps1` shim consumes the `--` separator. Direct invocation also works, for example `node scripts/benchmark.mjs --scenario comments` (no separator needed).
 
-`--compare` takes a locally available Git commit or tag (fetch it first if needed). It snapshots runtime sources into a temporary directory and uses the current checkout's installed dependencies and Node.js for both versions. This compares code, not historical dependency trees; no historical install scripts run and the checkout is untouched. Comparisons require safety-mode support (0.3.0 or later). Output differences appear as `outputMatches: false` and do not invalidate the timing run. Negative `changePercent` means the current checkout is faster. `--warmup`, `--samples`, and `--processes` override the defaults; very short runs are useful for checking the harness, not drawing performance conclusions.
+`--compare` takes a locally available Git commit or tag (fetch it first if needed). It snapshots runtime sources into a temporary directory and uses the current checkout's installed dependencies and Node.js for both versions. This compares code, not historical dependency trees; no historical install scripts run and the checkout is untouched. Comparisons require safety-mode support (0.3.0 or later). Output differences appear as `outputMatches: false` and do not invalidate the measurements. Negative `changePercent` means the current checkout is faster. `--warmup`, `--samples`, and `--processes` control time measurements; `--memory-processes` controls independent memory samples. Very short runs are useful for checking the harness, not drawing performance conclusions.
 
-CI runs the current version, writes a job summary and uploads `benchmark-results.json` as an artifact for 14 days. Timing values have no pass/fail thresholds; execution errors still fail the job. The report and benchmark scripts are excluded from the npm package.
+JSON **schema version 2** keeps timing data in `rows`/`workers` and adds `memoryRows`/`memoryWorkers` (the unselected metric has empty arrays). Memory rows contain `before`, `after`, `afterGC`, `deltaAfter` and `deltaAfterGC`, with `medianBytes`, quartiles and `samplesBytes` for each field; raw snapshots stay in the workers. Deltas are computed within each process before aggregation and may be negative. Version comparisons add `changeBytes` (current minus baseline median) for heap after, heap after GC and maxRSS. Input/output hashes must agree between time and memory for the same version; differences between code versions remain informational.
+
+Memory fields are `rss`, `heapTotal`, `heapUsed`, `external`, `arrayBuffers` and `maxRSS`, all in **bytes**. `arrayBuffers` is already included in `external`; do not add them together. Node's `maxRSS` is converted from KiB to bytes and records the process high-water mark through the final snapshot, including startup, imports, input preparation and GC. These snapshots are not allocation counts or exact heap peaks, and maxRSS is not an operation-only peak. See the [Node.js memory APIs](https://nodejs.org/docs/latest-v22.x/api/process.html#processmemoryusage) and [resource usage](https://nodejs.org/docs/latest-v22.x/api/process.html#processresourceusage).
+
+CI runs both metrics for the current version, writes time and memory tables (memory displayed in MiB) and uploads the combined `benchmark-results.json` as an artifact for 14 days. Values have no pass/fail thresholds; execution errors still fail the job. The report and benchmark scripts are excluded from the npm package.
 
 ## Presets
 
