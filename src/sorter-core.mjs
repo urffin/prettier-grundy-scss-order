@@ -307,12 +307,30 @@ export function createSorter(
         emitted ??= new WeakMap();
         propertyNamesConflict ??= createPropertyConflictChecker();
         const edges = [];
+        // Wide segments often repeat the same emitted properties in many nested
+        // blocks. Resolve each name to its conflicting declaration positions once
+        // per segment; the existing predicate remains the authority on conflicts.
+        // Short segments retain the direct path without candidate-cache overhead.
+        const matchingPositions = segment.length >= 32 ? new Map() : null;
         for (let i = 0; i < segment.length; i++) {
             if (declarations[i] !== null) continue;
             const properties = segment[i].nodes.flatMap(emittedProperties);
             if (!properties.length) continue;
+            let candidates;
+            if (matchingPositions) {
+                candidates = new Set();
+                for (const name of properties) {
+                    let matches = matchingPositions.get(name);
+                    if (!matches) {
+                        matches = positions.filter(j => propertyNamesConflict(name, declarations[j]));
+                        matchingPositions.set(name, matches);
+                    }
+                    for (const j of matches) candidates.add(j);
+                    if (candidates.size === positions.length) break;
+                }
+            }
             for (const j of positions) {
-                if (properties.some(name => propertyNamesConflict(name, declarations[j]))) {
+                if (candidates ? candidates.has(j) : properties.some(name => propertyNamesConflict(name, declarations[j]))) {
                     edges.push([Math.min(i, j), Math.max(i, j)]);
                 }
             }

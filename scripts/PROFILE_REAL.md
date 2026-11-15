@@ -97,3 +97,47 @@ Final comparison: four fresh processes per project/variant/operation, five warmu
 The cache's falcon sort improvement and grundyjs sort regression retain their signs in all four process rounds. The single-node shortcut regresses falcon sort in all four rounds. Full-format differences often change sign between rounds and have overlapping interquartile ranges; the landos sort improvement does not establish a format improvement. The initial edge-free/no-pair/cutoff exploration also changes sign across projects/rounds. None is justified as a general production optimization from this study.
 
 Recommendation: retain the current implementation. If pursuing another optimization, investigate short-path predicate costs, default group matching or nested crossing candidate filtering with focused regression cases and a new full-format comparison. For a larger end-to-end improvement, study the parser/printing pipeline separately; these measurements do not establish that replacing a parser will help. Keep the dense fallback and priority queue unchanged on this evidence.
+
+## Nested crossing candidate reuse on 2026-11-15
+
+The initial study above describes the unchanged `dad2aa8` implementation. This follow-up implements one focused optimization: in strict segments of at least 32 units, each emitted property name is resolved once to the external declaration positions with which it actually conflicts. Repeated nested blocks reuse those candidates, including empty matches. A per-block union prevents duplicate edges, stops once all declarations are covered and emits dependencies in the previous position order. The cache belongs to one segment and is discarded when its crossings are finished. Short segments retain direct discovery; loose does not call this path. CSS conflict policy and public configuration are unchanged.
+
+Counts on the pinned real corpus: landos-new crossing-checker requests fall from 15900 to 5054 (−68.2%), and `TelSelector/styles.scss` from 10916 to 449 (−95.9%). Other project request counts are unchanged. All 1542 crossing edges and all property-graph edges are identical per file/segment. The optimization removes repeated traversal/cache lookups rather than establishing fewer unique conflicts: crossing-cache misses increase from 2777 to 2837 in landos, because preparing a reusable match list sometimes checks positions the old per-declaration `some` would skip. This tradeoff is included in the stock measurements below.
+
+Full standard benchmark: 11 scenarios, strict/loose, sort/full format, two fresh timing processes per version/mode/operation with three warmups and nine samples each; three fresh memory processes per version/mode/operation/scenario. Baseline is `dad2aa8`, current is the local source snapshot, both use the same dependencies. There are 280 workers, 1584 timing samples and 264 memory samples. Version order reverses in the second round. Measurements are sequential and run after correctness checks. An earlier incomplete run crossed a computer suspension and timed out; it is excluded entirely.
+
+Pooled medians in milliseconds per scenario (whole-file batch for real projects). Negative percentages mean lower time. Loose columns are sort / full format differences; they are controls, not an intended optimization.
+
+| Scenario         | Strict sort, before → after | Strict full format, before → after | Loose changes, sort / format |
+| ---------------- | --------------------------: | ---------------------------------: | ---------------------------: |
+| independent-100  |       1.862 → 1.750 (-6.0%) |            19.607 → 19.095 (-2.6%) |                +9.1% / -2.4% |
+| independent-1000 |       7.790 → 8.396 (+7.8%) |            79.908 → 83.426 (+4.4%) |               +22.2% / +3.0% |
+| conflicts-500    |      4.417 → 3.910 (-11.5%) |            42.377 → 43.188 (+1.9%) |                +0.4% / +1.4% |
+| nested-media     |      7.247 → 5.991 (-17.3%) |            53.645 → 51.449 (-4.1%) |               +31.7% / -1.6% |
+| deep-35          |      0.125 → 0.157 (+25.3%) |              6.671 → 6.441 (-3.5%) |              -43.3% / +20.8% |
+| comments         |      4.949 → 4.340 (-12.3%) |            69.374 → 66.808 (-3.7%) |               -15.4% / +6.6% |
+| if-else-comments |       0.778 → 0.814 (+4.6%) |            16.341 → 17.570 (+7.5%) |               +15.7% / +2.3% |
+| real-grundyjs    |     20.323 → 20.269 (-0.3%) |          637.174 → 661.875 (+3.9%) |                -4.4% / +5.8% |
+| real-landos      |     24.716 → 22.991 (-7.0%) |          405.758 → 421.255 (+3.8%) |                -4.1% / -1.4% |
+| real-falcon      |     33.938 → 30.631 (-9.7%) |          667.741 → 650.517 (-2.6%) |                -6.2% / +0.2% |
+| real-eywa        |     9.953 → 11.185 (+12.4%) |         278.183 → 315.471 (+13.4%) |                -4.8% / -6.6% |
+
+Memory below shows current minus baseline medians in KiB for strict sort. These are snapshots, not allocation counts or an isolated heap peak. maxRSS includes process startup, parsing/preparation and GC. Full-format memory and all loose records remain in the JSON.
+
+| Scenario      | Heap after | Heap after GC | maxRSS |
+| ------------- | ---------: | ------------: | -----: |
+| nested-media  |    -3567.8 |           1.8 |  276.0 |
+| real-grundyjs |      111.9 |           7.0 |  396.0 |
+| real-landos   |       60.1 |           4.1 |  868.0 |
+| real-falcon   |       97.2 |          12.4 |  516.0 |
+| real-eywa     |      -83.8 |          27.5 |   92.0 |
+
+Correctness: 270 unit tests, installed-package/type checks (20 packed files), 3040 corpus invariant/idempotence cases and 6080 exact before/after core comparisons over all files, five presets, both modes, root and spacing settings. New regressions compare with the frozen pre-optimization all-pairs crossing function, covering 32 property pairs in both directions, repeated names, broad/empty matches, custom/opaque/logical/vendor/alias properties, both sides of the 32-unit cutoff, comments/ignore/control boundaries and edited-tree reuse. Controlled wide repeated-block examples preserve compiled Sass CSS across all presets. Every timing and memory output hash agrees with baseline and with each other.
+
+Raw evidence lives outside the repository in `nested-crossing-filter/`: `benchmark-full.json`, `comparison.json`, `verification.json`, `equivalence.json`, `corpus-results.json`, counted profiles and before/after runtime sources. The JSON retains quartiles and per-process samples; pooled percentages are not confidence bounds. Use per-round signs and overlapping ranges when interpreting small changes.
+
+The targeted paths improve in the full run: strict sort is 17.3% lower for `nested-media` (both round medians about 21% lower) and 7.0% lower for landos (round medians 6.4% and 11.4% lower). Full-format changes are mixed: `nested-media` −4.1%, landos +3.8%, with changing signs between rounds. The falcon sort improvement is not attributed to candidate reuse: counted discovery work there is unchanged. Some pooled comparisons even have the opposite sign to both per-round medians, showing that process distributions differ enough to make small pooled percentages unreliable.
+
+The full run's eywa strict-format increase of 13.4% prompted a separate control with only that project, both modes/operations, four fresh processes per version/mode/operation, five warmups and fifteen samples. Its 32 workers/480 samples all preserve output hashes. Strict format is 262.616 → 262.158 ms (−0.2%; round differences −1.2%, −1.4%, −1.6%, −0.5%), while strict sort is 11.933 → 12.054 ms (+1.0%, mixed signs). Interquartile ranges overlap. Loose controls are also variable: pooled sort +7.6% with round differences from −36.3% to +31.7%, full format +3.1% versus −6.6% in the complete run. The large eywa strict slowdown is not reproduced. See `eywa-control.json` and `eywa-control-summary.json` rather than treating the complete run as precise causal attribution.
+
+Retain this focused optimization for repeated nested-block discovery, with no claim of a general full-format speedup. Strict-sort heap-after-GC differences on real projects are approximately +4–28 KiB. Full-format maxRSS differences span about −0.4 to +4.7 MiB on those projects; this process high-water mark is not the candidate cache's allocation size. Further tuning should require another full comparison and loose controls. Public options, conflict rules and the warning-only function-effects decision remain unchanged.

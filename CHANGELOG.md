@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Reuse conflicting declaration positions for repeated property names emitted by nested blocks in wide strict segments. Preserve existing sorting results and loose behavior.
+
 - Add opt-in real-corpus profiling with separate counters, exclusive phase clocks and stock CPU samples, plus research optimization snapshots and output-equivalence checks. Production sorting behavior and configuration are unchanged.
 
 - Add reproducible Sass function side-effect research, compilation comparisons and experimental boundary policies. Document the current strict limitation and existing manual workarounds; production sorting behavior and configuration are unchanged.
