@@ -21,6 +21,7 @@
         "test:corpus": "node scripts/test-corpus.mjs",
         "corpus:update": "node scripts/update-corpus.mjs",
         "research:function-effects": "node scripts/research-function-effects.mjs",
+        "profile:real": "node scripts/profile-real-corpus.mjs",
         "benchmark": "node scripts/benchmark.mjs"
     },
     "repository": {

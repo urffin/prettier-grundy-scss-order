@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add opt-in real-corpus profiling with separate counters, exclusive phase clocks and stock CPU samples, plus research optimization snapshots and output-equivalence checks. Production sorting behavior and configuration are unchanged.
+
 - Add reproducible Sass function side-effect research, compilation comparisons and experimental boundary policies. Document the current strict limitation and existing manual workarounds; production sorting behavior and configuration are unchanged.
 
 - Add 15 SCSS regression fixtures with strict Sass invariants and explicit loose outcomes, plus a pinned 152-file CSS/SCSS corpus from four projects. Benchmark four whole-file project batches in both modes and metrics, record input provenance/hashes, and provide an explicit committed-source refresh command for evolving site styles. Check real-file invariants in CI and upload a separate corpus report. Sorting behavior and configuration are unchanged.

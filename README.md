@@ -139,6 +139,8 @@ CI runs both metrics for the current version, writes time and memory tables (mem
 
 `npm test` includes 15 SCSS regression fixtures across all presets and modes. `npm run test:corpus -- --output corpus-results.json` verifies snapshot hashes, idempotence, comments and AST inventory on all real files (3040 cases); CI saves its separate report. It does not compile standalone application files or prove general CSS equivalence. Update evolving site inputs explicitly with `npm run corpus:update -- --project grundyjs.ru --root /path/to/grundyjs.ru --check`, then remove `--check` to refresh from committed Git styles. Working-tree edits never enter the snapshot. See [corpus provenance, regression guarantees and refresh workflow](tests/fixtures/corpus/README.md).
 
+For opt-in phase timings, pair/edge counters and stock CPU profiles on the pinned real corpus, run `npm run profile:real -- --output /external/directory`. See the [profiling method and findings](scripts/PROFILE_REAL.md); instrumentation is confined to temporary source snapshots.
+
 ## Presets
 
 Start with a familiar convention, then override it only where your project differs:
