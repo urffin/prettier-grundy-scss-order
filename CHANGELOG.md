@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Compare both sorting modes with pinned baseline `dad2aa8` in one CI benchmark job, including sort/full format, time and memory statistics and output hashes for both versions.
+
 - Reuse conflicting declaration positions for repeated property names emitted by nested blocks in wide strict segments. Preserve existing sorting results and loose behavior.
 
 - Add opt-in real-corpus profiling with separate counters, exclusive phase clocks and stock CPU samples, plus research optimization snapshots and output-equivalence checks. Production sorting behavior and configuration are unchanged.

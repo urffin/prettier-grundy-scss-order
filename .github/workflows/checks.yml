@@ -39,9 +39,13 @@ jobs:
     benchmark:
         name: Sorting benchmark (informational)
         runs-on: ubuntu-latest
-        timeout-minutes: 10
+        timeout-minutes: 15
+        env:
+            BENCHMARK_BASELINE: dad2aa8dd42553c15dd7c021043a04d214f1ad37
         steps:
             - uses: actions/checkout@v6
+            - name: Fetch pinned benchmark baseline
+              run: git fetch --no-tags --depth=1 origin "$BENCHMARK_BASELINE"
             - uses: actions/setup-node@v6
               with:
                   node-version: "24"
@@ -49,7 +53,8 @@ jobs:
             - run: npm ci
             - name: Verify pinned real-file corpus
               run: npm run test:corpus -- --output corpus-results.json
-            - run: npm run benchmark -- --metric all --output benchmark-results.json
+            - name: Compare sorting against pinned baseline
+              run: npm run benchmark -- --compare "$BENCHMARK_BASELINE" --metric all --output benchmark-results.json
             - uses: actions/upload-artifact@v7
               with:
                   name: benchmark-results
