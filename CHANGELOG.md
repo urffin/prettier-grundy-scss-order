@@ -2,17 +2,23 @@
 
 ## Unreleased
 
-- Compare both sorting modes with pinned baseline `dad2aa8` in one CI benchmark job, including sort/full format, time and memory statistics and output hashes for both versions.
+## 0.4.7 — 2026-11-16
 
-- Reuse conflicting declaration positions for repeated property names emitted by nested blocks in wide strict segments. Preserve existing sorting results and loose behavior.
+Strict mode reuses conflicting declaration positions for property names repeated across nested blocks in segments of at least 32 units. The conflict predicate, resulting sort order, short-segment path and loose behavior are preserved. No configuration changes or migration steps are required: `strict` remains the default, `loose` remains explicit, and `conservative` / `structural` remain aliases.
 
-- Add opt-in real-corpus profiling with separate counters, exclusive phase clocks and stock CPU samples, plus research optimization snapshots and output-equivalence checks. Production sorting behavior and configuration are unchanged.
+- Add regression tests for repeated nested blocks, property conflicts and independent properties, comments, execution boundaries, threshold sizes and edited-tree reuse.
 
-- Add reproducible Sass function side-effect research, compilation comparisons and experimental boundary policies. Document the current strict limitation and existing manual workarounds; production sorting behavior and configuration are unchanged.
+- Add 15 SCSS regression fixtures and a pinned 152-file CSS/SCSS corpus from four projects. Check corpus hashes, idempotence, comments and AST inventory in CI; provide an explicit refresh command for evolving committed site styles.
 
-- Add 15 SCSS regression fixtures with strict Sass invariants and explicit loose outcomes, plus a pinned 152-file CSS/SCSS corpus from four projects. Benchmark four whole-file project batches in both modes and metrics, record input provenance/hashes, and provide an explicit committed-source refresh command for evolving site styles. Check real-file invariants in CI and upload a separate corpus report. Sorting behavior and configuration are unchanged.
+- Extend the benchmark with real-file batches and cold-process memory snapshots for both modes and sort/full format. JSON schema 2 retains raw samples, heap/RSS statistics, per-process memory deltas and output hashes. CI compares both versions with pinned baseline `dad2aa8` on one runner, using the same dependencies and separate sequential processes with reversed version order in the second round.
 
-- Extend the informational benchmark with cold-process memory snapshots for both safety modes and sort/format operations, including Git-revision comparisons. Record raw snapshots, per-process deltas, byte statistics and process maxRSS in JSON schema version 2 and CI summaries/artifacts. Timing workers remain separate from forced GC. Sorting behavior and configuration are unchanged.
+- Add opt-in real-corpus profiling with separate counters, exclusive phase clocks and unchanged-source CPU sampling, plus research-only optimization snapshots and output-equivalence checks. Research scripts, fixtures and reports are excluded from the npm package.
+
+- Add reproducible Sass function side-effect research and a RU/EN warning: even `strict` can change CSS values or compilation behavior when movable statements evaluate stateful Sass functions. Document existing assignments/mixins and ignoring the enclosing rule as manual workarounds; no new API or automatic restriction is introduced.
+
+Performance evidence is workload-specific. In the paired [reference CI run](https://github.com/urffin/prettier-grundy-scss-order/actions/runs/43746215145), strict landos sorting improved from 12.011 to 11.051 ms (about 8%); full formatting improved by 1.9%. For `nested-media`, sorting was effectively unchanged (+0.1%, with opposite signs between process rounds), while full formatting improved by 7.4%. No general speedup across the real corpus is claimed, and the earlier local nested-sort improvement was not reproduced in that CI run. Both versions produced identical output hashes in all 44 comparison pairs.
+
+These are pooled medians from two timing processes per version/mode/operation, with three warmups and nine samples each; they are not confidence bounds. Memory uses three fresh cold processes per case. Landos strict-sort heap after GC was about 0.20 MiB lower, while other real strict-sort cases changed by less than 0.01 MiB. Heap snapshots depend on GC timing and do not measure all allocations or exact peaks; maxRSS includes process startup, input preparation and GC. No general reduction in memory consumption is claimed. See the [profiling method and findings](scripts/PROFILE_REAL.md) for scope and limitations.
 
 ## 0.4.6 — 2026-11-14
 
