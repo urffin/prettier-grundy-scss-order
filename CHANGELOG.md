@@ -2,13 +2,21 @@
 
 ## Unreleased
 
-- Make direct SCSS parse/sort/stringify the default Prettier integration. Keep Processor for parsed source maps and root sourceMappingURL annotations, reuse the parsed tree, and preserve configuration validation before parsing. Sorting modes, public options and defaults are unchanged.
+## 0.4.8 — 2026-11-16
 
-- Add integration regressions for maps and diagnostics, BOM/line endings, comments/ignore, explicit Prettier options, range/cursor formatting and parser wrappers. Check exact output against the Processor reference on all real-corpus cases; keep that reference explicit in the paired benchmark and update full-format profiling clocks.
+The Prettier plugin now parses SCSS, invokes the existing sorter and serializes directly, bypassing PostCSS Processor orchestration for ordinary files. It still uses `postcss-scss` and then Prettier's native parser/printer; this is not a parser migration. Processor remains the fallback for parsed source maps and root `sourceMappingURL` annotations, using the already parsed tree and preserving the installed PostCSS version's map policy. Configuration validation still precedes parsing.
 
-- Add a manually dispatched same-runner CI comparison of stock and direct formatting on original/ready real files in both modes, with alternating process order, separate cold/warm memory measurements and a verified downloadable JSON report.
+No migration or new option is required. Sorting rules, public API, types, dependencies and configuration defaults are unchanged: `strict` remains the default, `loose` stays explicit, and `conservative` / `structural` remain aliases. The documented limitation for stateful Sass functions remains.
 
-- Add an opt-in full formatting study: plain Prettier versus both sorting modes on original and already formatted real files, separate timing/cold/warm memory workers, exact-output gates and research-only pipeline prototypes. Production behavior, configuration and dependencies are unchanged.
+- Add integration regressions for map handling and diagnostics, BOM/line endings, comments/ignore, explicit Prettier options, pragmas, ranges/cursor formatting and parser wrappers. Keep map expectations compatible with supported PostCSS versions.
+
+- Require byte-identical output against the retained Processor reference in all 3040 real-corpus cases. Independent checks also matched the prior implementation on original and ready inputs. Corpus invariants and output identity do not prove general Sass/CSS semantic equivalence.
+
+- Add an opt-in full-pipeline study and a manual same-runner CI comparison of the public direct path with the explicit Processor reference: both modes, original/own-ready inputs, alternating process order, separate cold/warm memory workers and a verified downloadable JSON report. Update profiling clocks for the direct path. Research tools and fixtures are excluded from the npm package.
+
+In the [paired reference CI run](https://github.com/urffin/prettier-grundy-scss-order/actions/runs/43844171313), warmed full-format pooled medians were 0.26–6.62% lower for direct across all 16 project/input/mode contexts; all four process medians were lower in eight contexts. The study used 152 pinned files from four projects, four timing processes per case, five warmups and eleven samples per process on Node 24.22.2 / Prettier 3.8.1 / PostCSS 8.5.8. These are workload-specific descriptive results, not confidence bounds or a promise that every SCSS input is faster. Module loading is excluded from timing. Runtime and measurement sources are identical to the implementation prepared for this release; absolute timings from other runners or the earlier prototype study are not directly comparable. The regular benchmark's `dad2aa8` baseline includes other changes and does not isolate direct alone.
+
+Memory uses four fresh processes per cold/warm case. Warm absolute heap after GC was 0.036–0.182 MiB lower, but the operation delta after GC ranged from 0.018 MiB lower to 0.025 MiB higher, and process maxRSS changed in both directions. Snapshots depend on GC, do not count all allocations or exact peaks, and retain formatted output; maxRSS includes startup, imports and warmup. Both comparison cohorts load the research module, so these footprints are not a prediction of an installed consumer's memory use. No general memory reduction is claimed. See the [full pipeline method and findings](scripts/RESEARCH_FORMAT_PIPELINE.md).
 
 ## 0.4.7 — 2026-11-16
 
