@@ -4,12 +4,14 @@ import path from "node:path";
 import prettier from "prettier";
 import scss from "postcss-scss";
 import plugin from "../src/index.mjs";
+import { createPipelinePlugin } from "./format-pipeline-variants.mjs";
 import { corpusManifest, corpusSources, corpusPath, projectDigest } from "./corpus.mjs";
 
 const args = process.argv.slice(2);
 if (args.length && (args.length !== 2 || args[0] !== "--output"))
     throw new Error("Usage: npm run test:corpus -- [--output FILE]");
 const manifest = corpusManifest(),
+    processor = createPipelinePlugin("processor"),
     presets = ["default", "csscomb", "csscomb-yandex", "csscomb-zen", "pepelsbey"];
 const clean = text => text.replace(/\s+/g, " ").trim();
 function inventory(source) {
@@ -43,6 +45,7 @@ const report = {
     corpus: manifest.projects.map(p => ({ id: p.id, revision: p.revision, digest: p.digest, files: p.files.length })),
     files: 0,
     cases: 0,
+    processorOutputMatches: 0,
     failures: []
 };
 for (const project of manifest.projects) {
@@ -68,6 +71,9 @@ for (const project of manifest.projects) {
                     report.cases++;
                     try {
                         const output = await prettier.format(file.source, options);
+                        const previous = await prettier.format(file.source, { ...options, plugins: [processor] });
+                        if (output !== previous) throw new Error("Output differs from the Processor reference");
+                        report.processorOutputMatches++;
                         if ((await prettier.format(output, options)) !== output) throw new Error("Not idempotent");
                         const after = inventory(output);
                         if (JSON.stringify(before) !== JSON.stringify(after)) {

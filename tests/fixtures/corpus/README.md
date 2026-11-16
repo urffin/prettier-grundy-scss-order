@@ -29,6 +29,8 @@ Each `real-*` benchmark scenario processes one project's files separately, with 
 
 CI runs regression tests across the compatibility matrix. The benchmark job also runs the complete real-file check and uploads `corpus-results.json` separately from the combined time/memory `benchmark-results.json`, both for 14 days. Performance has no thresholds; invariant violations fail CI.
 
+Each real-file case also requires byte-identical output from the retained Processor reference. `processorOutputMatches` records successful comparisons; a mismatch fails the check. This protects the direct integration without claiming general CSS equivalence.
+
 ## Refreshing evolving site styles
 
 Refresh explicitly after committing site changes. The updater reads Git blobs from the chosen revision (default `HEAD`), never working-tree edits. It discovers new committed `.css` and `.scss` files under the configured roots. Indented `.sass` syntax is outside this SCSS parser's scope.

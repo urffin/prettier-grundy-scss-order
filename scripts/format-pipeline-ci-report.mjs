@@ -49,7 +49,7 @@ const artifact = {
         runnerOS: process.env.RUNNER_OS,
         runnerArch: process.env.RUNNER_ARCH
     },
-    method: "Sequential isolated stock/direct workers on one runner; reverse implementation order each round. Warm timing excludes imports. Separate cold-first-use and one-batch-warm memory snapshots retain new output. maxRSS is process-wide; no performance thresholds.",
+    method: "Sequential isolated stock/direct workers on one runner; stock is the explicit Processor reference and direct is the public plugin. Reverse implementation order each round. Warm timing excludes imports. Separate cold-first-use and one-batch-warm memory snapshots retain new output. Both load the research module. maxRSS is process-wide; no performance thresholds.",
     ciToolHashes,
     manifest,
     preflight,

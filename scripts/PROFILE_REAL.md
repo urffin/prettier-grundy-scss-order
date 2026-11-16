@@ -2,6 +2,8 @@
 
 The profiling commands use the pinned whole-file corpus. They create temporary source snapshots and never edit production modules or change the sorting API. Reports and CPU profiles belong outside the repository. All files of a project are processed separately; times cover the entire project batch.
 
+Full-format phase clocks follow the current direct parse/serialize path and measure Processor fallback for maps without parsing twice. Recorded findings below retain their original baseline commit; they are not measurements of the new default integration.
+
 ```sh
 npm run profile:real -- --output /external/profile
 npm run profile:real -- --stage counts --project grundyjs.ru --output /external/counts

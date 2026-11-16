@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Make direct SCSS parse/sort/stringify the default Prettier integration. Keep Processor for parsed source maps and root sourceMappingURL annotations, reuse the parsed tree, and preserve configuration validation before parsing. Sorting modes, public options and defaults are unchanged.
+
+- Add integration regressions for maps and diagnostics, BOM/line endings, comments/ignore, explicit Prettier options, range/cursor formatting and parser wrappers. Check exact output against the Processor reference on all real-corpus cases; keep that reference explicit in the paired benchmark and update full-format profiling clocks.
+
 - Add a manually dispatched same-runner CI comparison of stock and direct formatting on original/ready real files in both modes, with alternating process order, separate cold/warm memory measurements and a verified downloadable JSON report.
 
 - Add an opt-in full formatting study: plain Prettier versus both sorting modes on original and already formatted real files, separate timing/cold/warm memory workers, exact-output gates and research-only pipeline prototypes. Production behavior, configuration and dependencies are unchanged.

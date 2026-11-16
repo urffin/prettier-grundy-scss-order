@@ -5,6 +5,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 import scss from "postcss-scss";
+import prettier from "prettier";
+import plugin from "../src/index.mjs";
 import { grundyPropSorter } from "../src/grundy-prop-sorter.mjs";
 import { instrument, snapshot } from "../scripts/profile-real-instrument.mjs";
 import { variantSource, variantCoreSource } from "../scripts/profile-real-variants.mjs";
@@ -19,6 +21,7 @@ test.before(async () => {
         const folder = path.join(directory, mode);
         await snapshot(root, folder, mode);
         targets[mode] = {
+            plugin: (await import(pathToFileURL(path.join(folder, "src/index.mjs")))).default,
             sort: (await import(pathToFileURL(path.join(folder, "src/grundy-prop-sorter.mjs")))).grundyPropSorter,
             profile: (await import(pathToFileURL(path.join(folder, "src/__profile.mjs")))).profile
         };
@@ -91,6 +94,29 @@ test("Exclusive phase clocks preserve both modes and do not double-count recursi
         () => instrument("function namesConflict(first, second) {}", "property-conflicts.mjs", "counts"),
         /anchor changed/
     );
+});
+
+test("Full-format profile measures direct parse/serialize and map fallback once", async () => {
+    const { plugin: observed, profile } = targets.phases;
+    for (const source of [
+        ".a { width:1px; color:red; }",
+        ".a { width:1px; color:red; } /*# sourceMappingURL=__scss_profile_missing__.map */"
+    ]) {
+        const options = { parser: "scss" };
+        const expected = await prettier.format(source, { ...options, plugins: [plugin] });
+        profile.reset();
+        profile.enabled = true;
+        let actual;
+        try {
+            actual = await prettier.format(source, { ...options, plugins: [observed] });
+        } finally {
+            profile.enabled = false;
+        }
+        assert.is(actual, expected);
+        const { phases } = profile.result();
+        for (const name of ["postcssParse", "postcssSerialize", "prettierParse", "pluginIntegration"])
+            assert.is(phases[name].calls, 1, name);
+    }
 });
 test("Research optimizations preserve source ties, property constraints and additional edges", async () => {
     const source = await fs.readFile(path.join(root, "src/property-conflicts.mjs"), "utf8");

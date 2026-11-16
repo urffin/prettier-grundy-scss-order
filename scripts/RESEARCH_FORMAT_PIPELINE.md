@@ -1,6 +1,8 @@
 # Full formatting pipeline research
 
-This study compares the public `prettier.format()` call without a plugin, with `loose` and with `strict`. Research plugins live under `scripts/`; production code, configuration defaults and dependencies are unchanged. Results are kept outside the repository.
+This study compares the public `prettier.format()` call without a plugin, with `loose` and with `strict`. Research plugins live under `scripts/`. Results are kept outside the repository; recorded findings identify their baseline commit.
+
+The working plugin now uses direct parse/sort/stringify with Processor fallback for source maps. Its configuration validation still precedes parsing. In the `direct` and `variants` stages, the historical `stock` label explicitly means the retained Processor reference, independent of the public default. The `direct` stage compares that reference with the public plugin, loading the research module in both cohorts for equal import scope; `variants` keeps its experimental implementations. The `main` stage measures the current public plugin; coarse `profile` clocks retain the Processor reference. Historical phase/calibration results below describe the pre-direct baseline, not a new profile of the current default.
 
 ## Reproduction
 
@@ -91,7 +93,7 @@ An independent stage wraps the stock path with nested exclusive clocks: configur
 
 Phase clocks change call shapes and add observer costs. Their whole-call medians are compared with uninstrumented stock for calibration, not used as a correction factor. Phase medians need not sum to the median total. The uninstrumented prototype comparison decides whether less intermediate work gives an observed full-call improvement.
 
-## Findings
+## Findings (pre-direct baseline)
 
 ### Public pipeline on 2026-11-16
 

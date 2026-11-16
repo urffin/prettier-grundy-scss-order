@@ -16,11 +16,22 @@ import { resolveConfiguration } from "./configuration.mjs";
  */
 async function grundyParseSorter(text, options) {
     const configuration = await resolveConfiguration(options);
-    const processed = await postcss([grundyPropSorter(configuration)]).process(text, {
-        from: undefined,
-        syntax: postcssScss
-    });
-    const sortedCss = processed.css;
+    // Construct first: invalid configuration must still fail before SCSS parsing.
+    const sorter = grundyPropSorter(configuration);
+    const root = postcssScss.parse(text, { from: undefined });
+    let sortedCss;
+    // Processor also removes/regenerates source-map annotations, including a
+    // missing external map whose annotation must be removed from the root.
+    if (
+        root.source.input.map ||
+        root.nodes.some(node => node.type === "comment" && node.text.startsWith("# sourceMappingURL="))
+    ) {
+        const processed = await postcss([sorter]).process(root, { from: undefined, syntax: postcssScss });
+        sortedCss = processed.css;
+    } else {
+        sorter.OnceExit(root);
+        sortedCss = root.toString(postcssScss.stringify);
+    }
     options.originalText = sortedCss;
     return prettierPostcss.parsers[options.parser].parse(sortedCss, [options.parser], options);
 }

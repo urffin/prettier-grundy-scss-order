@@ -26,7 +26,18 @@ const metadata = { ...config, pid: process.pid, timeOriginMs: performance.timeOr
 async function load() {
     const prettier = (await import(pathToFileURL(path.join(config.root, "node_modules/prettier/index.mjs")))).default;
     let plugin, clock;
-    if (config.implementation === "profile") {
+    if (config.stage === "direct") {
+        // Load the reference module in both cohorts so cold memory does not
+        // compare a research-module import against the public plugin alone.
+        const research = await import(new URL("./format-pipeline-variants.mjs", import.meta.url));
+        plugin =
+            config.implementation === "stock" ?
+                research.createPipelinePlugin("processor")
+            :   (await import(pathToFileURL(path.join(config.root, "src/index.mjs")))).default;
+    } else if (config.implementation === "stock" && config.stage === "variants") {
+        const research = await import(new URL("./format-pipeline-variants.mjs", import.meta.url));
+        plugin = research.createPipelinePlugin("processor");
+    } else if (config.implementation === "profile") {
         const research = await import(new URL("./format-pipeline-variants.mjs", import.meta.url));
         clock = research.phaseClock();
         plugin = research.createPipelinePlugin(config.formatter === "plain" ? "profile-plain" : "profile", { clock });

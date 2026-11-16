@@ -176,6 +176,16 @@ export function instrument(source, file, mode) {
         if (file === "index.mjs") {
             source = replace(
                 source,
+                "const root = postcssScss.parse(text, { from: undefined });",
+                "const root = __profile.measure('postcssParse', () => postcssScss.parse(text, { from: undefined }));"
+            );
+            source = replace(
+                source,
+                "sortedCss = root.toString(postcssScss.stringify);",
+                "sortedCss = __profile.measure('postcssSerialize', () => root.toString(postcssScss.stringify));"
+            );
+            source = replace(
+                source,
                 "syntax: postcssScss",
                 "syntax: { parse: (...args) => __profile.measure('postcssParse', () => postcssScss.parse(...args)), stringify: (...args) => __profile.measure('postcssSerialize', () => postcssScss.stringify(...args)) }"
             );
