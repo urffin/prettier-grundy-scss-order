@@ -1,17 +1,8 @@
 # prettier-grundy-scss-order [Русский](ru/README.md)
 
-[![npm][npm-badge]][npm] [![GitHub Actions Workflow Status][npm-build]][github-actions]
+[![npm][npm-badge]][npm] [![GitHub Actions Workflow Status][ci-badge]][github-actions]
 
 Keep SCSS readable as it grows. `prettier-grundy-scss-order` is a [Prettier](https://prettier.io/) plugin that puts declarations, variables, Sass directives, and nested rules in a predictable order every time you format a file.
-
-It is designed for real SCSS codebases: place layout properties consistently, separate logical sections with blank lines, and migrate from established property orders while keeping variable assignments and mixin calls in place.
-
-## Why use it?
-
-- **One format command, one team-wide style.** No more review comments about property order.
-- **SCSS-aware sorting.** Group CSS custom properties, declarations, Sass directives, and nested rules while respecting variable assignments and mixin calls as sorting boundaries.
-- **Adopt an existing convention.** Choose `csscomb`, `csscomb-yandex`, `csscomb-zen`, or `pepelsbey`.
-- **Make the order yours.** Create groups by node type, property prefix, or an explicit list of properties.
 
 ## Before and after
 
@@ -38,7 +29,7 @@ It is designed for real SCSS codebases: place layout properties consistently, se
 Install Prettier and the plugin:
 
 ```bash
-npm install --save-dev prettier prettier-grundy-scss-order
+npm install --save-dev prettier@3 prettier-grundy-scss-order
 ```
 
 Add it to `prettier.config.mjs`:
@@ -55,7 +46,7 @@ Then format your SCSS as usual:
 npx prettier --write "src/**/*.scss"
 ```
 
-The default order is:
+Default group priority (for statements that may be reordered):
 
 ```text
 @use → @extend → CSS custom properties → Sass variables → @if → declarations → @include → @mixin → nested rules
@@ -74,6 +65,7 @@ export default {
     grundyScssSorterGroupsOrder: ["--variable", "$variable", "layout", "typography", "decl", "@include", "rule"],
     grundyScssSorterGroups: JSON.stringify({
         layout: {
+            type: "decl",
             oneOf: ["display", "position", "inset", "width", "height", "margin", "padding"],
             order: "exact"
         },
@@ -85,65 +77,20 @@ export default {
 };
 ```
 
-| Option                        | Description                                                                                   | Default                                                                     |
-| ----------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `grundyScssSorterGroupsOrder` | Group names in the desired order. Nodes not matching a listed group are placed after them.    | `[@use, @extend, --variable, $variable, @if, decl, @include, @mixin, rule]` |
-| `grundyScssSorterWithRoot`    | Sort root-level nodes as well as declarations inside rules.                                   | `true`                                                                      |
-| `grundyScssSorterSplitGroup`  | Add a blank line between groups. Groups marked as split also separate their individual items. | `false`                                                                     |
-| `grundyScssSorterGroups`      | JSON string with custom groups. Custom definitions extend the built-in groups.                | —                                                                           |
-| `grundyScssSorterPreset`      | A bundled property-order preset.                                                              | —                                                                           |
+| Option                        | Description                                                                         | Without a preset    |
+| ----------------------------- | ----------------------------------------------------------------------------------- | ------------------- |
+| `grundyScssSorterSafety`      | `"strict"` preserves known dependencies; `"loose"` prioritizes configured ordering. | `"strict"`          |
+| `grundyScssSorterGroupsOrder` | Group priority; omitted or empty arrays inherit the preset order.                   | See the order above |
+| `grundyScssSorterWithRoot`    | Also sort root-level nodes.                                                         | `true`              |
+| `grundyScssSorterSplitGroup`  | Separate groups with blank lines and honor `splitItems`.                            | `false`             |
+| `grundyScssSorterGroups`      | JSON string containing group definitions.                                           | —                   |
+| `grundyScssSorterPreset`      | Bundled preset name.                                                                | `default`           |
 
-## Compatibility and checks
+## Compatibility
 
-### Upgrading to 0.4.0
+Requires Prettier `>=3.8.1 <4`. CI covers Node.js 22, 24 and 26 with the minimum and latest Prettier 3.x on Linux, plus Node.js 24 with the latest Prettier 3.x on Windows; see the exact matrix in the [development guide](scripts/DEVELOPMENT.md).
 
-Invalid configuration now produces errors: check preset and group names, group JSON, node types and criteria, and provide `oneOf` for `order: "exact"`. Options follow explicit value → preset → default. With `csscomb`, `csscomb-yandex`, `csscomb-zen` or `pepelsbey`, omitted `grundyScssSorterWithRoot` now inherits `false`; set it explicitly to `true` to preserve the previous root-sorting behavior. Without a preset it remains `true`. Explicit `grundyScssSorterSplitGroups: false` overrides the `pepelsbey` preset's `true`. The default safety mode remains `strict`; `loose` remains an explicit choice. See [the changelog](./CHANGELOG.md) for details.
-
-### Supported matrix
-
-The CI matrix covers current patch releases of Node.js 22, 24 and 26 with Prettier 3.8.1 (the minimum supported version) and the latest stable 3.x. All six combinations run on Linux; Node.js 24 with the latest Prettier 3.x also runs on Windows. The moving `3` selector stays within the supported peer dependency range and does not opt into Prettier 4 or prereleases.
-
-Pushes and pull requests run runtime tests, `npm run test:types`, and `npm run test:package`. The package check installs the actual tarball in a temporary consumer project and verifies public exports, all presets, both safety modes, configuration, comments, idempotence and the installed declarations. Release publishing waits for the same reusable checks.
-
-Run `npm ci`, `npm test`, `npm run test:types`, and `npm run test:package` locally. The package check needs registry access. Development checks use Sass and TypeScript as dev dependencies; neither is added to the published runtime dependencies.
-
-### Benchmark
-
-`npm run benchmark` covers seven synthetic scenarios (independent/conflicting declarations, nested blocks, comments and if/else chains) and four real-file batches: `real-grundyjs`, `real-landos`, `real-falcon`, `real-eywa`. The pinned corpus contains 152 whole files, including 51 CSS and two SCSS files from the evolving grundyjs.ru styles. Each file is processed separately; measurements cover the entire project batch. Both `strict` and `loose` run by default. `sort` measures sorter construction and ordering on prepared ASTs, excluding parsing and serialization; `format` measures the complete `prettier.format` pipeline. Results for all files remain live through the final memory snapshot.
-
-By default `--metric all` measures time and memory in separate sequential processes. Timing uses two processes per version/safety/measurement, with three warmups and nine samples per scenario in each process. Timing workers do not force GC. No worker loads two code versions. Process rounds alternate version order during comparisons. Reports contain medians, quartiles, raw samples, process IDs and time origins (`timeOriginMs`, to distinguish reused PIDs), runtime/package versions, Git revisions and output hashes. These measurements describe the measured machine and workload; a small difference is not a general speed or memory guarantee.
-
-Memory uses three fresh processes per **version/safety/measurement/scenario**, one cold operation each, without warmups. Each worker runs with `--expose-gc`: two GC calls before the baseline snapshot and two after the operation. The result AST/string remains live through the final snapshot; hashing and AST serialization happen afterwards. For `sort`, the input AST is prepared before the baseline; `format` includes the entire formatting pipeline. Separate processes per scenario prevent an earlier scenario from contributing to `maxRSS`.
-
-```sh
-npm run benchmark -- --output benchmark-results.json
-npm run benchmark -- --compare v0.4.3 --output benchmark-results.json
-npm run benchmark -- --scenario comments --safety strict --measurement format
-npm run benchmark -- --scenario real-grundyjs --output benchmark-results.json
-npm run benchmark -- --metric memory --compare v0.4.5 --memory-processes 3 --output benchmark-results.json
-npm run benchmark -- --metric time --scenario independent-1000
-npm run benchmark -- --help
-```
-
-In Windows PowerShell, use `npm.cmd run benchmark -- ...` if the `npm.ps1` shim consumes the `--` separator. Direct invocation also works, for example `node scripts/benchmark.mjs --scenario comments` (no separator needed).
-
-`--compare` takes a locally available Git commit or tag (fetch it first if needed). It snapshots runtime sources into a temporary directory and uses the current checkout's installed dependencies and Node.js for both versions. This compares code, not historical dependency trees; no historical install scripts run and the checkout is untouched. Comparisons require safety-mode support (0.3.0 or later). Output differences appear as `outputMatches: false` and do not invalidate the measurements. Negative `changePercent` means the current checkout is faster. `--warmup`, `--samples`, and `--processes` control time measurements; `--memory-processes` controls independent memory samples. Very short runs are useful for checking the harness, not drawing performance conclusions.
-
-JSON **schema version 2** keeps timing data in `rows`/`workers` and adds `memoryRows`/`memoryWorkers` (the unselected metric has empty arrays). Memory rows contain `before`, `after`, `afterGC`, `deltaAfter` and `deltaAfterGC`, with `medianBytes`, quartiles and `samplesBytes` for each field; raw snapshots stay in the workers. Deltas are computed within each process before aggregation and may be negative. Version comparisons add `changeBytes` (current minus baseline median) for heap after, heap after GC and maxRSS. Input/output hashes must agree between time and memory for the same version; differences between code versions remain informational.
-
-Memory fields are `rss`, `heapTotal`, `heapUsed`, `external`, `arrayBuffers` and `maxRSS`, all in **bytes**. `arrayBuffers` is already included in `external`; do not add them together. Node's `maxRSS` is converted from KiB to bytes and records the process high-water mark through the final snapshot, including startup, imports, input preparation and GC. These snapshots are not allocation counts or exact heap peaks, and maxRSS is not an operation-only peak. See the [Node.js memory APIs](https://nodejs.org/docs/latest-v22.x/api/process.html#processmemoryusage) and [resource usage](https://nodejs.org/docs/latest-v22.x/api/process.html#processresourceusage).
-
-JSON `inputs` identifies synthetic/real scenarios, file counts, bytes and input hashes. Real batches also record the source commit, corpus digest and individual file hashes; hashes include file boundaries. Compare performance only with the same inputs. The default 11 scenarios produce 44 timing and 44 memory rows per comparison, with statistics for each selected version.
-
-CI compares the current revision with pinned commit `dad2aa8dd42553c15dd7c021043a04d214f1ad37` on the same runner, using the same dependencies. Both versions run in separate sequential processes, with their order reversed in the second round. It measures both modes, sort/full format and time/memory, writes comparison tables (memory displayed in MiB) and uploads the combined `benchmark-results.json` for 14 days. Each row includes `current`/`baseline` statistics, output equality and percentage/byte differences. Values have no pass/fail thresholds; execution errors still fail the job. The report, corpus and benchmark scripts are excluded from the npm package.
-
-`npm test` includes 15 SCSS regression fixtures across all presets and modes. `npm run test:corpus -- --output corpus-results.json` verifies snapshot hashes, idempotence, comments, AST inventory and byte-identical output against the Processor reference on all real files (3040 cases); CI saves its separate report. It does not compile standalone application files or prove general CSS equivalence. Update evolving site inputs explicitly with `npm run corpus:update -- --project grundyjs.ru --root /path/to/grundyjs.ru --check`, then remove `--check` to refresh from committed Git styles. Working-tree edits never enter the snapshot. See [corpus provenance, regression guarantees and refresh workflow](tests/fixtures/corpus/README.md).
-
-For opt-in phase timings, pair/edge counters and stock CPU profiles on the pinned real corpus, run `npm run profile:real -- --output /external/directory`. See the [profiling method and findings](scripts/PROFILE_REAL.md); instrumentation is confined to temporary source snapshots.
-
-To compare plain Prettier, `loose` and `strict` on original and already formatted corpus files, run `npm run research:format-pipeline -- --output /external/directory`. The [full pipeline study](scripts/RESEARCH_FORMAT_PIPELINE.md) records warmed timings, separate cold/warm memory observations and intermediate-transformation experiments. Research variants do not change the shipped plugin.
-
-The Prettier plugin calls SCSS parse, sorting and serialization directly before using Prettier's parser and printer. It retains Processor for parsed source maps and root `sourceMappingURL` annotations. Both sorting modes use this internal path; no additional option is required. The PostCSS plugin entry point is unchanged.
+The plugin registers only Prettier’s `scss` parser, selected automatically for `.scss` files. It does not replace the `css`, `less` or indented Sass parsers. It sorts source code rather than compiling Sass.
 
 ## Presets
 
@@ -156,12 +103,13 @@ export default {
 };
 ```
 
-| Preset                                             | Best for                                                                        |
-| -------------------------------------------------- | ------------------------------------------------------------------------------- |
-| [`csscomb`](src/presets/csscomb.mjs)               | Migrating from CSScomb’s default configuration.                                 |
-| [`csscomb-yandex`](src/presets/csscomb-yandex.mjs) | Migrating from CSScomb’s Yandex configuration.                                  |
-| [`csscomb-zen`](src/presets/csscomb-zen.mjs)       | Migrating from CSScomb’s Zen configuration.                                     |
-| [`pepelsbey`](src/presets/pepelsbey.mjs)           | A comprehensive exact CSS-property order based on `stylelint-config-pepelsbey`. |
+| Preset                                             | Purpose                                                                         | `WithRoot` | `SplitGroup` |
+| -------------------------------------------------- | ------------------------------------------------------------------------------- | ---------- | ------------ |
+| [`default`](src/presets/default.mjs)               | Alphabetical declarations; used when no preset is selected.                     | `true`     | `false`      |
+| [`csscomb`](src/presets/csscomb.mjs)               | Migrating from CSScomb’s default configuration.                                 | `false`    | `false`      |
+| [`csscomb-yandex`](src/presets/csscomb-yandex.mjs) | Migrating from CSScomb’s Yandex configuration.                                  | `false`    | `false`      |
+| [`csscomb-zen`](src/presets/csscomb-zen.mjs)       | Migrating from CSScomb’s Zen configuration.                                     | `false`    | `false`      |
+| [`pepelsbey`](src/presets/pepelsbey.mjs)           | A comprehensive exact CSS-property order based on `stylelint-config-pepelsbey`. | `false`    | `true`       |
 
 ## Configuration precedence and validation
 
@@ -171,9 +119,11 @@ Group definitions merge by name: defaults → preset → custom groups. A later 
 
 Invalid JSON, non-object groups, unknown criteria or node types, wrong field types, unknown presets and references to undefined groups throw an error naming the option or group. `order: "exact"` requires a `oneOf` array. Empty lists are valid and match nothing; a group `{}` matches every sortable statement. Criteria within a group are combined with AND. Defined groups that match no statements are allowed.
 
-Statements matching no listed group retain their relative order after the configured groups, subject to the safety mode. Unknown at-rules use `type: "atrule"`. Comments stay attached to statements and are not independently sorted.
+Statements matching no listed group have lower priority than the configured groups; strict constraints can restrict this ordering. Unknown at-rules use `type: "atrule"`. Comments stay attached to statements and are not independently sorted.
 
-This changes two formerly silent behaviors: misspelled configuration now fails, and omitted root sorting respects the preset. Explicit `loose` mode remains available.
+See the [changelog](CHANGELOG.md) for behavior changes between releases.
+
+If a statement matches several groups in `grundyScssSorterGroupsOrder`, the first one determines its ordering. All matching groups contribute to blank-line separation.
 
 ## Built-in groups
 
@@ -183,7 +133,7 @@ This changes two formerly silent behaviors: misspelled configuration now fails, 
 | `@extend`             | Sass `@extend` statements                                            |
 | `--variable`          | CSS custom properties                                                |
 | `$variable`           | Sass variables                                                       |
-| `@if`                 | Sass `@if` statements; matching `@else` blocks remain attached       |
+| `@if`, `@else`        | Sass `@if` statements; matching `@else` blocks remain attached       |
 | `decl`                | CSS declarations, sorted alphabetically by default                   |
 | `@include`            | Sass `@include` statements                                           |
 | `@mixin`              | Sass `@mixin` declarations                                           |
@@ -201,6 +151,8 @@ Each group can combine these criteria:
 | `oneOf`      | Matches one of the listed node names.                                              | `{ oneOf: ["position", "inset"] }`                   |
 | `order`      | Sorts a group using `"alphabetical"` or the array order in `oneOf` with `"exact"`. | `{ oneOf: ["display", "position"], order: "exact" }` |
 | `splitItems` | Separates items in this group with blank lines when group splitting is enabled.    | `{ type: "include", splitItems: true }`              |
+
+`startsWith` and `oneOf` compare case-sensitive node names: the property name for declarations (including variable prefixes `--` or `$`), the selector for rules, and the **parameters** for at-rules, excluding the directive name. For example, `@include button` has name `button` and type `include`. Omitting `order` requests no alphabetical or exact ordering within the group; strict constraints still apply.
 
 Supported values for `type`: `use`, `extend`, `mixin`, `include`, `if`, `else`, `atrule`, `rule`, `decl`, `$variable`, `variable`, `media`, `supports`, and `comment`. Comment attachment takes precedence over group ordering.
 
@@ -236,7 +188,7 @@ Sass assignments (`$value: ...`, including `!default`, `!global`, and `theme.$va
 
 Enclosing blocks containing these operations also stay in place, and each `@if`/`@else` chain is kept together at its original position. Their contents are still sorted recursively between boundaries; `prettier-ignore` additionally protects the entire subtree. Comments remain attached, and group spacing still applies.
 
-This intentionally changes earlier formatting that hoisted assignments, conditions, or module loads. In particular, `@forward` and `@use` are never regrouped: their order can affect module configuration and emitted CSS. Invalid module placement is left in place for Sass to diagnose.
+The order of `@forward` and `@use` can affect module configuration and emitted CSS. The sorter leaves invalid module placement for Sass to diagnose.
 
 In `strict` mode, presets, group criteria, alphabetical/exact ordering, and blank-line settings apply within each sortable segment. They cannot override execution boundaries or property conflicts. Boundary groups still affect spacing. Conservative checks can prevent harmless moves too, especially for enclosing blocks and the `border`/`grid` families. Select `loose` explicitly when configured ordering should take priority.
 
@@ -244,7 +196,7 @@ In `strict`, declarations retain their original side of nested rules and CSS blo
 
 The sorter does not evaluate Sass or prove equivalence for arbitrary stylesheets. Side effects hidden in function calls and cascade dependencies between two sibling rules or CSS blocks still require further analysis.
 
-Stateful function calls in values, interpolations, selectors or at-rule parameters are currently not execution boundaries. Explicit Sass assignments or `prettier-ignore` on the enclosing style rule can preserve known evaluation order. See the [reproducible function-effect research and policy comparison](tests/fixtures/function-effects/README.md).
+See the [reproducible Sass function-effect study](tests/fixtures/function-effects/README.md).
 
 ## Comments
 
@@ -252,11 +204,15 @@ Comments on their own line move with the following statement. Comments after a s
 
 `// prettier-ignore` and `/* prettier-ignore */` protect the following statement and its contents from sorting. Other statements are sorted separately on each side of the ignored statement.
 
+## Development
+
+See the [development guide](scripts/DEVELOPMENT.md) for checks, benchmarks, memory measurements and corpus verification.
+
 ## Try it
 
 **[Open the playground](https://grundyjs.ru/prettier-grundy-scss-order/playground/)** to experiment with groups and presets before adding them to your project.
 
 [npm]: https://www.npmjs.com/package/prettier-grundy-scss-order
 [npm-badge]: https://img.shields.io/npm/v/prettier-grundy-scss-order?color=blue
-[npm-build]: https://img.shields.io/github/actions/workflow/status/urffin/grundy-scss-order/npm-publish.yml?label=build
-[github-actions]: https://github.com/urffin/grundy-scss-order/actions/workflows/npm-publish.yml
+[ci-badge]: https://img.shields.io/github/actions/workflow/status/urffin/prettier-grundy-scss-order/ci.yml?branch=main&label=CI
+[github-actions]: https://github.com/urffin/prettier-grundy-scss-order/actions/workflows/ci.yml
