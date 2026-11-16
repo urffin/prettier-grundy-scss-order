@@ -1,6 +1,7 @@
 # Logs
 benchmark-results.json
 corpus-results.json
+format-pipeline-results.json
 logs
 *.log
 npm-debug.log*

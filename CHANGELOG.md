@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add a manually dispatched same-runner CI comparison of stock and direct formatting on original/ready real files in both modes, with alternating process order, separate cold/warm memory measurements and a verified downloadable JSON report.
+
+- Add an opt-in full formatting study: plain Prettier versus both sorting modes on original and already formatted real files, separate timing/cold/warm memory workers, exact-output gates and research-only pipeline prototypes. Production behavior, configuration and dependencies are unchanged.
+
 ## 0.4.7 — 2026-11-16
 
 Strict mode reuses conflicting declaration positions for property names repeated across nested blocks in segments of at least 32 units. The conflict predicate, resulting sort order, short-segment path and loose behavior are preserved. No configuration changes or migration steps are required: `strict` remains the default, `loose` remains explicit, and `conservative` / `structural` remain aliases.

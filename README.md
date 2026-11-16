@@ -141,6 +141,8 @@ CI compares the current revision with pinned commit `dad2aa8dd42553c15dd7c021043
 
 For opt-in phase timings, pair/edge counters and stock CPU profiles on the pinned real corpus, run `npm run profile:real -- --output /external/directory`. See the [profiling method and findings](scripts/PROFILE_REAL.md); instrumentation is confined to temporary source snapshots.
 
+To compare plain Prettier, `loose` and `strict` on original and already formatted corpus files, run `npm run research:format-pipeline -- --output /external/directory`. The [full pipeline study](scripts/RESEARCH_FORMAT_PIPELINE.md) records warmed timings, separate cold/warm memory observations and intermediate-transformation experiments. Research variants do not change the shipped plugin.
+
 ## Presets
 
 Start with a familiar convention, then override it only where your project differs:

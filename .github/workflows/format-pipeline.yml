@@ -1,0 +1,38 @@
+name: Direct formatting pipeline
+
+on:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: format-pipeline-${{ github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    compare:
+        name: Stock versus direct (informational)
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: "24"
+                  cache: npm
+            - run: npm ci
+            - name: Prepare shared inputs and check exact output
+              run: node scripts/research-format-pipeline.mjs --stage prepare --output "$RUNNER_TEMP/format-pipeline" --processes 4 --warmup 5 --samples 11 --memory-processes 4
+            - name: Compare pipelines sequentially on this runner
+              run: node scripts/research-format-pipeline.mjs --stage direct --output "$RUNNER_TEMP/format-pipeline" --processes 4 --warmup 5 --samples 11 --memory-processes 4
+            - name: Build and verify downloadable report
+              run: |
+                  node scripts/format-pipeline-ci-report.mjs --input "$RUNNER_TEMP/format-pipeline" --output "$RUNNER_TEMP/format-pipeline-results.json"
+                  node scripts/verify-format-pipeline-ci.mjs --input "$RUNNER_TEMP/format-pipeline-results.json" --commit "$GITHUB_SHA"
+            - uses: actions/upload-artifact@v7
+              with:
+                  name: format-pipeline-results
+                  path: ${{ runner.temp }}/format-pipeline-results.json
+                  if-no-files-found: error
+                  retention-days: 14
