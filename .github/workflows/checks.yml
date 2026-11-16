@@ -31,7 +31,7 @@ jobs:
             - name: Select Prettier within the supported major
               run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund prettier@${{ matrix.prettier }}
             - name: Report actual versions
-              run: node -e "console.log(process.version, 'Prettier', require('prettier/package.json').version)"
+              run: node -e "console.log(process.version, 'Prettier', require('prettier/package.json').version); console.log('PostCSS', require('postcss/package.json').version, 'postcss-scss', require('postcss-scss/package.json').version)"
             - run: npm test
             - run: npm run test:types
             - run: npm run test:package
