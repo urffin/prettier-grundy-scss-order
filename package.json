@@ -19,6 +19,7 @@
         "test:types": "tsc -p tests/types/tsconfig.json",
         "test:package": "node scripts/test-package.mjs",
         "test:corpus": "node scripts/test-corpus.mjs",
+        "test:browser": "node scripts/test-browser.mjs",
         "corpus:update": "node scripts/update-corpus.mjs",
         "research:function-effects": "node scripts/research-function-effects.mjs",
         "research:format-pipeline": "node scripts/research-format-pipeline.mjs",
@@ -53,6 +54,8 @@
         "prettier": "^3.8.1"
     },
     "devDependencies": {
+        "esbuild": "0.28.2",
+        "playwright": "1.65.1",
         "sass": "^1.107.1",
         "typescript": "7.0.2",
         "uvu": "^0.5.6"

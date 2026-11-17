@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add a browser smoke check against Node.js using Prettier standalone, all presets and both safety modes. Verify comment/ignore fixtures, idempotence, direct/Processor fallback calls and configuration diagnostics. CI tests the minimum and latest Prettier 3.x on Chromium and uploads JSON reports. Build tooling is development-only; runtime code and defaults are unchanged.
+- Document the browser's PostCSS source-map policy: maps are not decoded or regenerated under its browser remaps. Annotation retention follows the installed Processor version; matching sorted CSS does not establish source-map accuracy.
+
 ## 0.4.8 — 2026-11-16
 
 The Prettier plugin now parses SCSS, invokes the existing sorter and serializes directly, bypassing PostCSS Processor orchestration for ordinary files. It still uses `postcss-scss` and then Prettier's native parser/printer; this is not a parser migration. Processor remains the fallback for parsed source maps and root `sourceMappingURL` annotations, using the already parsed tree and preserving the installed PostCSS version's map policy. Configuration validation still precedes parsing.

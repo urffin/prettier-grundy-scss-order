@@ -10,6 +10,8 @@ Pushes and pull requests run runtime tests, `npm run test:types`, and `npm run t
 
 Run `npm ci`, `npm test`, `npm run test:types`, and `npm run test:package` locally. The package check needs registry access. Development checks use Sass and TypeScript as dev dependencies; neither is added to the published runtime dependencies.
 
+The Node.js 24/Linux matrix also runs the [standalone browser smoke](BROWSER.md) with minimum/latest Prettier 3.x, comparing both modes and all presets against Node.js and saving separate JSON artifacts. esbuild and Playwright are development-only dependencies.
+
 ## Benchmark
 
 `npm run benchmark` covers seven synthetic scenarios (independent/conflicting declarations, nested blocks, comments and if/else chains) and four real-file batches: `real-grundyjs`, `real-landos`, `real-falcon`, `real-eywa`. The pinned corpus contains 152 whole files, including 51 CSS and two SCSS files from the evolving grundyjs.ru styles. Each file is processed separately; measurements cover the entire project batch. Both `strict` and `loose` run by default. `sort` measures sorter construction and ordering on prepared ASTs, excluding parsing and serialization; `format` measures the complete `prettier.format` pipeline. Results for all files remain live through the final memory snapshot.

@@ -35,6 +35,21 @@ jobs:
             - run: npm test
             - run: npm run test:types
             - run: npm run test:package
+            - name: Install browser smoke runtime
+              if: matrix.node == '24' && matrix.os == 'ubuntu-latest'
+              run: npx playwright install --with-deps chromium
+            - name: Compare standalone browser and Node output
+              if: matrix.node == '24' && matrix.os == 'ubuntu-latest'
+              run: npm run test:browser -- --output browser-results.json
+            - uses: actions/upload-artifact@v7
+              if: always() && matrix.node == '24' && matrix.os == 'ubuntu-latest'
+              with:
+                  name: browser-results-prettier-${{ matrix.prettier }}
+                  path: |
+                      browser-results.json
+                      browser-results.evidence/*.json
+                  if-no-files-found: error
+                  retention-days: 14
 
     benchmark:
         name: Sorting benchmark (informational)

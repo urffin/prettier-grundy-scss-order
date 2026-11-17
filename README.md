@@ -92,6 +92,8 @@ Requires Prettier `>=3.8.1 <4`. CI covers Node.js 22, 24 and 26 with the minimum
 
 The plugin registers only Prettier’s `scss` parser, selected automatically for `.scss` files. It does not replace the `css`, `less` or indented Sass parsers. It sorts source code rather than compiling Sass.
 
+For browser bundles with Prettier standalone, load the native PostCSS printer before this plugin and honor package `browser` mappings. See the [browser setup and smoke check](scripts/BROWSER.md), including differences in source-map handling between Node.js and browsers.
+
 ## Presets
 
 Start with a familiar convention, then override it only where your project differs:

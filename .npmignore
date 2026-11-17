@@ -10,4 +10,6 @@ scripts
 benchmark-results.json
 corpus-results.json
 format-pipeline-results.json
+browser-results.json
+browser-results.evidence
 *.test.mjs
