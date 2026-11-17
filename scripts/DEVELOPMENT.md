@@ -53,3 +53,5 @@ The Prettier plugin calls SCSS parse, sorting and serialization directly before 
 ## Official Sass parser readiness
 
 Run `npm run research:sass-parser -- --version 0.5.3 --output /external/directory/sass-parser-results.json` to reproduce the minimal migration blockers with an isolated exact-version candidate. See the [readiness method, JSON and exit codes](SASS_PARSER_READINESS.md). A completed report can be blocked; passing the minimal fixtures does not approve production migration.
+
+The separate Sass parser readiness Actions workflow supports a manual exact version and a Monday weekly npm-latest check. It uploads a JSON report even for setup/probe errors, distinguishes green `blocked` research from red execution failures, and does not run on push/PR.

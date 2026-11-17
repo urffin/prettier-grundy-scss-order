@@ -33,3 +33,19 @@ npm run research:sass-parser -- --version 0.5.3 --require-pass --output /externa
 ```
 
 The versioned candidate is not added to the regular compatibility matrix. `npm test` runs offline fixture/evaluator/CLI regression tests with a synthetic candidate in a fresh worker. The probe does not run the full corpus automatically, introduce a production adapter or approve migration. It does not measure speed, memory or browser support. See the [official parser README](https://github.com/sass/dart-sass/tree/main/pkg/sass-parser#readme) for its own development status; readiness for this formatter must be established with the recorded checks.
+
+## GitHub Actions: manual and weekly
+
+The separate [Sass parser readiness workflow](../.github/workflows/sass-parser-readiness.yml) offers a manual exact-version input. Its weekly schedule runs on Mondays at **06:23 UTC / 09:23 Europe/Moscow**, on the default branch. Scheduled runs query the official npm `latest` endpoint, validate and record an exact stable version and integrity, then use that fixed version for the probe. Prereleases remain available through manual input. Every weekly run checks the current dependency tree, even if the parser version has not changed.
+
+The workflow uses Node.js 24 and read-only repository permissions. Its result is independent of the ordinary push/PR matrix:
+
+- `passed`: minimal fixtures pass; investigation of the full corpus remains necessary.
+- `blocked`: research completed and reproduced blockers. The job succeeds, with blockers listed in its summary.
+- `error`: selection, setup, installation, import, API or report validation failed. The probe step fails and the job is red.
+
+An error placeholder JSON is initialized before `npm ci` using Node built-ins only. An `always()` summary step and artifact upload preserve evidence after dependency/probe failures. Failures before checkout or Node setup cannot produce that placeholder. The artifact **`sass-parser-readiness-results`** is retained for 30 days: a schema-1 `kind: "sass-parser-readiness-ci"` envelope with status, GitHub run/commit context, version selection and the complete research report; raw `*.probe.json` is also included when the probe ran. A scheduled selection's integrity must match the installed lockfile. The wrapper also rejects inconsistent counts, flags, inputs or missing checks. These files are excluded from npm.
+
+`npm run research:sass-parser:ci` is the workflow wrapper. It reads `SASS_PARSER_VERSION` for `workflow_dispatch`; `schedule` resolves npm `latest`. `--initialize` and `--summarize` are internal bootstrap/report modes that run without installed dependencies. `SASS_PARSER_REPORT` overrides the JSON location, otherwise it uses `RUNNER_TEMP` (or the current directory locally). Exit 0 covers `passed` and `blocked`; execution errors exit 1. The standalone research command's `--require-pass` exit-2 behavior is unchanged.
+
+GitHub's [`release` trigger](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#release) concerns releases in this repository, so it does not subscribe to another package's npm publications. An immediate upstream-publication trigger would require an external listener calling `repository_dispatch` or `workflow_dispatch`; no such listener is configured. Weekly polling provides the automated check here. GitHub [scheduled runs](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule) may be delayed, and public-repository schedules can be disabled after 60 days without repository activity. The workflow becomes available after its file reaches the default branch. It never changes the production parser or publishes a release.

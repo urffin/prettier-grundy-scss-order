@@ -12,5 +12,6 @@ corpus-results.json
 format-pipeline-results.json
 browser-results.json
 sass-parser-results.json
+sass-parser-readiness-results*.json
 browser-results.evidence
 *.test.mjs

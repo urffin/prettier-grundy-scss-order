@@ -1,0 +1,52 @@
+name: Sass parser readiness
+
+on:
+    workflow_dispatch:
+        inputs:
+            version:
+                description: Exact sass-parser version to check (for example 0.5.3)
+                required: true
+                default: "0.5.3"
+                type: string
+    schedule:
+        # Monday 06:23 UTC / 09:23 Europe/Moscow; avoid the start of the hour.
+        - cron: "23 6 * * 1"
+
+permissions:
+    contents: read
+
+concurrency:
+    group: sass-parser-readiness-${{ github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    readiness:
+        name: Minimal parser checks (informational)
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        env:
+            SASS_PARSER_VERSION: ${{ inputs.version }}
+        outputs:
+            status: ${{ steps.summary.outputs.status }}
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: "24"
+                  cache: npm
+            - name: Initialize error artifact before dependency installation
+              run: node scripts/sass-parser-ci.mjs --initialize
+            - run: npm ci
+            - name: Probe the selected exact version
+              run: npm run research:sass-parser:ci
+            - name: Summarize readiness separately from execution errors
+              id: summary
+              if: always()
+              run: node scripts/sass-parser-ci.mjs --summarize
+            - uses: actions/upload-artifact@v7
+              if: always()
+              with:
+                  name: sass-parser-readiness-results
+                  path: ${{ runner.temp }}/sass-parser-readiness-results*.json
+                  if-no-files-found: error
+                  retention-days: 30

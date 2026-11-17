@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a separate manual/weekly Sass parser readiness workflow with exact-version selection, npm-latest polling on Mondays, downloadable JSON and job summaries. Measured blockers remain informational; setup/execution errors fail the job. Bootstrap evidence is prepared before dependency installation. Add offline workflow regression tests; production parsing and dependencies remain unchanged.
+
 - Add an opt-in exact-version `sass-parser` readiness probe with isolated installation/worker, six minimal fixtures, JSON evidence and offline regression tests. Distinguish measured blockers from infrastructure failures and reserve migration approval for a later full-corpus/adapter/browser investigation. Production parsing and dependencies are unchanged.
 
 - Add a browser smoke check against Node.js using Prettier standalone, all presets and both safety modes. Verify comment/ignore fixtures, idempotence, direct/Processor fallback calls and configuration diagnostics. CI tests the minimum and latest Prettier 3.x on Chromium and uploads JSON reports. Build tooling is development-only; runtime code and defaults are unchanged.
