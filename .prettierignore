@@ -4,3 +4,4 @@ coverage
 node_modules
 tests/fixtures/corpus
 tests/fixtures/function-effects
+tests/fixtures/sass-parser

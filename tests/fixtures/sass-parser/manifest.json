@@ -1,0 +1,38 @@
+{
+    "schemaVersion": 1,
+    "origin": "Minimal reproductions from the isolated sass-parser 0.5.3 study (2026-11-02); pass criteria describe required behavior, not frozen broken output.",
+    "fixtures": [
+        {
+            "id": "keyframes-percentages",
+            "file": "keyframes.scss",
+            "purpose": "Parse percentage keyframe selectors, including 0% and 100%."
+        },
+        {
+            "id": "branch-comment",
+            "file": "branch-comment.scss",
+            "purpose": "Keep the comment between @if and @else through both round trips."
+        },
+        {
+            "id": "footer-comment",
+            "file": "footer-comment.scss",
+            "purpose": "Keep the block footer comment after a second parse/stringify."
+        },
+        {
+            "id": "ignored-subtree",
+            "file": "ignored-subtree.scss",
+            "purpose": "Keep the exact text of the node following prettier-ignore.",
+            "ignoredSelector": ".ignored"
+        },
+        {
+            "id": "leading-whitespace",
+            "file": "leading-whitespace.scss",
+            "purpose": "Expose the existing adapter's raws.before contract for declarations and attached comments.",
+            "rawsBefore": true
+        },
+        {
+            "id": "control",
+            "file": "control.scss",
+            "purpose": "A small ordinary stylesheet must remain parseable and stable."
+        }
+    ]
+}

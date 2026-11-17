@@ -49,3 +49,7 @@ For opt-in phase timings, pair/edge counters and stock CPU profiles on the pinne
 To compare plain Prettier, `loose` and `strict` on original and already formatted corpus files, run `npm run research:format-pipeline -- --output /external/directory`. The [full pipeline study](./RESEARCH_FORMAT_PIPELINE.md) records warmed timings, separate cold/warm memory observations and intermediate-transformation experiments. Research variants do not change the shipped plugin.
 
 The Prettier plugin calls SCSS parse, sorting and serialization directly before using Prettier's parser and printer. It retains Processor for parsed source maps and root `sourceMappingURL` annotations. Both sorting modes use this internal path; no additional option is required. The PostCSS plugin entry point is unchanged.
+
+## Official Sass parser readiness
+
+Run `npm run research:sass-parser -- --version 0.5.3 --output /external/directory/sass-parser-results.json` to reproduce the minimal migration blockers with an isolated exact-version candidate. See the [readiness method, JSON and exit codes](SASS_PARSER_READINESS.md). A completed report can be blocked; passing the minimal fixtures does not approve production migration.

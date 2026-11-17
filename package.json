@@ -23,6 +23,7 @@
         "corpus:update": "node scripts/update-corpus.mjs",
         "research:function-effects": "node scripts/research-function-effects.mjs",
         "research:format-pipeline": "node scripts/research-format-pipeline.mjs",
+        "research:sass-parser": "node scripts/research-sass-parser.mjs",
         "profile:real": "node scripts/profile-real-corpus.mjs",
         "benchmark": "node scripts/benchmark.mjs"
     },
