@@ -16,3 +16,5 @@ The manifest describes desired behavior. Tests do not pin the candidate's broken
 All cases check parse/print, whether printed SCSS remains parseable, comment content/count/style on both passes and byte stability between first and second outputs. Full input byte identity is informational except for the ignored subtree. This is not a Sass semantic equivalence test or a sorting test.
 
 Run the [versioned readiness command](../../../scripts/SASS_PARSER_READINESS.md). `npm test` validates these fixtures and the probe using an independent `postcss-scss` control and synthetic failures; it does not download or import `sass-parser` in the repository process.
+
+The [upstream triage and standalone collector](upstream/README.md) separate three syntax/comment-loss candidates from two adapter contracts, map relevant upstream work and retain three unpublished issue drafts. The six-fixture gate remains unchanged; source-span observations do not approve migration.

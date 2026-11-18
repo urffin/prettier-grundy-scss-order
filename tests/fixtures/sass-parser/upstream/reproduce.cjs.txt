@@ -1,0 +1,114 @@
+// Standalone evidence collector: copy beside a fresh sass-parser installation.
+// No sorter, Prettier, postcss-scss or repository modules are loaded.
+const fs = require("node:fs");
+const { createHash } = require("node:crypto");
+const { createRequire } = require("node:module");
+const path = require("node:path");
+const parser = require("sass-parser");
+const candidateRequire = createRequire(require.resolve("sass-parser"));
+const sass = candidateRequire("sass");
+function versionOf(name) {
+    let directory = path.dirname(candidateRequire.resolve(name));
+    for (;;) {
+        const file = path.join(directory, "package.json");
+        if (fs.existsSync(file)) {
+            const metadata = JSON.parse(fs.readFileSync(file, "utf8"));
+            if (metadata.name === name) return metadata.version;
+        }
+        const parent = path.dirname(directory);
+        if (parent === directory) throw new Error("Package metadata not found: " + name);
+        directory = parent;
+    }
+}
+
+const cases = [
+    { id: "keyframes-percentages", input: "@keyframes spin {0% {opacity:0} 100% {opacity:1}}\n" },
+    {
+        id: "branch-comment",
+        input: "@if true {.a{width:1px}} /* keep branch */ @else {.a{width:2px}}\n",
+        marker: "keep branch"
+    },
+    { id: "footer-comment", input: ".a { width: 1px; /* keep footer */ }\n", marker: "keep footer" },
+    { id: "ignored-subtree", input: "// prettier-ignore\n.ignored { z-index: 1;   color : red; }\n", selector: ".ignored" },
+    { id: "leading-whitespace", input: ".probe {z-index:1;\n\n/* for color */\ncolor:red;}\n", selector: ".probe" },
+    { id: "control", input: ".control { width: 1px; height: 2px; }\n" },
+    { id: "keyframes-from-to-control", input: "@keyframes spin {from {opacity:0} to {opacity:1}}\n" },
+    {
+        id: "footer-explicit-semicolon-control",
+        input: ".a { width: 1px; /* keep footer */ }\n",
+        marker: "keep footer",
+        forceSemicolon: true
+    }
+];
+const comments = root => {
+    const result = [];
+    root.walkComments(node => result.push({ type: node.sassType, text: node.text }));
+    return result;
+};
+function sourceSpan(node) {
+    const start = node.source?.start?.offset,
+        end = node.source?.end?.offset;
+    return {
+        start: start ?? null,
+        end: end ?? null,
+        // sass-parser 0.5.6 spans are end-exclusive. Record this observation;
+        // a future adapter must verify conventions before slicing changed ASTs.
+        sliceEndExclusive: Number.isInteger(start) && Number.isInteger(end) ? node.source.input.css.slice(start, end) : null
+    };
+}
+const rows = cases.map(test => {
+    // A failure here is a broken reproduction, not evidence against the parser.
+    sass.compileString(test.input, { logger: sass.Logger.silent });
+    const row = { ...test, validSass: true };
+    try {
+        const root = parser.scss.parse(test.input);
+        row.initialComments = comments(root);
+        if (test.selector) {
+            const node = root.nodes.find(node => node.selector === test.selector);
+            row.originalSpan = sourceSpan(node);
+            row.children = node.nodes.map(child => ({
+                type: child.sassType,
+                name: child.prop ?? child.text,
+                before: child.raws.before ?? null,
+                source: sourceSpan(child)
+            }));
+        }
+        if (test.forceSemicolon) root.nodes[0].raws.semicolon = true;
+        row.first = root.toString();
+        row.firstComments = comments(parser.scss.parse(row.first));
+        row.second = parser.scss.parse(row.first).toString();
+        row.third = parser.scss.parse(row.second).toString();
+        row.stable = row.first === row.second;
+        row.stableSecondToThird = row.second === row.third;
+        if (test.marker) {
+            row.markerInInitialAST = row.initialComments.some(comment => comment.text.includes(test.marker));
+            row.markerInFirstPrint = row.first.includes(test.marker);
+            row.markerInReparsedAST = row.firstComments.some(comment => comment.text.includes(test.marker));
+            row.markerInSecondPrint = row.second.includes(test.marker);
+            row.markerInThirdPrint = row.third.includes(test.marker);
+        }
+    } catch (error) {
+        row.error = { name: error.name, message: error.message };
+    }
+    return row;
+});
+console.log(
+    JSON.stringify(
+        {
+            schemaVersion: 1,
+            migrationApproved: false,
+            candidate: {
+                version: versionOf("sass-parser"),
+                entrySHA256: createHash("sha256")
+                    .update(fs.readFileSync(require.resolve("sass-parser")))
+                    .digest("hex"),
+                sass: sass.info,
+                postcss: candidateRequire("postcss/package.json").version,
+                node: process.version
+            },
+            rows
+        },
+        null,
+        2
+    )
+);

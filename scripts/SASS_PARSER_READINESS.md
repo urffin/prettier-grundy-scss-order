@@ -2,6 +2,8 @@
 
 This opt-in probe reproduces the parser-migration blockers without changing the production `postcss-scss` parser, sorter or dependencies. The six [minimal fixtures](../tests/fixtures/sass-parser/README.md) cover percentage keyframes, branch/footer comments, ignored text, whitespace metadata and an ordinary control.
 
+The [2026-11-18 upstream triage](../tests/fixtures/sass-parser/upstream/README.md) distinguishes three parser/printing candidates from two adapter requirements. It includes a standalone collector and unpublished issue drafts. Root raws work is separate from declaration `raws.before`; source spans recover ignored text in the measured example, but no migration adapter has been implemented or approved. The existing gate stays unchanged.
+
 ```sh
 npm ci
 npm run research:sass-parser -- --version 0.5.3 --output /external/directory/sass-parser-results.json

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Classify five Sass parser migration blockers against upstream work: distinguish syntax/comment-loss candidates from ignore/trivia adapter requirements. Add a standalone reproduction collector and three unpublished issue drafts. Keep the production parser and readiness gate unchanged.
+
 - Add a blocking CI matrix for all minimum/latest combinations of supported PostCSS and postcss-scss, using fresh tarball consumers and the existing Node/standalone browser smoke. Verify both modes, comments/ignore, direct/fallback and map policy; record exact versions, dependency selection, integrity and installation lockfiles in JSON artifacts. Add offline regression tests. Runtime code, dependency ranges, repository lockfile and defaults are unchanged.
 
 - Add a separate manual/weekly Sass parser readiness workflow with exact-version selection, npm-latest polling on Mondays, downloadable JSON and job summaries. Measured blockers remain informational; setup/execution errors fail the job. Bootstrap evidence is prepared before dependency installation. Add offline workflow regression tests; production parsing and dependencies remain unchanged.
