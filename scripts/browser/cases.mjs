@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 
 const presets = ["default", "csscomb", "csscomb-yandex", "csscomb-zen", "pepelsbey"];
 const modes = ["strict", "loose"];
-const root = new URL("../tests/fixtures/corpus/regressions/", import.meta.url);
+const root = new URL("../../tests/fixtures/corpus/regressions/", import.meta.url);
 const base =
     ".z { width:1px; /* leading */ color:red; // trailing\n margin-top:8px; margin:0; @media (min-width:1px) {color:blue;} } .a {height:2px;}";
 function inlineMap(encoding) {

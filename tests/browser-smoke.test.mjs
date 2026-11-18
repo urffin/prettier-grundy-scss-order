@@ -1,8 +1,8 @@
 import { test } from "uvu";
 import assert from "node:assert/strict";
 import prettier from "prettier";
-import { browserCases } from "../scripts/browser-cases.mjs";
-import { verifyBrowserResults, canonicalMapOutput } from "../scripts/browser-verification.mjs";
+import { browserCases } from "../scripts/browser/cases.mjs";
+import { verifyBrowserResults, canonicalMapOutput } from "../scripts/browser/verification.mjs";
 import { parseBrowserArgs } from "../scripts/test-browser.mjs";
 
 const environment = {

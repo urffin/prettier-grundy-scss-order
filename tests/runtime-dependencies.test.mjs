@@ -2,9 +2,9 @@ import { test } from "uvu";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
-import { dependencyRequests, consumerManifest, dependencyEvidence } from "../scripts/browser-dependencies.mjs";
+import { dependencyRequests, consumerManifest, dependencyEvidence } from "../scripts/browser/dependencies.mjs";
 import { parseBrowserArgs } from "../scripts/test-browser.mjs";
-import { browserCases } from "../scripts/browser-cases.mjs";
+import { browserCases } from "../scripts/browser/cases.mjs";
 
 const pkg = { name: "prettier-grundy-scss-order", dependencies: { postcss: "^8.5.8", "postcss-scss": "^4.0.9" } };
 const options = { postcss: "minimum", postcssScss: "latest" };

@@ -26,6 +26,8 @@ Fallback сохраняет браузерное поведение устано
 
 ## Запуск из репозитория
 
+Browser-инструменты собраны в `scripts/browser/`: `runner.mjs` готовит и обслуживает smoke, `cases.mjs` задаёт входы, `runtime.mjs` выполняет случаи, `page.mjs` управляет страницей, `verification.mjs` проверяет результаты, `dependencies.mjs` выбирает и проверяет профиль установки. `scripts/test-browser.mjs` остаётся CLI и переэкспортирует прежние программные функции. Команды, схемы отчётов, имена evidence-файлов и CI-артефактов сохранены. Для прежнего поля `sourceHashes.runtime` проверка исходников должна читать `scripts/browser/runtime.mjs`.
+
 ```sh
 npm ci
 npx playwright install --with-deps chromium

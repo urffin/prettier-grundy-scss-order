@@ -26,6 +26,8 @@ Preserved map annotations may describe the original input and be stale after sor
 
 ## Run from a repository checkout
 
+Browser tooling is grouped in `scripts/browser/`: `runner.mjs` prepares and serves the smoke, `cases.mjs` defines inputs, `runtime.mjs` runs each case, `page.mjs` drives the browser, `verification.mjs` checks results, and `dependencies.mjs` selects and verifies the installed dependency profile. `scripts/test-browser.mjs` remains the CLI and re-exports its existing programmatic functions. Commands, report schemas, evidence filenames and CI artifact names are unchanged. Source-hash verification should read `scripts/browser/runtime.mjs` for the report's existing `sourceHashes.runtime` field.
+
 ```sh
 npm ci
 npx playwright install --with-deps chromium

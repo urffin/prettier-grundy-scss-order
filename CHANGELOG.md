@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Group browser smoke tooling under `scripts/browser/`, retaining `scripts/test-browser.mjs` as the CLI/programmatic entry point. Preserve commands, report schemas, evidence paths and CI artifact names.
+
 - Classify five Sass parser migration blockers against upstream work: distinguish syntax/comment-loss candidates from ignore/trivia adapter requirements. Add a standalone reproduction collector and three unpublished issue drafts. Keep the production parser and readiness gate unchanged.
 
 - Add a blocking CI matrix for all minimum/latest combinations of supported PostCSS and postcss-scss, using fresh tarball consumers and the existing Node/standalone browser smoke. Verify both modes, comments/ignore, direct/fallback and map policy; record exact versions, dependency selection, integrity and installation lockfiles in JSON artifacts. Add offline regression tests. Runtime code, dependency ranges, repository lockfile and defaults are unchanged.
