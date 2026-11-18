@@ -42,4 +42,20 @@ The 312 cases cover all 15 pinned regression fixtures across five presets and st
 
 CI runs this check in the existing Node.js 24/Linux matrix with minimum Prettier 3.8.1 and the latest 3.x. Each run uploads a separate `browser-results-prettier-*` artifact with the report and JSON evidence for 14 days. The bundle and browser reports are excluded from the npm package. This is a Chromium smoke check, not a cross-engine guarantee, a performance benchmark or a proof of Sass/CSS semantic equivalence.
 
+## Runtime dependency matrix
+
+Four additional Node.js 24/Linux CI jobs run every minimum/latest combination of `postcss` and `postcss-scss`, using the checkout's locked Prettier. Each installs the actual plugin tarball in a fresh consumer and runs the same 312 Node/browser cases: both safety modes, all presets, comments/ignore, direct/fallback, valid and invalid maps. These jobs also gate releases through the reusable checks workflow.
+
+```sh
+npm run test:browser -- --postcss minimum --postcss-scss latest --output browser-results.json
+```
+
+Pass both selectors. `minimum` is the exact lower bound from the plugin's declared caret range (currently PostCSS 8.5.8 and postcss-scss 4.0.9). `latest` uses npm's fresh resolution within that range, rather than an unrestricted dist-tag or a prerelease. All four combinations run even when a package's minimum and latest resolve to the same version. A future unsupported range shape fails explicitly. These selectors cannot be combined with `--package-root`; `--serve` remains available.
+
+The temporary consumer declares and overrides both runtime packages. Before formatting, the check verifies loaded versions against its lockfile and checks that the plugin and SCSS parser resolve the same PostCSS instance. It rejects minimum-version drift, out-of-range/prerelease versions and unexpected nested versions. Repository dependency ranges and lockfile are unchanged.
+
+The additive JSON `dependencies` field records selection, declared/requested ranges, exact resolved versions, tarball URLs and integrity, the consumer manifest, full installation lockfile and its canonical JSON SHA-256. `versions` still records the actual Node/Prettier/PostCSS/postcss-scss/esbuild versions. CI uploads `runtime-dependencies-postcss-{minimum|latest}-scss-{minimum|latest}` with the report and raw JSON evidence for 14 days; the generated bundle is not uploaded.
+
+Map annotation retention can differ between supported PostCSS versions. Every profile must match its own Processor reference and the documented Node/browser policy; only map annotations and generated input IDs receive the existing narrow normalization. CSS, comments and integration call counts keep their existing checks. These results do not prove that preserved maps describe the final Prettier output.
+
 See also [development checks](DEVELOPMENT.md) and the [Russian guide](BROWSER.ru.md).

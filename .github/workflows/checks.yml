@@ -51,6 +51,36 @@ jobs:
                   if-no-files-found: error
                   retention-days: 14
 
+    runtime-dependencies:
+        name: Runtime PostCSS ${{ matrix.postcss }} / SCSS ${{ matrix.scss }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        strategy:
+            fail-fast: false
+            matrix:
+                postcss: [minimum, latest]
+                scss: [minimum, latest]
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: "24"
+                  cache: npm
+            - run: npm ci
+            - name: Install browser smoke runtime
+              run: npx playwright install --with-deps chromium
+            - name: Verify selected runtime dependencies in Node and browser
+              run: npm run test:browser -- --postcss ${{ matrix.postcss }} --postcss-scss ${{ matrix.scss }} --output browser-results.json
+            - uses: actions/upload-artifact@v7
+              if: always()
+              with:
+                  name: runtime-dependencies-postcss-${{ matrix.postcss }}-scss-${{ matrix.scss }}
+                  path: |
+                      browser-results.json
+                      browser-results.evidence/*.json
+                  if-no-files-found: error
+                  retention-days: 14
+
     benchmark:
         name: Sorting benchmark (informational)
         runs-on: ubuntu-latest

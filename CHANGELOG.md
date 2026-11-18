@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a blocking CI matrix for all minimum/latest combinations of supported PostCSS and postcss-scss, using fresh tarball consumers and the existing Node/standalone browser smoke. Verify both modes, comments/ignore, direct/fallback and map policy; record exact versions, dependency selection, integrity and installation lockfiles in JSON artifacts. Add offline regression tests. Runtime code, dependency ranges, repository lockfile and defaults are unchanged.
+
 - Add a separate manual/weekly Sass parser readiness workflow with exact-version selection, npm-latest polling on Mondays, downloadable JSON and job summaries. Measured blockers remain informational; setup/execution errors fail the job. Bootstrap evidence is prepared before dependency installation. Add offline workflow regression tests; production parsing and dependencies remain unchanged.
 
 - Add an opt-in exact-version `sass-parser` readiness probe with isolated installation/worker, six minimal fixtures, JSON evidence and offline regression tests. Distinguish measured blockers from infrastructure failures and reserve migration approval for a later full-corpus/adapter/browser investigation. Production parsing and dependencies are unchanged.

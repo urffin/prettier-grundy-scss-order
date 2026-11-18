@@ -12,6 +12,12 @@ import { build } from "esbuild";
 import { browserCases } from "./browser-cases.mjs";
 import { createBrowserRuntime } from "./browser-runtime.mjs";
 import { verifyBrowserResults } from "./browser-verification.mjs";
+import {
+    validateDependencyOptions,
+    dependencyRequests,
+    consumerManifest,
+    dependencyEvidence
+} from "./browser-dependencies.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const run = promisify(execFile);
@@ -23,46 +29,69 @@ export function parseBrowserArgs(args) {
     for (let i = 0; i < args.length; i++) {
         const key = args[i];
         if (key === "--serve") options.serve = true;
-        else if (["--output", "--package-root"].includes(key)) {
+        else if (["--output", "--package-root", "--postcss", "--postcss-scss"].includes(key)) {
             assert.ok(args[i + 1] && !args[i + 1].startsWith("--"), `Missing value: ${key}`);
-            options[key === "--output" ? "output" : "packageRoot"] = path.resolve(args[++i]);
+            const name = {
+                "--output": "output",
+                "--package-root": "packageRoot",
+                "--postcss": "postcss",
+                "--postcss-scss": "postcssScss"
+            }[key];
+            assert.equal(options[name] === undefined || name === "output", true, `Duplicate option: ${key}`);
+            const value = args[++i];
+            options[name] = ["output", "packageRoot"].includes(name) ? path.resolve(value) : value;
         } else throw new Error(`Unknown argument: ${key}`);
     }
+    validateDependencyOptions(options);
     return options;
 }
 
-async function installedPackage(temporary, selected) {
-    if (selected) return { directory: selected, kind: "existing-install" };
+async function installedPackage(temporary, options) {
+    if (options.packageRoot) return { directory: options.packageRoot, kind: "existing-install" };
     assert.ok(process.env.npm_execpath, "Run with npm run test:browser, or supply --package-root for an existing install");
     const npm = (args, cwd) =>
         run(process.execPath, [process.env.npm_execpath, ...args], { cwd, maxBuffer: 8 * 1024 * 1024 });
     const { stdout } = await npm(["pack", "--json", "--pack-destination", temporary], root);
     const [packed] = JSON.parse(stdout);
-    await writeFile(
-        path.join(temporary, "package.json"),
-        JSON.stringify({
-            name: "scss-browser-consumer",
-            private: true,
-            type: "module",
-            dependencies: {
-                "prettier-grundy-scss-order": `file:${path.join(temporary, packed.filename)}`,
-                prettier: require("prettier/package.json").version
-            }
-        })
+    const pkg = require("../package.json");
+    const requests = dependencyRequests(pkg, options);
+    const manifest = consumerManifest(
+        pkg,
+        path.join(temporary, packed.filename),
+        require("prettier/package.json").version,
+        requests
     );
+    await writeFile(path.join(temporary, "package.json"), JSON.stringify(manifest));
     await npm(
-        ["install", "--ignore-scripts", "--no-audit", "--no-fund", "--fetch-retries=0", "--fetch-timeout=30000"],
+        [
+            "install",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund",
+            "--registry=https://registry.npmjs.org/",
+            "--fetch-retries=0",
+            "--fetch-timeout=30000"
+        ],
         temporary
     );
     return {
         directory: path.join(temporary, "node_modules/prettier-grundy-scss-order"),
         kind: "packed-install",
-        integrity: packed.integrity
+        integrity: packed.integrity,
+        ...(requests ?
+            {
+                dependencyRequests: requests,
+                consumerManifest: manifest,
+                packageLock: JSON.parse(await readFile(path.join(temporary, "package-lock.json"), "utf8"))
+            }
+        :   {})
     };
 }
 
 export async function prepareBrowserSmoke(options, temporary) {
-    const target = await installedPackage(temporary, options.packageRoot);
+    validateDependencyOptions(options);
+    const installed = await installedPackage(temporary, options);
+    const { dependencyRequests: requests, consumerManifest: manifest, packageLock, ...target } = installed;
     const pkgRoot = target.directory;
     const consumer = createRequire(path.join(pkgRoot, "package.json"));
     const pkg = consumer("./package.json");
@@ -77,6 +106,29 @@ export async function prepareBrowserSmoke(options, temporary) {
         sorter: path.join(pkgRoot, "src/grundy-prop-sorter.mjs"),
         runtime: fileURLToPath(new URL("./browser-runtime.mjs", import.meta.url))
     };
+    const versions = {
+        node: process.version,
+        prettier: consumer("prettier/package.json").version,
+        postcss: consumer("postcss/package.json").version,
+        postcssScss: consumer("postcss-scss/package.json").version,
+        esbuild: require("esbuild/package.json").version
+    };
+    const dependencies = dependencyEvidence(requests, manifest, packageLock, versions);
+    if (dependencies) {
+        const syntaxConsumer = createRequire(consumer.resolve("postcss-scss/package.json"));
+        assert.equal(
+            syntaxConsumer.resolve("postcss"),
+            imports.postcss,
+            "SCSS syntax and plugin must load the same PostCSS"
+        );
+        const rootConsumer = createRequire(path.join(temporary, "package.json"));
+        assert.equal(rootConsumer.resolve("postcss"), imports.postcss, "Selected PostCSS must reach the packed plugin");
+        assert.equal(
+            rootConsumer.resolve("postcss-scss"),
+            consumer.resolve("postcss-scss"),
+            "Selected SCSS syntax must reach the packed plugin"
+        );
+    }
     const load = file => import(pathToFileURL(file));
     const [prettier, plugin, native, postcss, scss, configuration, sorter] = await Promise.all([
         load(path.join(pp, "index.mjs")),
@@ -132,13 +184,8 @@ export const runtime = createBrowserRuntime({prettier,plugin,native,postcss,scss
         prettier: prettier.default,
         metadata: {
             target: { ...target, version: pkg.version },
-            versions: {
-                node: process.version,
-                prettier: prettier.default.version,
-                postcss: consumer("postcss/package.json").version,
-                postcssScss: consumer("postcss-scss/package.json").version,
-                esbuild: require("esbuild/package.json").version
-            },
+            versions,
+            ...(dependencies ? { dependencies } : {}),
             sourceHashes,
             bundleSHA256: digest(bundle),
             bundleBytes: Buffer.byteLength(bundle),
@@ -223,7 +270,7 @@ export async function serveBrowserSmoke(prepared, options) {
 export async function main(args = process.argv.slice(2)) {
     if (args.includes("--help")) {
         console.log(
-            "npm run test:browser -- [--output browser-results.json] [--serve] [--package-root /installed/package]\nDefault: pack/install current checkout and run headless Chromium. --serve: open the printed URL in a browser; no browser is launched or debugged by this command."
+            "npm run test:browser -- [--output browser-results.json] [--serve] [--package-root /installed/package | --postcss minimum|latest --postcss-scss minimum|latest]\nDefault: pack/install current checkout and run headless Chromium. latest resolves within the declared runtime range; dependency selectors require a fresh tarball install. --serve: open the printed URL in a browser; no browser is launched or debugged by this command."
         );
         return;
     }

@@ -12,6 +12,8 @@ Run `npm ci`, `npm test`, `npm run test:types`, and `npm run test:package` local
 
 The Node.js 24/Linux matrix also runs the [standalone browser smoke](BROWSER.md) with minimum/latest Prettier 3.x, comparing both modes and all presets against Node.js and saving separate JSON artifacts. esbuild and Playwright are development-only dependencies.
 
+Four additional runtime-dependency jobs cover the full minimum/latest cross-product of PostCSS and postcss-scss with locked Prettier. Each installs a fresh plugin tarball, verifies the resolved dependency graph and runs the same Node/browser smoke, including both modes, comments, direct/fallback and maps. Artifacts record exact versions, selection and installation lockfile. See the [selectors and JSON evidence](BROWSER.md#runtime-dependency-matrix).
+
 ## Benchmark
 
 `npm run benchmark` covers seven synthetic scenarios (independent/conflicting declarations, nested blocks, comments and if/else chains) and four real-file batches: `real-grundyjs`, `real-landos`, `real-falcon`, `real-eywa`. The pinned corpus contains 152 whole files, including 51 CSS and two SCSS files from the evolving grundyjs.ru styles. Each file is processed separately; measurements cover the entire project batch. Both `strict` and `loose` run by default. `sort` measures sorter construction and ordering on prepared ASTs, excluding parsing and serialization; `format` measures the complete `prettier.format` pipeline. Results for all files remain live through the final memory snapshot.
