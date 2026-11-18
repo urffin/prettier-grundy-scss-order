@@ -251,7 +251,16 @@ test("Initialization and error summary work before node_modules exists", async (
 });
 
 test("Workflow stays opt-in or weekly, passes manual input via env and uploads failure evidence", async () => {
-    const source = await readFile(new URL("../.github/workflows/sass-parser-readiness.yml", import.meta.url), "utf8");
+    const input = await readFile(new URL("../.github/workflows/sass-parser-readiness.yml", import.meta.url), "utf8");
+    assertWorkflow(input.replaceAll("\r\n", "\n"));
+    assertWorkflow(input.replaceAll("\r\n", "\n").replaceAll("\n", "\r\n"));
+    for (const text of [input.replaceAll("\r\n", "\n"), input.replaceAll("\r\n", "\n").replaceAll("\n", "\r\n")])
+        assert.throws(() => assertWorkflow(text.replaceAll("if: always()", "if: success()")));
+});
+
+function assertWorkflow(input) {
+    // Checkout line endings do not change YAML semantics. Exercise both above.
+    const source = input.replaceAll("\r\n", "\n");
     assert.match(source, /workflow_dispatch:/);
     assert.match(source, /cron: "23 6 \* \* 1"/);
     assert(!/^ {4}(push|pull_request|release):/m.test(source));
@@ -263,6 +272,6 @@ test("Workflow stays opt-in or weekly, passes manual input via env and uploads f
     assert.match(source, /if: always\(\)\n\s+run: node scripts\/sass-parser-ci.mjs --summarize/);
     assert.match(source, /uses: actions\/upload-artifact@v7\n\s+if: always\(\)/);
     assert.match(source, /sass-parser-readiness-results\*\.json/);
-});
+}
 
 test.run();
