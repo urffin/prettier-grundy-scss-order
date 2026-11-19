@@ -9,9 +9,6 @@ import prettier from "prettier";
 import plugin from "../src/index.mjs";
 import { grundyPropSorter } from "../src/grundy-prop-sorter.mjs";
 import { instrument, snapshot } from "../scripts/profile-real-instrument.mjs";
-import { variantSource, variantCoreSource } from "../scripts/profile-real-variants.mjs";
-import { sortWithPropertyConstraints } from "../src/property-conflicts.mjs";
-import { presets } from "../src/presets/index.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const directory = await fs.mkdtemp(path.join(os.tmpdir(), "scss-profile-test-"));
@@ -117,91 +114,5 @@ test("Full-format profile measures direct parse/serialize and map fallback once"
         for (const name of ["postcssParse", "postcssSerialize", "prettierParse", "pluginIntegration"])
             assert.is(phases[name].calls, 1, name);
     }
-});
-test("Research optimizations preserve source ties, property constraints and additional edges", async () => {
-    const source = await fs.readFile(path.join(root, "src/property-conflicts.mjs"), "utf8");
-    const choices = [
-        null,
-        "*",
-        "color",
-        "margin",
-        "margin-top",
-        "width",
-        "height",
-        "--A",
-        "--a",
-        "border",
-        "border-image",
-        "grid",
-        "grid-row",
-        "all",
-        "direction"
-    ];
-    let seed = 246813579;
-    const random = () => {
-        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
-        return seed;
-    };
-    const cases = Array.from({ length: 72 }, (_, i) => {
-        const units = Array.from({ length: i }, (_, id) => ({
-            node: { id, property: choices[random() % choices.length], rank: random() % 5 }
-        }));
-        return {
-            units,
-            edges:
-                i > 2 ?
-                    [
-                        [0, i - 1],
-                        [1, i - 1]
-                    ]
-                :   []
-        };
-    });
-    const compare = (a, b) => a.rank - b.rank,
-        property = node => node.property;
-    for (const variant of ["edge-free-sort", "no-pair-graph", "index-16", "tree-cache-1024"]) {
-        const observed = await import(
-            `data:text/javascript;base64,${Buffer.from(variantSource(source, variant)).toString("base64")}`
-        );
-        for (const { units, edges } of cases) {
-            observed.resetProfilePairCache?.();
-            const expected = sortWithPropertyConstraints(units, compare, property, edges).map(u => u.node.id);
-            assert.equal(
-                observed.sortWithPropertyConstraints(units, compare, property, edges).map(u => u.node.id),
-                expected,
-                variant
-            );
-            assert.equal(
-                units.map(u => u.node.id),
-                units.map((_, i) => i)
-            );
-        }
-    }
-});
-test("Single-node emission prototype preserves comments, block dependencies and both safety modes", async () => {
-    const folder = path.join(directory, "single-emissions");
-    await snapshot(root, folder);
-    const file = path.join(folder, "src/sorter-core.mjs");
-    await fs.writeFile(file, variantCoreSource(await fs.readFile(file, "utf8"), "single-node-emissions"));
-    const observed = (await import(pathToFileURL(path.join(folder, "src/grundy-prop-sorter.mjs")))).grundyPropSorter;
-    const sources = [
-        ".a { color:red; @media (min-width:1px) { color:blue; } color:green; }",
-        ".a { width:1px; /* block */ .b { color:red; } height:2px; // tail\n }",
-        ".a { color:red; @if $ok { color:blue; } @else { color:green; } color:black; }",
-        ".a { font-size:1px; font: { size:2px; weight:700; } color:red; }",
-        ".a { width:1px; /* prettier-ignore */ .b {color:red;color:blue} color:green; }"
-    ];
-    for (const preset of Object.values(presets))
-        for (const safety of ["strict", "loose"])
-            for (const withRoot of [false, true])
-                for (const splitGroups of [false, true])
-                    for (const source of sources) {
-                        const options = { presetGroups: preset.groups, order: preset.order, safety, withRoot, splitGroups };
-                        const before = scss.parse(source),
-                            after = scss.parse(source);
-                        grundyPropSorter(options).OnceExit(before);
-                        observed(options).OnceExit(after);
-                        assert.is(after.toString(scss.stringify), before.toString(scss.stringify));
-                    }
 });
 test.run();

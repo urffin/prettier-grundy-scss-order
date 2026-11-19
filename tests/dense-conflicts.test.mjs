@@ -223,4 +223,58 @@ test("Dense declarations retain compiled CSS, comments and media crossings", asy
     }
 });
 
+test("Mixed property graphs preserve priorities, ties and extra edges across cutoffs", () => {
+    const choices = [
+        null,
+        "*",
+        "color",
+        "margin",
+        "margin-top",
+        "width",
+        "height",
+        "--A",
+        "--a",
+        "border",
+        "border-image",
+        "grid",
+        "grid-row",
+        "all",
+        "direction"
+    ];
+    let seed = 246813579;
+    const random = () => {
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+        return seed;
+    };
+    for (let size = 0; size < 72; size++) {
+        const units = Object.freeze(
+            Array.from({ length: size }, (_, id) =>
+                Object.freeze({
+                    node: Object.freeze({ id, property: choices[random() % choices.length], rank: random() % 5 })
+                })
+            )
+        );
+        const extra =
+            size > 2 ?
+                [
+                    [0, size - 1],
+                    [1, size - 1]
+                ]
+            :   [];
+        const compare = (a, b) => a.rank - b.rank;
+        const expected = reference(
+            units.map(u => u.node.property),
+            (a, b) => compare(units[a.id].node, units[b.id].node),
+            extra
+        );
+        const result = sortWithPropertyConstraints(units, compare, node => node.property, extra);
+        assert.equal(
+            result.map(u => u.node.id),
+            expected,
+            `size ${size}`
+        );
+        for (const unit of result) assert.is(unit, units[unit.node.id]);
+    }
+});
+
 test.run();

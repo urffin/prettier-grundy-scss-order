@@ -1,0 +1,91 @@
+{
+    "baselineCommit": "402f156e25f5fec03d840908ab57507285768f78",
+    "sources": [
+        {
+            "id": "media-cascade",
+            "input": ".a { color:red; @media (min-width:1px) { color:blue; } color:green; }"
+        },
+        {
+            "id": "comments-and-nested-rule",
+            "input": ".a { width:1px; /* block */ .b { color:red; } height:2px; // tail\n }"
+        },
+        {
+            "id": "conditional-chain",
+            "input": ".a { color:red; @if $ok { color:blue; } @else { color:green; } color:black; }"
+        },
+        {
+            "id": "nested-properties",
+            "input": ".a { font-size:1px; font: { size:2px; weight:700; } color:red; }"
+        },
+        {
+            "id": "prettier-ignore",
+            "input": ".a { width:1px; /* prettier-ignore */ .b {color:red;color:blue} color:green; }"
+        }
+    ],
+    "outputs": [
+        ".a { color:red; @media (min-width:1px) { color:blue; } color:green; }",
+        ".a { height:2px; // tail\n width:1px; /* block */ .b { color:red; }\n }",
+        ".a { color:red; @if $ok { color:blue; } @else { color:green; } color:black; }",
+        ".a { font-size:1px; font: { size:2px; weight:700; } color:red; }",
+        ".a { width:1px;\n /* prettier-ignore */ .b {color:red;color:blue} color:green; }",
+        ".a { color:red;\n\n @media (min-width:1px) { color:blue; }\n\n color:green; }",
+        ".a { height:2px; // tail\n width:1px; /* block */\n\n .b { color:red; }\n }",
+        ".a { color:red;\n\n @if $ok { color:blue; } @else { color:green; }\n\n color:black; }",
+        ".a { font-size:1px;\n\n font: { size:2px; weight:700; }\n\n color:red; }",
+        ".a { width:1px;\n /* prettier-ignore */ .b {color:red;color:blue}\n\n color:green; }",
+        ".a { color:red; color:green; @media (min-width:1px) { color:blue; } }",
+        ".a { @if $ok { color:blue; } @else { color:green; } color:red; color:black; }",
+        ".a { color:red; font-size:1px; font: { size:2px; weight:700; } }",
+        ".a { color:red; color:green;\n\n @media (min-width:1px) { color:blue; } }",
+        ".a { @if $ok { color:blue; } @else { color:green; }\n\n color:red; color:black; }",
+        ".a { color:red; font-size:1px;\n\n font: { size:2px; weight:700; } }",
+        ".a { width:1px; /* block */ .b { color:red; } height:2px; // tail\n }",
+        ".a { width:1px; /* block */\n\n .b { color:red; }\n\n height:2px; // tail\n }",
+        ".a { width:1px; /* block */ height:2px; // tail\n .b { color:red; }\n }",
+        ".a { width:1px; /* block */ height:2px; // tail\n\n .b { color:red; }\n }",
+        ".a { color:red; color:black; @if $ok { color:blue; } @else { color:green; } }",
+        ".a { color:red; color:black;\n\n @if $ok { color:blue; } @else { color:green; } }"
+    ],
+    "expected": {
+        "default/strict/false/false": [0, 1, 2, 3, 4],
+        "default/strict/false/true": [5, 6, 7, 8, 9],
+        "default/strict/true/false": [0, 1, 2, 3, 4],
+        "default/strict/true/true": [5, 6, 7, 8, 9],
+        "default/loose/false/false": [10, 1, 11, 12, 4],
+        "default/loose/false/true": [13, 6, 14, 15, 9],
+        "default/loose/true/false": [10, 1, 11, 12, 4],
+        "default/loose/true/true": [13, 6, 14, 15, 9],
+        "csscomb/strict/false/false": [0, 16, 2, 3, 4],
+        "csscomb/strict/false/true": [5, 17, 7, 8, 9],
+        "csscomb/strict/true/false": [0, 16, 2, 3, 4],
+        "csscomb/strict/true/true": [5, 17, 7, 8, 9],
+        "csscomb/loose/false/false": [0, 16, 2, 3, 4],
+        "csscomb/loose/false/true": [5, 17, 7, 8, 9],
+        "csscomb/loose/true/false": [0, 16, 2, 3, 4],
+        "csscomb/loose/true/true": [5, 17, 7, 8, 9],
+        "csscomb-yandex/strict/false/false": [0, 18, 2, 3, 4],
+        "csscomb-yandex/strict/false/true": [5, 19, 7, 8, 9],
+        "csscomb-yandex/strict/true/false": [0, 18, 2, 3, 4],
+        "csscomb-yandex/strict/true/true": [5, 19, 7, 8, 9],
+        "csscomb-yandex/loose/false/false": [10, 18, 20, 12, 4],
+        "csscomb-yandex/loose/false/true": [13, 19, 21, 15, 9],
+        "csscomb-yandex/loose/true/false": [10, 18, 20, 12, 4],
+        "csscomb-yandex/loose/true/true": [13, 19, 21, 15, 9],
+        "pepelsbey/strict/false/false": [0, 18, 2, 3, 4],
+        "pepelsbey/strict/false/true": [5, 19, 7, 8, 9],
+        "pepelsbey/strict/true/false": [0, 18, 2, 3, 4],
+        "pepelsbey/strict/true/true": [5, 19, 7, 8, 9],
+        "pepelsbey/loose/false/false": [10, 18, 20, 12, 4],
+        "pepelsbey/loose/false/true": [13, 19, 21, 15, 9],
+        "pepelsbey/loose/true/false": [10, 18, 20, 12, 4],
+        "pepelsbey/loose/true/true": [13, 19, 21, 15, 9],
+        "csscomb-zen/strict/false/false": [0, 18, 2, 3, 4],
+        "csscomb-zen/strict/false/true": [5, 19, 7, 8, 9],
+        "csscomb-zen/strict/true/false": [0, 18, 2, 3, 4],
+        "csscomb-zen/strict/true/true": [5, 19, 7, 8, 9],
+        "csscomb-zen/loose/false/false": [10, 18, 20, 12, 4],
+        "csscomb-zen/loose/false/true": [13, 19, 21, 15, 9],
+        "csscomb-zen/loose/true/false": [10, 18, 20, 12, 4],
+        "csscomb-zen/loose/true/true": [13, 19, 21, 15, 9]
+    }
+}
