@@ -7,6 +7,7 @@ import { resolveConfiguration } from "../src/configuration.mjs";
 import { grundyPropSorter } from "../src/grundy-prop-sorter.mjs";
 import { createSorter } from "../src/sorter-core.mjs";
 import { postcssAdapter } from "../src/postcss-adapter.mjs";
+import { createProcessorPlugin } from "./processor-reference.mjs";
 
 export function phaseClock() {
     let stack = [],
@@ -125,34 +126,13 @@ function applyNativeOrder(view) {
 }
 
 export function createPipelinePlugin(kind, { clock, observe = () => {} } = {}) {
-    if (
-        ![
-            "processor",
-            "direct",
-            "skip-unchanged",
-            "raw-handoff",
-            "native-view",
-            "profile",
-            "profile-plain",
-            "roundtrip"
-        ].includes(kind)
-    )
+    if (kind === "processor") return createProcessorPlugin();
+    if (!["direct", "skip-unchanged", "raw-handoff", "native-view", "profile", "profile-plain", "roundtrip"].includes(kind))
         throw new Error("Unknown pipeline research variant");
     if (kind.startsWith("profile") && !clock) throw new Error("Phase clock required");
     const parser = {
         ...native.parsers.scss,
         async parse(text, options) {
-            // Preserve the pre-direct integration as an explicit reference even
-            // after the public plugin switches to the direct path.
-            if (kind === "processor") {
-                const config = await resolveConfiguration(options);
-                const processed = await postcss([grundyPropSorter(config)]).process(text, {
-                    from: undefined,
-                    syntax: scss
-                });
-                options.originalText = processed.css;
-                return native.parsers.scss.parse(processed.css, [options.parser], options);
-            }
             if (kind === "profile-plain")
                 return clock.async("prettierParse", () => native.parsers.scss.parse(text, [], options));
             if (kind === "profile") {

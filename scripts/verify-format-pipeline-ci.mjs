@@ -76,6 +76,7 @@ const toolFiles = [
     "research-format-pipeline.mjs",
     "format-pipeline-worker.mjs",
     "format-pipeline-variants.mjs",
+    "processor-reference.mjs",
     "corpus.mjs",
     "benchmark-statistics.mjs"
 ];

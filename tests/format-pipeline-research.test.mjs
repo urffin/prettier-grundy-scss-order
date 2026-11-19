@@ -5,7 +5,7 @@ import prettier from "prettier";
 import stock from "../src/index.mjs";
 import { createPipelinePlugin, phaseClock } from "../scripts/format-pipeline-variants.mjs";
 
-test("Direct and unchanged-text research paths preserve public formatting across presets and trivia", async () => {
+test("Processor, direct and unchanged-text research paths preserve public formatting across presets and trivia", async () => {
     const sources = [
         ".z { width:1px; /* before */ color:red; @media (min-width:1px) { margin:0; } margin-left:1px; } .a { height:2px; }",
         "\ufeff.a {\r\n width:1px; // tail\r\n color:red;\r\n}",
@@ -25,7 +25,7 @@ test("Direct and unchanged-text research paths preserve public formatting across
                         grundyScssSorterSplitGroup: split
                     };
                     const expected = await prettier.format(source, { ...options, plugins: [stock] });
-                    for (const kind of ["direct", "skip-unchanged"]) {
+                    for (const kind of ["processor", "direct", "skip-unchanged"]) {
                         const config = { ...options, plugins: [createPipelinePlugin(kind)] };
                         assert.is(await prettier.format(source, config), expected, kind);
                         assert.is(await prettier.format(expected, config), expected, kind + " idempotence");

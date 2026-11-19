@@ -6,6 +6,8 @@ The working plugin now uses direct parse/sort/stringify with Processor fallback 
 
 ## Reproduction
 
+The independent pre-direct Processor reference lives in `scripts/processor-reference.mjs`. Corpus checks and direct integration tests import it without loading the experimental variants. The research factory retains `createPipelinePlugin("processor")` as a compatible entry point to the same reference. Its source is included in the executed-tool hashes and snapshot; the paired workers still load the research module in both cohorts.
+
 ```sh
 npm run research:format-pipeline -- --output /external/format-pipeline
 ```

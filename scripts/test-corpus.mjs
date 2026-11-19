@@ -4,14 +4,14 @@ import path from "node:path";
 import prettier from "prettier";
 import scss from "postcss-scss";
 import plugin from "../src/index.mjs";
-import { createPipelinePlugin } from "./format-pipeline-variants.mjs";
+import { createProcessorPlugin } from "./processor-reference.mjs";
 import { corpusManifest, corpusSources, corpusPath, projectDigest } from "./corpus.mjs";
 
 const args = process.argv.slice(2);
 if (args.length && (args.length !== 2 || args[0] !== "--output"))
     throw new Error("Usage: npm run test:corpus -- [--output FILE]");
 const manifest = corpusManifest(),
-    processor = createPipelinePlugin("processor"),
+    processor = createProcessorPlugin(),
     presets = ["default", "csscomb", "csscomb-yandex", "csscomb-zen", "pepelsbey"];
 const clean = text => text.replace(/\s+/g, " ").trim();
 function inventory(source) {

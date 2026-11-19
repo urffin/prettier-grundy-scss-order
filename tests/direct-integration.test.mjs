@@ -8,9 +8,9 @@ import prettier from "prettier";
 import postcss from "postcss";
 import scss from "postcss-scss";
 import plugin from "../src/index.mjs";
-import { createPipelinePlugin } from "../scripts/format-pipeline-variants.mjs";
+import { createProcessorPlugin } from "../scripts/processor-reference.mjs";
 
-const processor = createPipelinePlugin("processor");
+const processor = createProcessorPlugin();
 const format = (source, implementation = plugin, options = {}) =>
     prettier.format(source, { parser: "scss", plugins: [implementation], ...options });
 const source =
