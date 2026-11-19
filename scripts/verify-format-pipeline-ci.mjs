@@ -75,7 +75,7 @@ for (const [file, digest] of Object.entries(manifest.sourceHashes))
 const toolFiles = [
     "research-format-pipeline.mjs",
     "format-pipeline-worker.mjs",
-    "format-pipeline-variants.mjs",
+    ...(Object.keys(preflight.counts).length === 1 && preflight.counts.direct ? [] : ["format-pipeline-variants.mjs"]),
     "processor-reference.mjs",
     "corpus.mjs",
     "benchmark-statistics.mjs"

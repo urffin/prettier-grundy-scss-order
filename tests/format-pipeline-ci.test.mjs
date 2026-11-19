@@ -1,12 +1,12 @@
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 import nodeAssert from "node:assert/strict";
-import { mkdtemp, writeFile, readFile, rm } from "node:fs/promises";
+import { mkdtemp, writeFile, readFile, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { statistics, summarizeMemory } from "../scripts/benchmark-statistics.mjs";
 import { directComparisons, verifyDirectMeasurements } from "../scripts/format-pipeline-comparison.mjs";
 
@@ -163,20 +163,119 @@ test("Preparing pipeline inputs cannot overwrite existing measurement evidence",
     const directory = await mkdtemp(path.join(tmpdir(), "scss-pipeline-evidence-"));
     try {
         await writeFile(path.join(directory, "report.json"), "preserve");
-        await nodeAssert.rejects(
-            promisify(execFile)(process.execPath, [
-                fileURLToPath(new URL("../scripts/research-format-pipeline.mjs", import.meta.url)),
-                "--stage",
-                "prepare",
-                "--output",
-                directory
-            ]),
-            /preserve existing research evidence/
-        );
+        for (const stage of ["prepare", "prepare-direct"])
+            await nodeAssert.rejects(
+                promisify(execFile)(process.execPath, [
+                    fileURLToPath(new URL("../scripts/research-format-pipeline.mjs", import.meta.url)),
+                    "--stage",
+                    stage,
+                    "--output",
+                    directory
+                ]),
+                /preserve existing research evidence/
+            );
         assert.is(await readFile(path.join(directory, "report.json"), "utf8"), "preserve");
     } finally {
         nodeAssert.equal(path.dirname(path.resolve(directory)), path.resolve(tmpdir()));
         nodeAssert.ok(path.basename(directory).startsWith("scss-pipeline-evidence-"));
+        await rm(directory, { recursive: true, force: true });
+    }
+});
+
+test("Direct preparation and workers bypass prototypes and reject public mismatches", async () => {
+    const directory = await mkdtemp(path.join(tmpdir(), "scss-pipeline-direct-"));
+    const script = fileURLToPath(new URL("../scripts/research-format-pipeline.mjs", import.meta.url));
+    const root = fileURLToPath(new URL("../", import.meta.url));
+    const execute = promisify(execFile);
+    try {
+        const loader = path.join(directory, "isolation-loader.mjs");
+        await writeFile(
+            loader,
+            `
+export async function load(url, context, nextLoad) {
+    if (url.endsWith('/format-pipeline-variants.mjs')) throw new Error('Historical prototypes blocked');
+    const result = await nextLoad(url, context);
+    if (url === ${JSON.stringify(new URL("../src/index.mjs", import.meta.url).href)} && process.env.SCSS_TEST_PUBLIC_MISMATCH) {
+        result.source += \`\nconst parse = parsers.scss.parse;
+parsers.scss.parse = function(text, options) {
+    if (text.includes('sourceMappingURL=missing.css.map')) throw new Error('Injected public parse failure');
+    return parse(text, options);
+};\`;
+    }
+    return result;
+}
+`
+        );
+        const env = {
+            ...process.env,
+            NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ""} --experimental-loader=${pathToFileURL(loader).href}`
+        };
+        const run = (stage, output = directory, extraEnv = {}) =>
+            execute(
+                process.execPath,
+                [
+                    script,
+                    "--stage",
+                    stage,
+                    "--project",
+                    "landos-new",
+                    "--output",
+                    output,
+                    "--processes",
+                    "1",
+                    "--warmup",
+                    "0",
+                    "--samples",
+                    "1",
+                    "--memory-processes",
+                    "1"
+                ],
+                { env: { ...env, ...extraEnv }, windowsHide: true }
+            );
+        await run("prepare-direct");
+        const read = async name => JSON.parse(await readFile(path.join(directory, name), "utf8"));
+        const preflight = await read("preflight.json"),
+            manifest = await read("manifest.json");
+        assert.equal(Object.keys(preflight.counts), ["direct"]);
+        assert.equal(preflight.eligible, ["direct"]);
+        const cases = manifest.datasets.reduce((n, d) => n + d.files * 2, 0) + preflight.fixtures * 5 * 2 * 2 * 2;
+        assert.equal(preflight.counts.direct, { checked: cases, matched: cases, different: 0, errors: 0 });
+        assert.ok(preflight.cases.every(c => c.serialized === 0 && c.skipped === 0));
+        const tools = await readdir(path.join(directory, "executed-tools"));
+        assert.is(tools.length, 5);
+        assert.ok(tools.includes("processor-reference.mjs") && !tools.includes("format-pipeline-variants.mjs"));
+        for (const implementation of ["stock", "direct"]) {
+            const config = {
+                root,
+                stage: "direct",
+                implementation,
+                metric: "time",
+                formatter: "strict",
+                warmup: 0,
+                samples: 1,
+                dataset: path.join(directory, manifest.datasets[0].file)
+            };
+            const { stdout } = await execute(
+                process.execPath,
+                [fileURLToPath(new URL("../scripts/format-pipeline-worker.mjs", import.meta.url)), JSON.stringify(config)],
+                { env, windowsHide: true }
+            );
+            assert.is(JSON.parse(stdout).outputHash, manifest.datasets[0].expected.strict);
+        }
+        await nodeAssert.rejects(run("variants"), /Use --stage prepare in a fresh output directory/);
+        assert.equal(await read("manifest.json"), manifest);
+        await nodeAssert.rejects(run("prepare", path.join(directory, "historical")), /Historical prototypes blocked/);
+        const failed = path.join(directory, "failed");
+        await nodeAssert.rejects(
+            run("prepare-direct", failed, { SCSS_TEST_PUBLIC_MISMATCH: "1" }),
+            /Public direct failed the Processor exact-output gate/
+        );
+        const failure = JSON.parse(await readFile(path.join(failed, "preflight.json"), "utf8"));
+        assert.ok(failure.counts.direct.errors > 0);
+        assert.equal(failure.eligible, []);
+    } finally {
+        nodeAssert.equal(path.dirname(path.resolve(directory)), path.resolve(tmpdir()));
+        nodeAssert.ok(path.basename(directory).startsWith("scss-pipeline-direct-"));
         await rm(directory, { recursive: true, force: true });
     }
 });

@@ -27,12 +27,11 @@ async function load() {
     const prettier = (await import(pathToFileURL(path.join(config.root, "node_modules/prettier/index.mjs")))).default;
     let plugin, clock;
     if (config.stage === "direct") {
-        // Load the reference module in both cohorts so cold memory does not
-        // compare a research-module import against the public plugin alone.
-        const research = await import(new URL("./format-pipeline-variants.mjs", import.meta.url));
+        // Equal import scope in both cohorts, without historical prototypes.
+        const reference = await import(new URL("./processor-reference.mjs", import.meta.url));
         plugin =
             config.implementation === "stock" ?
-                research.createPipelinePlugin("processor")
+                reference.createProcessorPlugin()
             :   (await import(pathToFileURL(path.join(config.root, "src/index.mjs")))).default;
     } else if (config.implementation === "stock" && config.stage === "variants") {
         const research = await import(new URL("./format-pipeline-variants.mjs", import.meta.url));

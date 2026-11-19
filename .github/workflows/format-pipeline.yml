@@ -23,7 +23,7 @@ jobs:
                   cache: npm
             - run: npm ci
             - name: Prepare shared inputs and check exact output
-              run: node scripts/research-format-pipeline.mjs --stage prepare --output "$RUNNER_TEMP/format-pipeline" --processes 4 --warmup 5 --samples 11 --memory-processes 4
+              run: node scripts/research-format-pipeline.mjs --stage prepare-direct --output "$RUNNER_TEMP/format-pipeline" --processes 4 --warmup 5 --samples 11 --memory-processes 4
             - name: Compare pipelines sequentially on this runner
               run: node scripts/research-format-pipeline.mjs --stage direct --output "$RUNNER_TEMP/format-pipeline" --processes 4 --warmup 5 --samples 11 --memory-processes 4
             - name: Build and verify downloadable report

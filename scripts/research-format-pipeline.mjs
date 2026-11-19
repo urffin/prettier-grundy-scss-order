@@ -20,7 +20,8 @@ for (let i = 2; i < process.argv.length; i += 2) {
 if (!args.output) throw new Error("Pass --output EXTERNAL_DIRECTORY");
 const output = path.resolve(args.output),
     stage = args.stage ?? "all";
-if (!["all", "prepare", "main", "variants", "direct", "phases"].includes(stage)) throw new Error("Unknown research stage");
+if (!["all", "prepare", "prepare-direct", "main", "variants", "direct", "phases"].includes(stage))
+    throw new Error("Unknown research stage");
 const options = {
     processes: Number(args.processes ?? 3),
     samples: Number(args.samples ?? 7),
@@ -48,30 +49,34 @@ async function sourceHashes() {
     await walk(path.join(root, "src"), "src/");
     return result;
 }
-async function prepare() {
+async function prepare(historical) {
     const prettier = (await import("prettier")).default;
     const stock = (await import("../src/index.mjs")).default;
-    const { createPipelinePlugin } = await import("./format-pipeline-variants.mjs");
     const { presets } = await import("../src/presets/index.mjs");
     const projects = corpusManifest().projects.filter(p => !args.project || p.id === args.project);
     if (!projects.length) throw new Error("Unknown project");
     const proof = { counts: {}, failures: [], baselineCases: 0, originalBytes: 0, cases: [] };
-    const variants = ["direct", "skip-unchanged", "native-view", "raw-handoff", "roundtrip"];
+    const variants = historical ? ["direct", "skip-unchanged", "native-view", "raw-handoff", "roundtrip"] : ["direct"];
     const observations = {};
-    const plugins = Object.fromEntries(
-        variants.map(v => [
-            v,
-            createPipelinePlugin(v, {
-                observe: row => {
-                    const count = (observations[v] ??= { serialized: 0, skipped: 0 });
-                    count[row.serialized ? "serialized" : "skipped"]++;
-                }
-            })
-        ])
-    );
+    const reference = historical ? stock : (await import("./processor-reference.mjs")).createProcessorPlugin();
+    let plugins = { direct: stock };
+    if (historical) {
+        const { createPipelinePlugin } = await import("./format-pipeline-variants.mjs");
+        plugins = Object.fromEntries(
+            variants.map(v => [
+                v,
+                createPipelinePlugin(v, {
+                    observe: row => {
+                        const count = (observations[v] ??= { serialized: 0, skipped: 0 });
+                        count[row.serialized ? "serialized" : "skipped"]++;
+                    }
+                })
+            ])
+        );
+    }
     const baseOptions = formatter => ({
         parser: "scss",
-        ...(formatter === "plain" ? {} : { plugins: [stock], grundyScssSorterSafety: formatter })
+        ...(formatter === "plain" ? {} : { plugins: [reference], grundyScssSorterSafety: formatter })
     });
     async function probe(source, expected, formatter, context, extra = {}) {
         for (const variant of variants) {
@@ -238,22 +243,30 @@ async function prepare() {
         datasets,
         eligible,
         sourceHashes: await sourceHashes(),
-        method: "Three common inputs: original, strict formatted, loose formatted. Plain, stock loose and stock strict run on every input. No equality assumption between modes. Prototypes must match stock output in corpus and configuration fixtures."
+        method:
+            historical ?
+                "Three common inputs: original, strict formatted, loose formatted. Plain, stock loose and stock strict run on every input. No equality assumption between modes. Prototypes must match stock output in corpus and configuration fixtures."
+            :   "Three common inputs: original, strict formatted, loose formatted. Plain and the Processor reference run on every input. Public direct must match Processor in both modes, corpus and configuration fixtures. No historical prototypes or mutation observations."
     });
     await fs.cp(path.join(root, "src"), path.join(output, "source-snapshot/src"), { recursive: true });
     process.stderr.write("Eligible research variants: " + eligible.join(", ") + "\n");
+    if (!historical && !eligible.includes("direct")) throw new Error("Public direct failed the Processor exact-output gate");
 }
 
-if (stage === "prepare" || stage === "all") {
+if (["prepare", "prepare-direct", "all"].includes(stage)) {
     try {
         await fs.access(path.join(output, "report.json"));
         throw new Error("Use a new output directory to prepare inputs; preserve existing research evidence");
     } catch (error) {
         if (error.code !== "ENOENT") throw error;
     }
-    await prepare();
+    await prepare(stage !== "prepare-direct");
 }
 const manifest = await read("manifest.json");
+const preflight = await read("preflight.json"),
+    directOnly = Object.keys(preflight.counts).length === 1 && !!preflight.counts.direct;
+if (directOnly && !["prepare-direct", "direct"].includes(stage))
+    throw new Error("Use --stage prepare in a fresh output directory for historical research");
 if (JSON.stringify(await sourceHashes()) !== JSON.stringify(manifest.sourceHashes))
     throw new Error("Production sources changed since preparation");
 const reportPath = path.join(output, "report.json");
@@ -279,7 +292,7 @@ if (report.manifestHash !== hash(await fs.readFile(path.join(output, "manifest.j
 for (const name of [
     "research-format-pipeline.mjs",
     "format-pipeline-worker.mjs",
-    "format-pipeline-variants.mjs",
+    ...(directOnly ? [] : ["format-pipeline-variants.mjs"]),
     "processor-reference.mjs",
     "corpus.mjs",
     "benchmark-statistics.mjs"
@@ -398,7 +411,7 @@ async function measure(currentStage) {
     await write("report.json", report);
 }
 for (const currentStage of stage === "all" ? ["main", "variants", "phases"]
-: stage === "prepare" ? []
+: ["prepare", "prepare-direct"].includes(stage) ? []
 : [stage])
     await measure(currentStage);
 const rows = [];
