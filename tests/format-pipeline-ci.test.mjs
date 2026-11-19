@@ -9,6 +9,9 @@ import { promisify } from "node:util";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { statistics, summarizeMemory } from "../scripts/benchmark-statistics.mjs";
 import { directComparisons, verifyDirectMeasurements } from "../scripts/format-pipeline-comparison.mjs";
+import { createHash } from "node:crypto";
+import prettier from "prettier";
+import plugin from "../src/index.mjs";
 
 function fixture() {
     const commit = "a".repeat(40),
@@ -262,9 +265,9 @@ parsers.scss.parse = function(text, options) {
             );
             assert.is(JSON.parse(stdout).outputHash, manifest.datasets[0].expected.strict);
         }
-        await nodeAssert.rejects(run("variants"), /Use --stage prepare in a fresh output directory/);
+        for (const stage of ["variants", "phases"])
+            await nodeAssert.rejects(run(stage), /Historical stages are preserved at 9e186a5/);
         assert.equal(await read("manifest.json"), manifest);
-        await nodeAssert.rejects(run("prepare", path.join(directory, "historical")), /Historical prototypes blocked/);
         const failed = path.join(directory, "failed");
         await nodeAssert.rejects(
             run("prepare-direct", failed, { SCSS_TEST_PUBLIC_MISMATCH: "1" }),
@@ -276,6 +279,71 @@ parsers.scss.parse = function(text, options) {
     } finally {
         nodeAssert.equal(path.dirname(path.resolve(directory)), path.resolve(tmpdir()));
         nodeAssert.ok(path.basename(directory).startsWith("scss-pipeline-direct-"));
+        await rm(directory, { recursive: true, force: true });
+    }
+});
+
+test("Pipeline workers reject retired or ambiguous configurations before reading input", async () => {
+    const worker = fileURLToPath(new URL("../scripts/format-pipeline-worker.mjs", import.meta.url));
+    const config = { stage: "direct", implementation: "stock", formatter: "strict", metric: "time" };
+    for (const extra of [
+        { stage: "variants" },
+        { metric: "phases" },
+        { implementation: "skip-unchanged" },
+        { formatter: "plain" },
+        { stage: "main", implementation: "direct" }
+    ])
+        await nodeAssert.rejects(
+            promisify(execFile)(process.execPath, [worker, JSON.stringify({ ...config, ...extra })], { windowsHide: true }),
+            /Unsupported public pipeline worker configuration/
+        );
+});
+
+test("Main workers preserve plain Prettier and both public modes without prototype clocks", async () => {
+    const directory = await mkdtemp(path.join(tmpdir(), "scss-pipeline-main-"));
+    try {
+        const input = ".a { color:red; @media (min-width:1px) { color:blue; } color:green; width:1px; }";
+        const hash = value => createHash("sha256").update(value).digest("hex");
+        const bundle = value => JSON.stringify([["fixture.scss", value]]);
+        const expected = {};
+        for (const formatter of ["plain", "strict", "loose"])
+            expected[formatter] = hash(
+                bundle(
+                    await prettier.format(input, {
+                        parser: "scss",
+                        ...(formatter === "plain" ? {} : { plugins: [plugin], grundyScssSorterSafety: formatter })
+                    })
+                )
+            );
+        const file = path.join(directory, "input.json");
+        await writeFile(
+            file,
+            JSON.stringify({ files: [{ path: "fixture.scss", source: input }], inputHash: hash(bundle(input)), expected })
+        );
+        for (const formatter of ["plain", "strict", "loose"]) {
+            const config = {
+                stage: "main",
+                implementation: "stock",
+                formatter,
+                metric: "time",
+                dataset: file,
+                root: fileURLToPath(new URL("../", import.meta.url)),
+                warmup: 0,
+                samples: 1
+            };
+            const { stdout } = await promisify(execFile)(
+                process.execPath,
+                [fileURLToPath(new URL("../scripts/format-pipeline-worker.mjs", import.meta.url)), JSON.stringify(config)],
+                { windowsHide: true }
+            );
+            const result = JSON.parse(stdout);
+            assert.is(result.outputHash, expected[formatter]);
+            assert.is(result.samplesMs.length, 1);
+            assert.equal(result.phases, []);
+        }
+    } finally {
+        nodeAssert.equal(path.dirname(path.resolve(directory)), path.resolve(tmpdir()));
+        nodeAssert.ok(path.basename(directory).startsWith("scss-pipeline-main-"));
         await rm(directory, { recursive: true, force: true });
     }
 });

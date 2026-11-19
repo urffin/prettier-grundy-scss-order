@@ -44,6 +44,8 @@ assert.equal(
 const artifact = JSON.parse(await fs.readFile(args["--input"], "utf8")),
     result = verifyDirectMeasurements(artifact);
 const { manifest, measurement: report, preflight, ci } = artifact;
+assert.deepEqual(Object.keys(preflight.counts), ["direct"]);
+assert.deepEqual(manifest.eligible, ["direct"]);
 assert.equal(artifact.commit, commit);
 assert.equal(artifact.clean, true);
 assert.equal(ci.repository, "urffin/prettier-grundy-scss-order");
@@ -75,7 +77,6 @@ for (const [file, digest] of Object.entries(manifest.sourceHashes))
 const toolFiles = [
     "research-format-pipeline.mjs",
     "format-pipeline-worker.mjs",
-    ...(Object.keys(preflight.counts).length === 1 && preflight.counts.direct ? [] : ["format-pipeline-variants.mjs"]),
     "processor-reference.mjs",
     "corpus.mjs",
     "benchmark-statistics.mjs"

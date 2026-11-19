@@ -48,12 +48,15 @@ test("Ordinary formatting bypasses Processor; map fallback reuses the parsed tre
         const plain = await format(source);
         assert.is(processes, 0);
         assert.is(parses, 1);
+        assert.is(await format(plain), plain);
+        assert.is(processes, 0);
+        assert.is(parses, 2);
         assert.is(await format(mapped), expectedMapped);
         assert.is(processes, 1);
-        assert.is(parses, 2);
+        assert.is(parses, 3);
         assert.is(await format(source, processor), plain);
         assert.is(processes, 2);
-        assert.is(parses, 3);
+        assert.is(parses, 4);
     } finally {
         postcss.Processor.prototype.process = originalProcess;
         scss.parse = originalParse;
@@ -74,7 +77,12 @@ test("Direct output and idempotence match Processor across presets, root and gro
         "\ufeff.a {\r\n width:1px; // last\r\n color:red;\r\n}",
         ".a { font: { size:1px; weight:700; } @if $x { color:red; } /* branch */ @else { color:blue; } --Token:0; all:initial; }",
         ".a { width:1px; /* prettier-ignore */ .b {width:1px;color:red} /* end */ color:red; }",
-        "$size:1px; @use 'theme'; .z { width:$size; @include theme.paint; color:red; &:hover { color:blue; } } // end"
+        "$size:1px; @use 'theme'; .z { width:$size; @include theme.paint; color:red; &:hover { color:blue; } } // end",
+        ".z { width:1px; /* before */ color:red; @media (min-width:1px) { margin:0; } margin-left:1px; } .a { height:2px; }",
+        "﻿.a {\r\n width:1px; // tail\r\n color:red;\r\n}",
+        ".a { width:1px; color:red; } /*# sourceMappingURL=missing.css.map */",
+        ".a { width:1px; color:red; }",
+        ".a { width:1px; @media (min-width:1px) { color:red; } color:blue; }"
     ];
     for (const preset of ["default", "csscomb", "csscomb-yandex", "csscomb-zen", "pepelsbey"])
         for (const safety of ["strict", "loose"])
@@ -265,8 +273,12 @@ test("External maps keep the Processor output annotation", async () => {
 });
 
 test("Syntax diagnostics and configuration-before-parse precedence remain unchanged", async () => {
-    for (const input of [".a {", '.a { color: "unterminated; }', ".a { /* unclosed", ".a { color red; }"])
-        assert.equal(await signature(() => format(input)), await signature(() => format(input, processor)));
+    for (const safety of ["strict", "loose"])
+        for (const input of [".a {", '.a { color: "unterminated; }', ".a { /* unclosed", ".a { color red; }"])
+            assert.equal(
+                await signature(() => format(input, plugin, { grundyScssSorterSafety: safety })),
+                await signature(() => format(input, processor, { grundyScssSorterSafety: safety }))
+            );
     for (const options of [
         { grundyScssSorterGroups: "{" },
         { grundyScssSorterGroups: JSON.stringify({ bad: { order: "random" } }) },

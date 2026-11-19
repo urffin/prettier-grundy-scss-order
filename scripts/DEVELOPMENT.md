@@ -48,7 +48,7 @@ CI compares the current revision with pinned commit `dad2aa8dd42553c15dd7c021043
 
 For opt-in phase timings, pair/edge counters and stock CPU profiles on the pinned real corpus, run `npm run profile:real -- --output /external/directory`. See the [profiling method and findings](./PROFILE_REAL.md); instrumentation is confined to temporary source snapshots.
 
-To compare plain Prettier, `loose` and `strict` on original and already formatted corpus files, run `npm run research:format-pipeline -- --output /external/directory`. The [full pipeline study](./RESEARCH_FORMAT_PIPELINE.md) records warmed timings, separate cold/warm memory observations and intermediate-transformation experiments. Research variants do not change the shipped plugin.
+To compare plain Prettier, public `loose`/`strict` and the Processor reference on original and already formatted corpus files, run `npm run research:format-pipeline -- --output /external/directory`. The [pipeline comparison guide](./RESEARCH_FORMAT_PIPELINE.md) describes warmed timings, separate cold/warm memory observations and the frozen checkout for historical transformation/phase experiments. Those prototypes are no longer maintained against current runtime sources.
 
 The Prettier plugin calls SCSS parse, sorting and serialization directly before using Prettier's parser and printer. It retains Processor for parsed source maps and root `sourceMappingURL` annotations. Both sorting modes use this internal path; no additional option is required. The PostCSS plugin entry point is unchanged.
 

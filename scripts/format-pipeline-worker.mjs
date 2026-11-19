@@ -5,6 +5,14 @@ import { createHash } from "node:crypto";
 import { cpus } from "node:os";
 
 const config = JSON.parse(process.argv[2]);
+if (
+    !["time", "memory"].includes(config.metric) ||
+    !["plain", "strict", "loose"].includes(config.formatter) ||
+    !(config.stage === "direct" ?
+        ["stock", "direct"].includes(config.implementation) && config.formatter !== "plain"
+    :   config.stage === "main" && config.implementation === "stock")
+)
+    throw new Error("Unsupported public pipeline worker configuration");
 const dataset = JSON.parse(await fs.readFile(config.dataset, "utf8"));
 const hash = text => createHash("sha256").update(text).digest("hex");
 const batch = texts => JSON.stringify(dataset.files.map((f, i) => [f.path, texts[i]]));
@@ -25,7 +33,7 @@ const metadata = { ...config, pid: process.pid, timeOriginMs: performance.timeOr
 
 async function load() {
     const prettier = (await import(pathToFileURL(path.join(config.root, "node_modules/prettier/index.mjs")))).default;
-    let plugin, clock;
+    let plugin;
     if (config.stage === "direct") {
         // Equal import scope in both cohorts, without historical prototypes.
         const reference = await import(new URL("./processor-reference.mjs", import.meta.url));
@@ -33,16 +41,6 @@ async function load() {
             config.implementation === "stock" ?
                 reference.createProcessorPlugin()
             :   (await import(pathToFileURL(path.join(config.root, "src/index.mjs")))).default;
-    } else if (config.implementation === "stock" && config.stage === "variants") {
-        const research = await import(new URL("./format-pipeline-variants.mjs", import.meta.url));
-        plugin = research.createPipelinePlugin("processor");
-    } else if (config.implementation === "profile") {
-        const research = await import(new URL("./format-pipeline-variants.mjs", import.meta.url));
-        clock = research.phaseClock();
-        plugin = research.createPipelinePlugin(config.formatter === "plain" ? "profile-plain" : "profile", { clock });
-    } else if (config.implementation !== "stock") {
-        const research = await import(new URL("./format-pipeline-variants.mjs", import.meta.url));
-        plugin = research.createPipelinePlugin(config.implementation);
     } else if (config.formatter !== "plain") {
         plugin = (await import(pathToFileURL(path.join(config.root, "src/index.mjs")))).default;
     }
@@ -52,7 +50,6 @@ async function load() {
         ...(config.formatter === "plain" ? {} : { grundyScssSorterSafety: config.formatter })
     };
     return {
-        clock,
         async format() {
             const results = [];
             for (const file of dataset.files) results.push(await prettier.format(file.source, options));
@@ -92,13 +89,11 @@ if (config.metric === "memory") {
     record.samplesMs = [];
     record.phases = [];
     for (let i = 0; i < config.warmup + config.samples; i++) {
-        formatter.clock?.reset();
         const started = performance.now();
         result = await formatter.format();
         const elapsed = performance.now() - started;
         if (i >= config.warmup) {
             record.samplesMs.push(elapsed);
-            if (formatter.clock) record.phases.push(formatter.clock.result);
         }
     }
     record.gcExposed = typeof global.gc === "function";

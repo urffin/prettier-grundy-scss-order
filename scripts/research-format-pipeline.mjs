@@ -20,8 +20,11 @@ for (let i = 2; i < process.argv.length; i += 2) {
 if (!args.output) throw new Error("Pass --output EXTERNAL_DIRECTORY");
 const output = path.resolve(args.output),
     stage = args.stage ?? "all";
-if (!["all", "prepare", "prepare-direct", "main", "variants", "direct", "phases"].includes(stage))
-    throw new Error("Unknown research stage");
+if (["variants", "phases"].includes(stage))
+    throw new Error(
+        "Historical stages are preserved at 9e186a5bb5f6b4a2b882621d19a8d18396b45e75; see scripts/RESEARCH_FORMAT_PIPELINE.md"
+    );
+if (!["all", "prepare", "prepare-direct", "main", "direct"].includes(stage)) throw new Error("Unknown research stage");
 const options = {
     processes: Number(args.processes ?? 3),
     samples: Number(args.samples ?? 7),
@@ -49,90 +52,67 @@ async function sourceHashes() {
     await walk(path.join(root, "src"), "src/");
     return result;
 }
-async function prepare(historical) {
+async function prepare() {
     const prettier = (await import("prettier")).default;
     const stock = (await import("../src/index.mjs")).default;
+    const reference = (await import("./processor-reference.mjs")).createProcessorPlugin();
     const { presets } = await import("../src/presets/index.mjs");
     const projects = corpusManifest().projects.filter(p => !args.project || p.id === args.project);
     if (!projects.length) throw new Error("Unknown project");
-    const proof = { counts: {}, failures: [], baselineCases: 0, originalBytes: 0, cases: [] };
-    const variants = historical ? ["direct", "skip-unchanged", "native-view", "raw-handoff", "roundtrip"] : ["direct"];
-    const observations = {};
-    const reference = historical ? stock : (await import("./processor-reference.mjs")).createProcessorPlugin();
-    let plugins = { direct: stock };
-    if (historical) {
-        const { createPipelinePlugin } = await import("./format-pipeline-variants.mjs");
-        plugins = Object.fromEntries(
-            variants.map(v => [
-                v,
-                createPipelinePlugin(v, {
-                    observe: row => {
-                        const count = (observations[v] ??= { serialized: 0, skipped: 0 });
-                        count[row.serialized ? "serialized" : "skipped"]++;
-                    }
-                })
-            ])
-        );
-    }
+    const proof = {
+        counts: { direct: { checked: 0, matched: 0, different: 0, errors: 0 } },
+        failures: [],
+        baselineCases: 0,
+        originalBytes: 0,
+        cases: []
+    };
     const baseOptions = formatter => ({
         parser: "scss",
         ...(formatter === "plain" ? {} : { plugins: [reference], grundyScssSorterSafety: formatter })
     });
     async function probe(source, expected, formatter, context, extra = {}) {
-        for (const variant of variants) {
-            if (variant === "raw-handoff" && proof.counts[variant]?.checked >= 3) continue;
-            if (variant === "roundtrip" && formatter !== "plain") continue;
-            if (variant !== "roundtrip" && formatter === "plain") continue;
-            const summaryKey = `${variant}/${context.project ?? "fixtures"}/${context.input ?? "fixtures"}/${formatter}`;
-            const row = (proof.counts[variant] ??= { checked: 0, matched: 0, different: 0, errors: 0 });
-            const obsBefore = { ...observations[variant] };
-            row.checked++;
-            let actual, error;
-            try {
-                actual = await prettier.format(source, { ...baseOptions(formatter), ...extra, plugins: [plugins[variant]] });
-            } catch (cause) {
-                error = cause.message;
-            }
-            const matched = !error && actual === expected;
-            row[
-                matched ? "matched"
-                : error ? "errors"
-                : "different"
-            ]++;
-            const observation = {
-                serialized: (observations[variant]?.serialized ?? 0) - (obsBefore.serialized ?? 0),
-                skipped: (observations[variant]?.skipped ?? 0) - (obsBefore.skipped ?? 0)
-            };
-            const entry = proof.cases.find(c => c.key === summaryKey) ?? {
-                key: summaryKey,
-                checked: 0,
-                matched: 0,
-                serialized: 0,
-                skipped: 0
-            };
-            if (!proof.cases.includes(entry)) proof.cases.push(entry);
-            entry.checked++;
-            entry.matched += Number(matched);
-            entry.serialized += observation.serialized;
-            entry.skipped += observation.skipped;
-            if (!matched && proof.failures.filter(f => f.variant === variant).length < 8) {
-                const id = `${variant}-${proof.failures.length}`;
-                await fs.mkdir(path.join(output, "counterexamples", id), { recursive: true });
-                await fs.writeFile(path.join(output, "counterexamples", id, "input.scss"), source);
-                await fs.writeFile(path.join(output, "counterexamples", id, "expected.scss"), expected);
-                if (actual !== undefined)
-                    await fs.writeFile(path.join(output, "counterexamples", id, "actual.scss"), actual);
-                proof.failures.push({
-                    id,
-                    variant,
-                    formatter,
-                    context,
-                    extra,
-                    error,
-                    expectedHash: hash(expected),
-                    actualHash: actual === undefined ? undefined : hash(actual)
-                });
-            }
+        if (formatter === "plain") return;
+        const summaryKey = `direct/${context.project ?? "fixtures"}/${context.input ?? "fixtures"}/${formatter}`;
+        const row = proof.counts.direct;
+        row.checked++;
+        let actual, error;
+        try {
+            actual = await prettier.format(source, { ...baseOptions(formatter), ...extra, plugins: [stock] });
+        } catch (cause) {
+            error = cause.message;
+        }
+        const matched = !error && actual === expected;
+        row[
+            matched ? "matched"
+            : error ? "errors"
+            : "different"
+        ]++;
+        const entry = proof.cases.find(c => c.key === summaryKey) ?? {
+            key: summaryKey,
+            checked: 0,
+            matched: 0,
+            serialized: 0,
+            skipped: 0
+        };
+        if (!proof.cases.includes(entry)) proof.cases.push(entry);
+        entry.checked++;
+        entry.matched += Number(matched);
+        if (!matched && proof.failures.length < 8) {
+            const id = `direct-${proof.failures.length}`;
+            await fs.mkdir(path.join(output, "counterexamples", id), { recursive: true });
+            await fs.writeFile(path.join(output, "counterexamples", id, "input.scss"), source);
+            await fs.writeFile(path.join(output, "counterexamples", id, "expected.scss"), expected);
+            if (actual !== undefined) await fs.writeFile(path.join(output, "counterexamples", id, "actual.scss"), actual);
+            proof.failures.push({
+                id,
+                variant: "direct",
+                formatter,
+                context,
+                extra,
+                error,
+                expectedHash: hash(expected),
+                actualHash: actual === undefined ? undefined : hash(actual)
+            });
         }
     }
     const datasets = [];
@@ -231,9 +211,7 @@ async function prepare(historical) {
                         await probe(fixture.source, expected, formatter, { fixture: fixture.path }, extra);
                     }
     }
-    const eligible = ["direct", "skip-unchanged", "native-view"].filter(
-        v => proof.counts[v] && proof.counts[v].matched === proof.counts[v].checked
-    );
+    const eligible = proof.counts.direct.checked === proof.counts.direct.matched ? ["direct"] : [];
     await write("preflight.json", { ...proof, fixtures: fixtures.length, eligible });
     await write("manifest.json", {
         schemaVersion: 1,
@@ -243,14 +221,11 @@ async function prepare(historical) {
         datasets,
         eligible,
         sourceHashes: await sourceHashes(),
-        method:
-            historical ?
-                "Three common inputs: original, strict formatted, loose formatted. Plain, stock loose and stock strict run on every input. No equality assumption between modes. Prototypes must match stock output in corpus and configuration fixtures."
-            :   "Three common inputs: original, strict formatted, loose formatted. Plain and the Processor reference run on every input. Public direct must match Processor in both modes, corpus and configuration fixtures. No historical prototypes or mutation observations."
+        method: "Three common inputs: original, strict formatted, loose formatted. Plain and the Processor reference run on every input. Public direct must match Processor in both modes, corpus and configuration fixtures. No historical prototypes or mutation observations."
     });
     await fs.cp(path.join(root, "src"), path.join(output, "source-snapshot/src"), { recursive: true });
     process.stderr.write("Eligible research variants: " + eligible.join(", ") + "\n");
-    if (!historical && !eligible.includes("direct")) throw new Error("Public direct failed the Processor exact-output gate");
+    if (!eligible.includes("direct")) throw new Error("Public direct failed the Processor exact-output gate");
 }
 
 if (["prepare", "prepare-direct", "all"].includes(stage)) {
@@ -260,13 +235,12 @@ if (["prepare", "prepare-direct", "all"].includes(stage)) {
     } catch (error) {
         if (error.code !== "ENOENT") throw error;
     }
-    await prepare(stage !== "prepare-direct");
+    await prepare();
 }
 const manifest = await read("manifest.json");
-const preflight = await read("preflight.json"),
-    directOnly = Object.keys(preflight.counts).length === 1 && !!preflight.counts.direct;
-if (directOnly && !["prepare-direct", "direct"].includes(stage))
-    throw new Error("Use --stage prepare in a fresh output directory for historical research");
+const preflight = await read("preflight.json");
+if (Object.keys(preflight.counts).join() !== "direct" || manifest.eligible.join() !== "direct")
+    throw new Error("Use a fresh public pipeline preparation; historical manifests belong to their frozen checkout");
 if (JSON.stringify(await sourceHashes()) !== JSON.stringify(manifest.sourceHashes))
     throw new Error("Production sources changed since preparation");
 const reportPath = path.join(output, "report.json");
@@ -292,7 +266,6 @@ if (report.manifestHash !== hash(await fs.readFile(path.join(output, "manifest.j
 for (const name of [
     "research-format-pipeline.mjs",
     "format-pipeline-worker.mjs",
-    ...(directOnly ? [] : ["format-pipeline-variants.mjs"]),
     "processor-reference.mjs",
     "corpus.mjs",
     "benchmark-statistics.mjs"
@@ -315,8 +288,8 @@ async function launch(config) {
         ...config,
         root,
         dataset: path.join(output, config.dataset),
-        warmup: config.stage === "phases" ? 2 : options.warmup,
-        samples: config.stage === "phases" ? 3 : options.samples
+        warmup: options.warmup,
+        samples: options.samples
     };
     process.stderr.write(
         [
@@ -349,68 +322,37 @@ async function measure(currentStage) {
     await write("report.json", report);
     if (currentStage === "direct" && !manifest.eligible.includes("direct"))
         throw new Error("Direct pipeline failed the exact-output gate");
-    const datasets = manifest.datasets;
-    const listFor = (dataset, formatter) =>
-        currentStage === "direct" ? ["stock", "direct"]
-        : currentStage === "variants" ? ["stock", ...manifest.eligible]
-        : currentStage === "phases" ? ["profile"]
-        : ["stock"];
+    const implementations = currentStage === "direct" ? ["stock", "direct"] : ["stock"];
     const allowed = (d, f) =>
-        !["variants", "direct"].includes(currentStage) ||
-        (f !== "plain" && (d.input === "original" || d.input === f + "-ready"));
-    const phases = currentStage === "phases";
-    for (let round = 0; round < (phases ? 1 : options.processes); round++)
-        for (let di = 0; di < datasets.length; di++) {
-            const d = datasets[di];
-            const order = formatters.slice((round + di) % 3).concat(formatters.slice(0, (round + di) % 3));
-            for (const formatter of order)
-                if (allowed(d, formatter)) {
-                    const implementations = listFor(d, formatter),
-                        offset = round % implementations.length;
-                    const rotated = implementations.slice(offset).concat(implementations.slice(0, offset));
-                    for (const implementation of rotated)
-                        await launch({
-                            stage: currentStage,
-                            metric: phases ? "phases" : "time",
-                            project: d.project,
-                            input: d.input,
-                            dataset: d.file,
-                            formatter,
-                            implementation,
-                            round
-                        });
-                }
-        }
-    if (!phases)
-        for (const memoryRegime of ["cold", "warm"])
-            for (let round = 0; round < options.memoryProcesses; round++)
-                for (let di = 0; di < datasets.length; di++) {
-                    const d = datasets[di],
-                        offset = (round + di) % 3;
-                    for (const formatter of formatters.slice(offset).concat(formatters.slice(0, offset)))
-                        if (allowed(d, formatter)) {
-                            const impl = listFor(d, formatter),
-                                at = round % impl.length;
-                            for (const implementation of impl.slice(at).concat(impl.slice(0, at)))
-                                await launch({
-                                    stage: currentStage,
-                                    metric: "memory",
-                                    memoryRegime,
-                                    project: d.project,
-                                    input: d.input,
-                                    dataset: d.file,
-                                    formatter,
-                                    implementation,
-                                    round
-                                });
-                        }
-                }
+        currentStage === "main" || (f !== "plain" && (d.input === "original" || d.input === f + "-ready"));
+    for (const memoryRegime of [undefined, "cold", "warm"])
+        for (let round = 0; round < (memoryRegime ? options.memoryProcesses : options.processes); round++)
+            for (let di = 0; di < manifest.datasets.length; di++) {
+                const d = manifest.datasets[di],
+                    offset = (round + di) % 3;
+                for (const formatter of formatters.slice(offset).concat(formatters.slice(0, offset)))
+                    if (allowed(d, formatter)) {
+                        const at = round % implementations.length;
+                        for (const implementation of implementations.slice(at).concat(implementations.slice(0, at)))
+                            await launch({
+                                stage: currentStage,
+                                metric: memoryRegime ? "memory" : "time",
+                                memoryRegime,
+                                project: d.project,
+                                input: d.input,
+                                dataset: d.file,
+                                formatter,
+                                implementation,
+                                round
+                            });
+                    }
+            }
     if (JSON.stringify(await sourceHashes()) !== JSON.stringify(manifest.sourceHashes))
         throw new Error("Sources changed during measurements");
     report.stages[currentStage] = { ...report.stages[currentStage], status: "complete", endedAt: new Date().toISOString() };
     await write("report.json", report);
 }
-for (const currentStage of stage === "all" ? ["main", "variants", "phases"]
+for (const currentStage of stage === "all" ? ["main", "direct"]
 : ["prepare", "prepare-direct"].includes(stage) ? []
 : [stage])
     await measure(currentStage);
@@ -438,18 +380,6 @@ for (const worker of report.workers) {
     else {
         row.time = statistics(matching.flatMap(w => w.samplesMs));
         row.roundMedians = matching.map(w => ({ round: w.round, ...statistics(w.samplesMs) }));
-        if (worker.metric === "phases") {
-            const samples = matching.flatMap(w => w.phases),
-                names = [...new Set(samples.flatMap(s => Object.keys(s)))];
-            row.phases = Object.fromEntries(
-                names.map(name => [name, statistics(samples.map(s => s[name]?.exclusiveMs ?? 0))])
-            );
-            row.remainder = statistics(
-                matching.flatMap(w =>
-                    w.samplesMs.map((v, i) => v - Object.values(w.phases[i]).reduce((n, p) => n + p.exclusiveMs, 0))
-                )
-            );
-        }
     }
     rows.push(row);
 }

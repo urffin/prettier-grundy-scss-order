@@ -1,56 +1,66 @@
-# Full formatting pipeline research
+# Public formatting comparisons and archived pipeline research
 
-This study compares the public `prettier.format()` call without a plugin, with `loose` and with `strict`. Research plugins live under `scripts/`. Results are kept outside the repository; recorded findings identify their baseline commit.
+The current tool compares public `prettier.format()` paths: plain Prettier, public strict/loose, and the independent pre-direct Processor reference. It contains no experimental parser factory, mutation tracker, native-AST view or coarse pipeline clocks. Production code and public sorter options are unchanged. Results belong outside the repository.
 
-The working plugin now uses direct parse/sort/stringify with Processor fallback for source maps. Its configuration validation still precedes parsing. In the `direct` and `variants` stages, the historical `stock` label explicitly means the retained Processor reference, independent of the public default. The `direct` stage compares that reference with the public plugin, loading only the Processor reference module in both cohorts for equal import scope; `variants` keeps its experimental implementations. The `main` stage measures the current public plugin; coarse `profile` clocks retain the Processor reference. Historical phase/calibration results below describe the pre-direct baseline, not a new profile of the current default.
-
-## Reproduction
-
-The independent pre-direct Processor reference lives in `scripts/processor-reference.mjs`. Corpus checks and direct integration tests import it without loading the experimental variants. The research factory retains `createPipelinePlugin("processor")` as a compatible entry point to the same reference. Its source is included in the executed-tool hashes and snapshot. The commands below retain the historical experiments; the separate paired workflow does not import their factory.
+## Current commands
 
 ```sh
 npm run research:format-pipeline -- --output /external/format-pipeline
 ```
 
-Use `npm.cmd` in PowerShell if its shim consumes `--`. The default `all` stage prepares inputs, checks prototype output, then measures the public pipeline, eligible prototypes and coarse phases sequentially. Stages can also be run separately against the same directory:
+Use `npm.cmd` in PowerShell if its shim consumes `--`. Default `all` prepares common inputs, then measures `main` (plain Prettier/public strict/loose) and `direct` (Processor/public strict/loose). Separate stages remain available:
 
 ```sh
-node scripts/research-format-pipeline.mjs --stage prepare --output /external/format-pipeline
+node scripts/research-format-pipeline.mjs --stage prepare-direct --output /external/format-pipeline
 node scripts/research-format-pipeline.mjs --stage main --output /external/format-pipeline
-node scripts/research-format-pipeline.mjs --stage variants --output /external/format-pipeline
-node scripts/research-format-pipeline.mjs --stage phases --output /external/format-pipeline
+node scripts/research-format-pipeline.mjs --stage direct --output /external/format-pipeline
 ```
 
-Use a new directory to repeat a measured stage. A stage cannot overwrite existing observations. `--project`, `--processes`, `--samples`, `--warmup` and `--memory-processes` control scope. The tool records corpus revisions/digests, runtime versions, input/output hashes, production-source hashes and copies, executed-tool hashes and copies, and the dependency lock hash. Once measurements exist, changed tools or runtime sources are rejected. Do not run other CPU-heavy checks alongside workers.
+`prepare` is an alias for `prepare-direct`; both now prepare only public comparisons. `variants` and `phases` give a clear error pointing to the frozen study below. They are no longer supported against current runtime sources. Use a fresh directory for each run and a new directory to repeat a measured stage; existing observations cannot be overwritten. `--project`, `--processes`, `--samples`, `--warmup` and `--memory-processes` retain their meanings. Do not run CPU-heavy checks alongside measurement workers.
 
-## Paired CI experiment
+The Processor reference lives in `scripts/processor-reference.mjs`, also used by corpus checks and direct integration tests. In the `direct` stage, historical label `stock` means Processor and `direct` means the public plugin. In `main`, `stock` means the public plugin; `plain` uses no sorter. Preparation generates Processor references and ready inputs, requires exact public-output equality in both modes across corpus/configuration fixtures and checks reference idempotence. A mismatch preserves diagnostics and fails preparation. Selector/function side-effect limitations are not proved away by output equality.
 
-Run the manual [Direct formatting pipeline workflow](https://github.com/urffin/prettier-grundy-scss-order/actions/workflows/format-pipeline.yml) after pushing the tools. One Ubuntu job with Node 24 and lockfile dependencies runs stock and direct sequentially on the same runner. It does not change the production plugin and does not time the rejected native-AST variant or the serialization tracker.
+`main` measures original, strict-ready and loose-ready inputs with all three formatters, including cross-mode ready inputs. `direct` measures original and each mode's own ready input. Sources, corpus revisions/digests, input/output hashes, tools and dependency lock are recorded. Once workers exist, changing measurement sources/tools/parameters is rejected. Exactly five tools accompany the snapshot: parent, worker, Processor reference, corpus helper and statistics helper.
 
-The workflow uses `prepare-direct`: Processor generates the references and ready inputs, and the public plugin must match it in both modes across the corpus and preset/root/group-spacing fixtures. A mismatch fails preparation and preserves diagnostics. Historical prototypes are neither imported nor probed. Existing `prepare`, `all`, `main`, `variants` and `phases` commands remain available for the full research. Use a fresh directory with `prepare` for historical stages; a `prepare-direct` directory is reserved for `direct`.
+## Paired CI comparison
 
-The `direct` stage covers four pinned projects × both modes × original/own-ready input × stock/direct. Each timing case has four fresh processes, five warmups and eleven samples. Stock/direct order reverses each round, including memory rounds. Memory has four separate cold processes and four separate warm processes per case. That gives 384 worker instances, 1408 timing samples and 256 memory samples/768 snapshots. Workers do not overlap; tests, packaging and validation run outside the measurement stage.
-
-The pinned real files contain no `sourceMappingURL` annotations, so their direct calls bypass Processor. Map fallback remains part of the regression checks.
-
-For a local reproduction, use a fresh external directory and the same options for both commands:
+The manual [Direct formatting pipeline workflow](https://github.com/urffin/prettier-grundy-scss-order/actions/workflows/format-pipeline.yml) keeps its `prepare-direct`/`direct` commands and artifact names. One Ubuntu/Node 24 job runs the two implementations sequentially on the same runner. Four pinned projects × both modes × original/own-ready input × Processor/public are covered. Four timing processes per case use five warmups and eleven samples. Four separate cold and four warm memory processes per case retain the newly produced output; implementation order reverses each round. Total: 384 fresh workers, 1408 timing samples, 256 memory samples/768 snapshots. Tests and verification run outside measurement.
 
 ```sh
 node scripts/research-format-pipeline.mjs --stage prepare-direct --output /external/direct --processes 4 --warmup 5 --samples 11 --memory-processes 4
 node scripts/research-format-pipeline.mjs --stage direct --output /external/direct --processes 4 --warmup 5 --samples 11 --memory-processes 4
 ```
 
-CI packages one `format-pipeline-results.json` in the `format-pipeline-results` artifact, retained for 14 days. Its JSON structure and schema version are unchanged: manifest, exact-output gate, all raw workers, statistics, per-round comparisons and memory differences in bytes. The report identifies its clean commit, run/attempt, runner/runtime and source/tool/lock hashes. The direct-only gate has `counts.direct` and `eligible: ["direct"]`; legacy research retains its other variant entries. The `serialized`/`skipped` fields stay present but are zero in direct-only preparation because it does not observe production mutations. Direct-only snapshots/hashes contain five tools, excluding the historical factory; the legacy preparation retains six. The verifier requires the exact corresponding list.
+Both direct cohorts load the same small Processor reference module, without historical prototypes. Cold memory includes imports; warm timing excludes them. Cold baselines precede imports/first formatting, while warm baselines follow one untimed batch. GC precedes the baseline and follows the measured operation. Heap/RSS snapshots and process-wide maxRSS are not total allocations or formatter-only peaks. Earlier reports importing the entire research factory have a different cold import scope; cross-run differences must not be attributed only to formatting.
 
-Both direct cohorts load the same small Processor reference module. Cold observations therefore have a different import scope from earlier runs that loaded the entire research factory; do not attribute a cross-version cold-memory difference solely to the formatting path. Full-call timings are warmed and exclude imports. There are no performance thresholds; output mismatch or invalid evidence fails the job.
+CI retains one `format-pipeline-results.json` in artifact `format-pipeline-results` for 14 days. The paired JSON structure/schema version 1 are preserved: manifest, preflight, workers, summary and comparisons. Preflight has only `counts.direct` and `eligible: ["direct"]`. Reserved `serialized`/`skipped` fields remain zero because production mutations are not observed. Timing workers retain an empty `phases` array for schema compatibility; no phase-clock study is performed. The exact five-tool hash list is required by the verifier.
 
-The independent verifier recalculates statistics/deltas/comparisons, checks the complete alternating worker schedule and single runtime, verifies measured sources/tools against the requested commit, and rebuilds every corpus reference using the public plugin. After downloading the artifact and checking its ZIP digest against GitHub metadata, verify the extracted JSON from the matching checkout:
+The independent verifier recalculates statistics/deltas/comparisons, checks the alternating worker schedule, runtime, measured source/tool/lock hashes against the clean commit and rebuilds corpus references. Download the artifact, check its ZIP digest against GitHub metadata, then verify from the matching checkout:
 
 ```sh
 node scripts/verify-format-pipeline-ci.mjs --input /external/format-pipeline-results.json --commit FULL_SHA --output /external/verification.json
 ```
 
-This complements the normal compatibility/benchmark/corpus CI; the research workflow is opt-in and does not add a job to every npm release. Interpret changes with all four process medians and quartiles. A lower pooled median or snapshot alone is not evidence of a universal speed or memory improvement.
+Only a direct-only measurement directory is eligible for this CI packer/verifier; a combined `all` report also contains `main` observations. There are no performance thresholds. Examine quartiles and all process medians; small pooled differences are not a universal performance guarantee. The real files contain no map annotations, so map fallback is covered separately by regression tests.
+
+## Regression coverage
+
+Useful former prototype inputs now live in `tests/direct-integration.test.mjs`: ten inputs across five presets, strict/loose and independent root/group-spacing flags (400 combinations), exact Processor equality and public idempotence. Ready-input bypass/parse counts and malformed-input diagnostics remain checked on public paths. Tests of the removed tracker and phase-clock implementation are historical; they are not product contracts. `tests/format-pipeline-ci.test.mjs` retains independent statistics/evidence checks and covers plain/public workers and rejection of retired configurations.
+
+## Archived prototype and phase study
+
+Reproduce the original research on published commit `9e186a5bb5f6b4a2b882621d19a8d18396b45e75`, which retains the factory, runner, tests, source, lock and pinned corpus together:
+
+```sh
+git worktree add --detach ../scss-order-pipeline-study 9e186a5bb5f6b4a2b882621d19a8d18396b45e75
+cd ../scss-order-pipeline-study
+npm ci --ignore-scripts --no-audit --no-fund
+npm run research:format-pipeline -- --output /external/pipeline-study
+```
+
+In that frozen checkout, original `prepare`, `main`, `variants` and `phases` commands remain available; `all` runs the original full study. `--project` and sample/process counts can limit a replay. Keep generated manifests, preflight/counterexamples, raw reports, sources/tools/lock hashes and runtime metadata with observations. Historical timing values need not repeat exactly on another machine or runtime. Old JSON reports must be interpreted/verified with their matching historical checkout.
+
+The remaining sections document that pre-direct study, its rejected prototypes and calibration results. They do not describe current default integration or a supported purity/AST API. Current phase profiling remains available separately through `npm run profile:real`.
 
 ## Inputs and timing
 
