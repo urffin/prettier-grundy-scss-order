@@ -2,6 +2,10 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { createHash } from "node:crypto";
+import nodeAssert from "node:assert/strict";
 import { test } from "uvu";
 import * as assert from "uvu/assert";
 import scss from "postcss-scss";
@@ -115,4 +119,137 @@ test("Full-format profile measures direct parse/serialize and map fallback once"
             assert.is(phases[name].calls, 1, name);
     }
 });
+test("Legacy profiling imports retain the grouped implementations and export names", async () => {
+    for (const [name, exports] of [
+        ["instrument", ["instrument", "snapshot"]],
+        ["runtime", ["profile"]],
+        ["summary", ["summarize", "summarizeCPU", "summarizeCounts"]]
+    ]) {
+        const previous = await import(`../scripts/profile-real-${name}.mjs`),
+            current = await import(`../scripts/profile/${name}.mjs`);
+        assert.equal(Object.keys(previous).sort(), exports.slice().sort());
+        for (const name of exports) assert.is(previous[name], current[name]);
+    }
+});
+
+test("Profiling CLIs retain reports, CPU files, complete tool hashes and cleanup outside the checkout", async () => {
+    const output = path.join(directory, "cli"),
+        run = promisify(execFile),
+        env = { ...process.env, TMPDIR: directory, TMP: directory, TEMP: directory };
+    const { stdout } = await run(
+        process.execPath,
+        [
+            path.join(root, "scripts/profile-real-corpus.mjs"),
+            "--output",
+            output,
+            "--project",
+            "landos-new",
+            "--processes",
+            "2",
+            "--samples",
+            "1",
+            "--warmup",
+            "0",
+            "--cpu-sort-repetitions",
+            "3",
+            "--cpu-format-repetitions",
+            "1"
+        ],
+        { cwd: directory, env, windowsHide: true, maxBuffer: 8 * 1024 * 1024 }
+    );
+    const report = JSON.parse(await fs.readFile(path.join(output, "profile.json"), "utf8"));
+    assert.equal(Object.keys(report), [
+        "schemaVersion",
+        "options",
+        "output",
+        "commit",
+        "projects",
+        "runtimeSources",
+        "profilerSources",
+        "workers",
+        "methodology"
+    ]);
+    assert.is(report.schemaVersion, 1);
+    assert.is(report.workers.length, 20);
+    assert.equal(JSON.parse(stdout), { output, workers: 20, projects: report.projects, commit: report.commit });
+    const tools = [
+        "scripts/profile-real-corpus.mjs",
+        "scripts/profile-real-worker.mjs",
+        "scripts/profile-real-instrument.mjs",
+        "scripts/profile-real-runtime.mjs",
+        "scripts/profile-real-summary.mjs",
+        "scripts/profile/runner.mjs",
+        "scripts/profile/worker.mjs",
+        "scripts/profile/instrument.mjs",
+        "scripts/profile/runtime.mjs",
+        "scripts/profile/summary.mjs",
+        "scripts/corpus.mjs",
+        "scripts/benchmark-statistics.mjs"
+    ];
+    assert.equal(Object.keys(report.profilerSources), tools);
+    const hash = value => createHash("sha256").update(value).digest("hex");
+    for (const file of tools) assert.is(report.profilerSources[file], hash(await fs.readFile(path.join(root, file))), file);
+    for (const [file, digest] of Object.entries(report.runtimeSources)) {
+        assert.is(digest, hash(await fs.readFile(path.join(root, file))));
+        assert.is(digest, hash(await fs.readFile(path.join(output, "runtime-source", file))));
+    }
+    const instances = new Set();
+    for (const worker of report.workers) {
+        instances.add(`${worker.pid}/${worker.timeOriginMs}`);
+        const reference = report.workers.find(w => w.safety === worker.safety && w.measurement === worker.measurement);
+        assert.is(worker.inputHash, reference.inputHash);
+        assert.is(worker.outputHash, reference.outputHash);
+        await nodeAssert.rejects(fs.access(worker.target), { code: "ENOENT" });
+        if (worker.stage === "timing") {
+            assert.is(worker.samplesMs.length, 1);
+            assert.is(worker.phases.length, 1);
+            const lane = report.workers.filter(
+                w =>
+                    w.stage === "timing" &&
+                    w.round === worker.round &&
+                    w.safety === worker.safety &&
+                    w.measurement === worker.measurement
+            );
+            assert.equal(
+                lane.map(w => w.variant),
+                worker.round ? ["phases", "stock"] : ["stock", "phases"]
+            );
+        } else if (worker.stage === "cpu") {
+            assert.is(worker.safety, "strict");
+            assert.is(worker.cpuPath, path.join(output, `landos-new-${worker.measurement}.cpuprofile`));
+            const cpu = JSON.parse(await fs.readFile(worker.cpuPath, "utf8"));
+            assert.equal(Object.keys(cpu).sort(), ["nodes", "startTime", "endTime", "samples", "timeDeltas"].sort());
+            assert.is(cpu.samples.length, worker.samples);
+            assert.is(cpu.timeDeltas.length, cpu.samples.length);
+            assert.is(cpu.endTime - cpu.startTime, worker.durationUs);
+            const ids = new Set(cpu.nodes.map(n => n.id));
+            for (const id of cpu.samples) assert.ok(ids.has(id));
+        }
+    }
+    assert.is(instances.size, 20);
+    assert.equal(
+        report.workers.filter(w => w.stage === "counts").map(w => w.safety),
+        ["strict", "loose"]
+    );
+    assert.not.ok((await fs.readdir(directory)).some(name => name.startsWith("scss-profile-snapshot-")));
+    const legacy = await run(
+        process.execPath,
+        [path.join(root, "scripts/profile-real-summary.mjs"), path.join(output, "profile.json")],
+        { cwd: directory, env, windowsHide: true }
+    );
+    const summary = JSON.parse(await fs.readFile(path.join(output, "summary.json"), "utf8"));
+    const grouped = await run(
+        process.execPath,
+        [path.join(root, "scripts/profile/summary.mjs"), path.join(output, "profile.json")],
+        { cwd: directory, env, windowsHide: true }
+    );
+    assert.equal(JSON.parse(grouped.stdout), JSON.parse(legacy.stdout));
+    assert.equal(JSON.parse(await fs.readFile(path.join(output, "summary.json"), "utf8")), summary);
+    assert.equal(Object.keys(summary), ["counts", "timings", "calibration", "cpu"]);
+    assert.is(summary.counts.length, 2);
+    assert.is(summary.timings.length, 8);
+    assert.is(summary.calibration.length, 4);
+    assert.is(summary.cpu.length, 2);
+});
+
 test.run();
