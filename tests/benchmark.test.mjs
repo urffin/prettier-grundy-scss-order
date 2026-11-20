@@ -1,17 +1,70 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { test } from "uvu";
 import * as assert from "uvu/assert";
+import scss from "postcss-scss";
+import prettier from "prettier";
+import plugin from "../src/index.mjs";
+import { grundyPropSorter } from "../src/grundy-prop-sorter.mjs";
 import { memoryFields, statistics, summarizeMemory } from "../scripts/benchmark-statistics.mjs";
-import { scenarios, scenarioInfo } from "../scripts/benchmark-scenarios.mjs";
+import { scenarios, scenarioInfo, scenarioSources } from "../scripts/benchmark-scenarios.mjs";
 
 const run = promisify(execFile);
 const root = fileURLToPath(new URL("../", import.meta.url));
 const script = path.join(root, "scripts/benchmark.mjs");
+
+async function canonicalRecords(scenario) {
+    const sources = scenarioSources(scenario);
+    // Encode independently of scenarioText: synthetic hashes use raw text;
+    // real batches retain every relative path and file boundary, in order.
+    const digest = texts =>
+        createHash("sha256")
+            .update(scenario.project ? JSON.stringify(sources.map((file, i) => [file.path, texts[i]])) : texts[0])
+            .digest("hex");
+    const expected = {};
+    for (const safety of ["strict", "loose"])
+        for (const measurement of ["sort", "format"]) {
+            const output = [];
+            for (const file of sources) {
+                if (measurement === "sort") {
+                    const tree = scss.parse(file.source);
+                    grundyPropSorter({ safety }).OnceExit(tree);
+                    output.push(tree.toString(scss.stringify));
+                } else
+                    output.push(
+                        await prettier.format(file.source, {
+                            parser: "scss",
+                            plugins: [plugin],
+                            grundyScssSorterSafety: safety
+                        })
+                    );
+            }
+            expected[`${safety}/${measurement}`] = {
+                scenario: scenario.id,
+                fileCount: sources.length,
+                inputHash: digest(sources.map(f => f.source)),
+                outputHash: digest(output)
+            };
+        }
+    return expected;
+}
+
+function assertCanonicalRecord(worker, expected) {
+    const row = worker.rows[0];
+    assert.equal(Object.keys(row), [
+        "scenario",
+        "fileCount",
+        "inputHash",
+        "outputHash",
+        worker.metric === "memory" ? "snapshots" : "samplesMs"
+    ]);
+    assert.equal(Object.fromEntries(Object.keys(expected).map(key => [key, row[key]])), expected);
+}
 
 test("Benchmark compares revisions in fresh processes, saves samples and cleans its snapshot", async () => {
     const directory = await mkdtemp(path.join(tmpdir(), "scss-benchmark-test-"));
@@ -44,7 +97,8 @@ test("Benchmark compares revisions in fresh processes, saves samples and cleans 
                 env: { ...process.env, TMPDIR: directory, TMP: directory, TEMP: directory, GITHUB_STEP_SUMMARY: summary }
             }
         );
-        const report = JSON.parse(stdout);
+        const report = JSON.parse(stdout),
+            expected = await canonicalRecords(scenarios.find(s => s.id === "comments"));
         assert.equal(report, JSON.parse(await readFile(output, "utf8")));
         assert.is(report.schemaVersion, 2);
         assert.is(report.method.metric, "all");
@@ -67,6 +121,7 @@ test("Benchmark compares revisions in fresh processes, saves samples and cleans 
             }
         }
         for (const worker of [...report.workers, ...report.memoryWorkers]) {
+            assertCanonicalRecord(worker, expected[`${worker.safety}/${worker.measurement}`]);
             assert.ok(worker.pid !== process.pid);
             assert.ok(Number.isFinite(worker.timeOriginMs) && worker.timeOriginMs > 0);
             assert.is(worker.runtime.node, process.version);
@@ -311,7 +366,9 @@ test("Real-file benchmark batches preserve file boundaries and compare both metr
         { cwd: root, windowsHide: true, maxBuffer: 8 * 1024 * 1024 }
     );
     const report = JSON.parse(stdout),
-        info = scenarioInfo(scenarios.find(s => s.id === "real-grundyjs"));
+        scenario = scenarios.find(s => s.id === "real-grundyjs"),
+        info = scenarioInfo(scenario),
+        expected = await canonicalRecords(scenario);
     assert.equal(report.inputs, [info]);
     assert.is(info.kind, "real");
     assert.ok(info.files > 2 && info.corpus.files.some(f => f.path.endsWith(".css")));
@@ -321,6 +378,7 @@ test("Real-file benchmark batches preserve file boundaries and compare both metr
     assert.is(report.memoryWorkers.length, 8);
     assert.is(new Set([...report.workers, ...report.memoryWorkers].map(w => `${w.pid}:${w.timeOriginMs}`)).size, 16);
     for (const worker of [...report.workers, ...report.memoryWorkers]) {
+        assertCanonicalRecord(worker, expected[`${worker.safety}/${worker.measurement}`]);
         assert.is(worker.rows.length, 1);
         assert.is(worker.rows[0].inputHash, info.inputHash);
         assert.is(worker.rows[0].fileCount, info.files);
@@ -330,6 +388,87 @@ test("Real-file benchmark batches preserve file boundaries and compare both metr
         assert.is(worker.rows[0].outputHash, timed.rows[0].outputHash);
     }
     for (const row of [...report.rows, ...report.memoryRows]) assert.ok(row.outputMatches);
+});
+
+test("Record serialization and hashing follow timing and every memory snapshot in both modes", async () => {
+    const directory = await mkdtemp(path.join(tmpdir(), "scss-benchmark-boundaries-"));
+    try {
+        const preload = path.join(directory, "trace.mjs"),
+            trace = path.join(directory, "events.json");
+        await writeFile(
+            preload,
+            `
+import { writeFileSync } from 'node:fs';
+import crypto from 'node:crypto';
+import { createRequire, syncBuiltinESMExports } from 'node:module';
+const require = createRequire(${JSON.stringify(new URL("../package.json", import.meta.url).href)});
+const { Root } = require('postcss');
+const events = [];
+const now = performance.now.bind(performance);
+Object.defineProperty(performance, 'now', { value() { events.push('clock'); return now(); } });
+const createHash = crypto.createHash;
+crypto.createHash = function(...args) { events.push('hash'); return createHash(...args); };
+syncBuiltinESMExports();
+const memoryUsage = process.memoryUsage;
+process.memoryUsage = Object.assign(function() { events.push('snapshot'); return memoryUsage(); }, memoryUsage);
+if (global.gc) {
+    const gc = global.gc;
+    global.gc = function() { events.push('gc'); return gc(); };
+}
+const toString = Root.prototype.toString;
+Root.prototype.toString = function(...args) { events.push('serialize'); return toString.apply(this, args); };
+process.once('exit', () => writeFileSync(${JSON.stringify(trace)}, JSON.stringify(events)));
+`
+        );
+        for (const safety of ["strict", "loose"])
+            for (const metric of ["time", "memory"]) {
+                const config = {
+                    target: root,
+                    dependencies: root,
+                    scenario: "independent-100",
+                    safety,
+                    measurement: "sort",
+                    metric,
+                    warmup: 0,
+                    samples: 1
+                };
+                const { stdout } = await run(
+                    process.execPath,
+                    [
+                        ...(metric === "memory" ? ["--expose-gc"] : []),
+                        "--import",
+                        pathToFileURL(preload).href,
+                        path.join(root, "scripts/benchmark-worker.mjs"),
+                        JSON.stringify(config)
+                    ],
+                    { cwd: root, windowsHide: true }
+                );
+                const events = JSON.parse(await readFile(trace, "utf8"));
+                assert.equal(events, [
+                    ...(metric === "memory" ?
+                        ["gc", "gc", "snapshot", "snapshot", "gc", "gc", "snapshot"]
+                    :   ["clock", "clock"]),
+                    "serialize",
+                    "hash",
+                    "hash"
+                ]);
+                const worker = JSON.parse(stdout);
+                assert.is(worker.metric, metric);
+                assert.is(worker.safety, safety);
+                assert.is(worker.resolvedSafety, safety);
+                assert.ok(worker.rows[0].outputHash);
+            }
+    } finally {
+        const relative = path.relative(path.resolve(tmpdir()), path.resolve(directory));
+        if (
+            !relative ||
+            relative.startsWith("..") ||
+            path.isAbsolute(relative) ||
+            !path.basename(directory).startsWith("scss-benchmark-boundaries-")
+        )
+            throw new Error("Invalid boundary test cleanup path");
+        await rm(directory, { recursive: true, force: true });
+    }
 });
 
 test.run();

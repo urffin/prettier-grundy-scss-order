@@ -25,6 +25,22 @@ const safety =
     : "structural";
 if (!choices.includes(safety)) throw new Error(`Target does not support ${config.safety} safety (requires 0.3.0 or later)`);
 const rows = [];
+function createRecord(scenario, sources, result, metricFields) {
+    const hash = text => createHash("sha256").update(text).digest("hex");
+    const output = scenarioText(
+        scenario,
+        sources,
+        result.map(r => (typeof r === "string" ? r : r.toString(scss.stringify)))
+    );
+    const input = sources.map(f => f.source);
+    return {
+        scenario: scenario.id,
+        fileCount: sources.length,
+        inputHash: hash(scenarioText(scenario, sources, input)),
+        outputHash: hash(output),
+        ...metricFields
+    };
+}
 async function metadata() {
     return {
         packageVersion: JSON.parse(await readFile(path.join(config.target, "package.json"), "utf8")).version,
@@ -70,26 +86,7 @@ if (metric === "memory") {
     const afterGC = snapshot();
     // Keep the result live through afterGC. Hashing and AST serialization occur
     // afterwards, so their allocations do not enter the snapshots/high-water mark.
-    const output = scenarioText(
-        scenario,
-        sources,
-        result.map(r => (typeof r === "string" ? r : r.toString(scss.stringify)))
-    );
-    rows.push({
-        scenario: scenario.id,
-        fileCount: sources.length,
-        inputHash: createHash("sha256")
-            .update(
-                scenarioText(
-                    scenario,
-                    sources,
-                    sources.map(f => f.source)
-                )
-            )
-            .digest("hex"),
-        outputHash: createHash("sha256").update(output).digest("hex"),
-        snapshots: { before, after, afterGC }
-    });
+    rows.push(createRecord(scenario, sources, result, { snapshots: { before, after, afterGC } }));
 } else
     for (const scenario of selected) {
         const sources = scenarioSources(scenario);
@@ -116,26 +113,7 @@ if (metric === "memory") {
             if (round >= config.warmup) samplesMs.push(elapsed);
         }
         // Serialization/hashing is outside the timed section.
-        const output = scenarioText(
-            scenario,
-            sources,
-            result.map(r => (typeof r === "string" ? r : r.toString(scss.stringify)))
-        );
-        rows.push({
-            scenario: scenario.id,
-            fileCount: sources.length,
-            inputHash: createHash("sha256")
-                .update(
-                    scenarioText(
-                        scenario,
-                        sources,
-                        sources.map(f => f.source)
-                    )
-                )
-                .digest("hex"),
-            outputHash: createHash("sha256").update(output).digest("hex"),
-            samplesMs
-        });
+        rows.push(createRecord(scenario, sources, result, { samplesMs }));
     }
 console.log(
     JSON.stringify({
