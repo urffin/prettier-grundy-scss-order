@@ -6,10 +6,33 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "uvu";
 import * as assert from "uvu/assert";
-import { corpusPath, hash, projectDigest } from "../scripts/corpus.mjs";
+import { corpusManifest, corpusPath, corpusSources, hash, projectDigest } from "../scripts/corpus.mjs";
+import { scenarios, scenarioInfo } from "../scripts/benchmark-scenarios.mjs";
 
 const run = promisify(execFile),
     root = fileURLToPath(new URL("../", import.meta.url));
+test("Archived site benchmark preserves the original whole-file snapshot and canonical hash", async () => {
+    const id = "grundyjs.ru-6f9645c",
+        project = corpusManifest().projects.find(p => p.id === id),
+        scenario = scenarios.find(s => s.id === "real-grundyjs-6f9645c");
+    assert.is(project.revision, "6f9645c65d9c6cd2cfa2f87a7ef34b06bba4a8a4");
+    assert.is(project.digest, "757b38894ad8d08550fcb7e1557b63ff260cf1cb8606027e2941396f2f1c3348");
+    assert.is(projectDigest(project.files), project.digest);
+    assert.is(project.files.length, 53);
+    assert.is(
+        project.files.reduce((n, f) => n + f.bytes, 0),
+        123814
+    );
+    assert.is(corpusSources(id).length, 53);
+    assert.is(scenario.project, id);
+    assert.is(scenarioInfo(scenario).inputHash, "69779f4d1b71afa854f4f37aa316bba8c4dca8289f28a7fe4e43496a885ec7e6");
+    assert.is(scenarios.find(s => s.id === "real-grundyjs").project, "grundyjs.ru");
+    const selection = JSON.parse(await readFile(path.join(root, "tests/fixtures/corpus/real/selection.json"), "utf8"));
+    assert.not.ok(
+        selection.projects.some(p => p.id === id),
+        "Archived inputs must not be refreshed in place"
+    );
+});
 test("Corpus paths reject escapes and absolute source paths", () => {
     for (const [project, file] of [
         ["..", "a.scss"],

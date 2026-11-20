@@ -1,0 +1,143 @@
+.player {
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+.form {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) repeat(2, minmax(0, 1fr)) auto;
+    align-items: end;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.player label {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+    font-size: 14px;
+}
+.player select,
+.player button {
+    min-width: 0;
+    min-height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background-color: var(--paper);
+    color: var(--ink);
+}
+.player select {
+    width: 100%;
+    padding-block: 8px;
+    padding-inline-start: 10px;
+    font-size: 16px;
+}
+.player button {
+    padding: 8px 12px;
+    font-size: 14px;
+}
+.player button:hover:not(:disabled) {
+    background: var(--surface);
+}
+.player button:disabled {
+    opacity: 0.4;
+}
+.player :is(button, select, input):focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: 3px;
+}
+.canvas {
+    display: block;
+    width: 100%;
+    border-radius: 8px;
+    background: var(--canvas-background);
+}
+.controls {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(100px, 0.7fr);
+    gap: 8px;
+    align-items: end;
+    margin: 16px 0;
+}
+.seek {
+    width: 100%;
+    min-height: 44px;
+}
+.status {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+.operation {
+    min-height: 3em;
+}
+.counters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    color: var(--muted);
+}
+.distances {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.distances div {
+    display: flex;
+    gap: 6px;
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+}
+.distances dt {
+    font-weight: 600;
+}
+.legend {
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+.error {
+    margin-bottom: 12px;
+    color: var(--ink);
+}
+.placeholder {
+    display: grid;
+    align-content: start;
+    gap: 16px;
+    min-height: 740px;
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+@media (max-width: 640px) {
+    .player {
+        padding: 12px;
+    }
+    .form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .example,
+    .apply {
+        grid-column: 1 / -1;
+    }
+    .controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .controls label {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .controls select {
+        width: 110px;
+    }
+    .placeholder {
+        min-height: 1060px;
+    }
+}

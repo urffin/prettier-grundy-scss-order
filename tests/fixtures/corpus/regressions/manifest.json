@@ -107,11 +107,12 @@
       },
       "origin": {
         "kind": "adapted",
-        "project": "grundyjs.ru",
+        "project": "grundyjs.ru-6f9645c",
         "files": [
           "components/so/SoInfo.module.scss"
         ],
-        "note": "Reduced and rewritten as a closed example; real benchmark snapshots remain whole files."
+        "note": "Reduced and rewritten as a closed example; real benchmark snapshots remain whole files.",
+        "revision": "6f9645c65d9c6cd2cfa2f87a7ef34b06bba4a8a4"
       },
       "features": [
         "independent-properties",
@@ -321,6 +322,98 @@
         "@keyframes orbit{0%{opacity:0}100%{opacity:1}}",
         "&:hover {color:red;color:blue}"
       ]
+    },
+    {
+      "id": "site-fullscreen-canvas",
+      "entry": "site-fullscreen-canvas/input.scss",
+      "expected": {
+        "strict": "site-fullscreen-canvas/strict.scss",
+        "loose": "site-fullscreen-canvas/loose.scss"
+      },
+      "oracle": {
+        "version": "0.4.8",
+        "revision": "1dbe483aa148240a9648c696ad3bb8874c9ed116"
+      },
+      "origin": {
+        "kind": "adapted",
+        "project": "grundyjs.ru",
+        "revision": "ccdfe3ff37715fdb63fab36fa2b3ad78e4d41ddf",
+        "files": [
+          "components/algorithms/PythagorasTreePlayer.module.css",
+          "components/algorithms/ChaosGamePlayer.module.css"
+        ],
+        "note": "Reduced from the committed site snapshot; nested SCSS and the shared decoration reset make the regression self-contained."
+      },
+      "features": [
+        "attribute-selectors",
+        "custom-properties",
+        "functions",
+        "logical-properties",
+        "comments"
+      ],
+      "strictCSS": "projection",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "site-glossary-decoration",
+      "entry": "site-glossary-decoration/input.scss",
+      "expected": {
+        "strict": "site-glossary-decoration/strict.scss",
+        "loose": "site-glossary-decoration/loose.scss"
+      },
+      "oracle": {
+        "version": "0.4.8",
+        "revision": "1dbe483aa148240a9648c696ad3bb8874c9ed116"
+      },
+      "origin": {
+        "kind": "adapted",
+        "project": "grundyjs.ru",
+        "revision": "ccdfe3ff37715fdb63fab36fa2b3ad78e4d41ddf",
+        "files": [
+          "app/globals.css"
+        ],
+        "note": "Reduced from the committed site snapshot; nested SCSS and the shared decoration reset make the regression self-contained."
+      },
+      "features": [
+        "functional-selectors",
+        "pseudo-classes",
+        "nested-rules",
+        "shorthands",
+        "conflicts",
+        "comments"
+      ],
+      "strictCSS": "projection",
+      "defaultLooseCompiles": true
+    },
+    {
+      "id": "site-responsive-summary",
+      "entry": "site-responsive-summary/input.scss",
+      "expected": {
+        "strict": "site-responsive-summary/strict.scss",
+        "loose": "site-responsive-summary/loose.scss"
+      },
+      "oracle": {
+        "version": "0.4.8",
+        "revision": "1dbe483aa148240a9648c696ad3bb8874c9ed116"
+      },
+      "origin": {
+        "kind": "adapted",
+        "project": "grundyjs.ru",
+        "revision": "ccdfe3ff37715fdb63fab36fa2b3ad78e4d41ddf",
+        "files": [
+          "components/short-links/PublicLinks.module.css"
+        ],
+        "note": "Reduced from the committed site snapshot; nested SCSS and the shared decoration reset make the regression self-contained."
+      },
+      "features": [
+        "grid-functions",
+        "media",
+        "nested-rules",
+        "custom-properties",
+        "functions"
+      ],
+      "strictCSS": "projection",
+      "defaultLooseCompiles": true
     }
   ]
 }

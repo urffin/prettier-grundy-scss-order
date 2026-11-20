@@ -1,0 +1,64 @@
+.player,
+.configuration,
+.scene {
+    min-width: 0;
+}
+.configuration {
+    flex-basis: 100%;
+}
+.settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: end;
+    margin-block: 10px;
+}
+.settings label {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+    font-size: 14px;
+}
+.settings input,
+.settings button {
+    min-height: 44px;
+    max-width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+}
+.settings input {
+    width: 125px;
+}
+.settings button {
+    cursor: pointer;
+}
+.note {
+    margin-block: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+.canvas {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+.inspection {
+    padding: 12px 0;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+.player[data-expanded="true"] .canvas {
+    width: var(--fullscreen-canvas-width, 100%);
+    height: var(--fullscreen-canvas-height, auto);
+    margin-inline: auto;
+    transform: translateY(var(--fullscreen-canvas-offset-y, 0px));
+}
+.player[data-expanded="true"] .inspection {
+    display: none;
+}

@@ -1,0 +1,232 @@
+.player {
+    min-width: 0;
+}
+.hiddenExplanation {
+    display: none;
+}
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.player label {
+    display: grid;
+    min-width: 0;
+    gap: 5px;
+    font-size: 14px;
+}
+.player :is(select, button, input[type="number"]) {
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 14px;
+}
+.player select {
+    font-size: 16px;
+}
+.player button:disabled {
+    opacity: 0.4;
+}
+.player button:hover:not(:disabled) {
+    background: var(--surface);
+}
+.player :is(button, select, input, summary):focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: 3px;
+}
+.canvas {
+    display: block;
+    width: 100%;
+    max-width: 760px;
+    margin-inline: auto;
+    border-radius: 8px;
+    cursor: crosshair;
+    background: var(--canvas-background);
+}
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 18px;
+    margin: 12px 0;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+}
+.legend > span,
+.legend label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+}
+.legend input,
+.trace input {
+    width: 18px;
+    height: 18px;
+    flex: none;
+}
+.currentSample {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+.pathSample {
+    width: 18px;
+    height: 3px;
+}
+.traces {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 16px;
+    max-width: 760px;
+    margin-inline: auto;
+}
+.trace {
+    padding: 10px;
+    border-radius: 8px;
+    background: var(--surface);
+}
+.trace label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 600;
+}
+.traceStatus {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+.seek {
+    width: 100%;
+    min-height: 44px;
+}
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+}
+.card {
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+.card h3 {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-weight: 600;
+    font-size: 17px;
+}
+.swatch {
+    width: 12px;
+    height: 12px;
+    flex: none;
+    border-radius: 3px;
+}
+.rule,
+.note {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+}
+.card dl {
+    display: grid;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 14px;
+}
+.card dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+.card dd {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+.status {
+    margin-top: 8px;
+    font-size: 14px;
+}
+.editor {
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+}
+.editor summary {
+    cursor: pointer;
+    min-height: 44px;
+    padding: 8px 0;
+    font-weight: 600;
+}
+.fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(70px, 1fr)) minmax(110px, 1.5fr);
+    align-items: end;
+    gap: 10px;
+}
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+}
+.error {
+    margin-top: 12px;
+    color: var(--ink);
+    font-size: 14px;
+}
+@media (max-width: 640px) {
+    .player {
+        padding: 12px;
+    }
+    .toolbar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .toolbar label:first-child {
+        grid-column: 1/-1;
+    }
+    .cards {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .card dl {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .card dl div {
+        display: block;
+    }
+    .card dt {
+        font-size: 12px;
+    }
+    .fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .fields label:last-child {
+        grid-column: 1/-1;
+    }
+    .trace {
+        padding: 8px 5px;
+    }
+    .trace label {
+        gap: 4px;
+        font-size: 12px;
+    }
+    .trace .swatch {
+        width: 8px;
+        height: 8px;
+    }
+}

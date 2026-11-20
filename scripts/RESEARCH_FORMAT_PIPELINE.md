@@ -24,7 +24,7 @@ The Processor reference lives in `scripts/processor-reference.mjs`, also used by
 
 ## Paired CI comparison
 
-The manual [Direct formatting pipeline workflow](https://github.com/urffin/prettier-grundy-scss-order/actions/workflows/format-pipeline.yml) keeps its `prepare-direct`/`direct` commands and artifact names. One Ubuntu/Node 24 job runs the two implementations sequentially on the same runner. Four pinned projects × both modes × original/own-ready input × Processor/public are covered. Four timing processes per case use five warmups and eleven samples. Four separate cold and four warm memory processes per case retain the newly produced output; implementation order reverses each round. Total: 384 fresh workers, 1408 timing samples, 256 memory samples/768 snapshots. Tests and verification run outside measurement.
+The manual [Direct formatting pipeline workflow](https://github.com/urffin/prettier-grundy-scss-order/actions/workflows/format-pipeline.yml) keeps its `prepare-direct`/`direct` commands and artifact names. One Ubuntu/Node 24 job runs the two implementations sequentially on the same runner. Five pinned batches (four projects plus the site's archived snapshot) × both modes × original/own-ready input × Processor/public are covered. Four timing processes per case use five warmups and eleven samples. Four separate cold and four warm memory processes per case retain the newly produced output; implementation order reverses each round. Total: 480 fresh workers, 1760 timing samples, 320 memory samples/960 snapshots. Tests and verification run outside measurement.
 
 ```sh
 node scripts/research-format-pipeline.mjs --stage prepare-direct --output /external/direct --processes 4 --warmup 5 --samples 11 --memory-processes 4

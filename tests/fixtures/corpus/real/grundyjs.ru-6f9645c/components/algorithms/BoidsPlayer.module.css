@@ -1,0 +1,114 @@
+.player {
+    min-width: 0;
+}
+.settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: end;
+}
+.settings label {
+    display: grid;
+    gap: 5px;
+    font-size: 14px;
+    min-width: 0;
+}
+.settings input:not([type="checkbox"]),
+.settings select {
+    min-height: 44px;
+    max-width: 100%;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink);
+    background: var(--paper);
+    font-size: 16px;
+}
+.settings input[type="number"],
+.settings input[type="text"] {
+    width: 120px;
+}
+.settings .toggle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+}
+.toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--link);
+}
+.rules {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    width: 100%;
+}
+.note {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin-block: 10px;
+    overflow-wrap: anywhere;
+}
+.scene {
+    min-width: 0;
+    display: grid;
+    gap: 16px;
+    align-items: start;
+    margin-top: 16px;
+}
+.canvas {
+    display: block;
+    width: 100%;
+    border-radius: 8px;
+}
+.inspection {
+    min-width: 0;
+}
+.inspection h3 {
+    font-size: 16px;
+    font-weight: 600;
+}
+.inspection table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 12px;
+    font-variant-numeric: tabular-nums;
+}
+.inspection :is(td, th) {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line);
+}
+.inspection th {
+    text-align: left;
+    font-weight: 400;
+}
+.inspection td {
+    text-align: right;
+    white-space: nowrap;
+    padding-left: 8px;
+}
+.swatch {
+    display: inline-block;
+    width: 12px;
+    height: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+.alert {
+    color: var(--canvas-recording);
+    margin-block: 10px;
+}
+@media (min-width: 900px) {
+    .inspecting {
+        grid-template-columns: minmax(0, 1fr) 290px;
+    }
+}
+:global([data-expanded="true"]) .canvas {
+    transform: translateY(var(--fullscreen-canvas-offset-y, 0px));
+}

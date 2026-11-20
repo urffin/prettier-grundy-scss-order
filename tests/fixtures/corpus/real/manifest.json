@@ -436,6 +436,324 @@
         "kind": "local-git",
         "repository": "grundyjs.ru"
       },
+      "revision": "ccdfe3ff37715fdb63fab36fa2b3ad78e4d41ddf",
+      "selection": {
+        "roots": [
+          "app",
+          "components",
+          "styles"
+        ]
+      },
+      "digest": "cc776be3c1725250fab37372d806e3449dcaa830a02a5ef361f132913c33c4be",
+      "files": [
+        {
+          "path": "app/(practice)/practice/castaway/components/about/about.module.css",
+          "bytes": 1068,
+          "sha256": "a07b7b5d81eef4d2553523ac9bff2380d9c5badc88f9d025e06d3cfec12da396"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/button/button.module.css",
+          "bytes": 184,
+          "sha256": "dcbb6e19cdb3e105d041d6c176c6b4d67416ba040241f313b7c66e69503f5432"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/contact-links/contact-links.module.css",
+          "bytes": 52,
+          "sha256": "db580dc0120695a4ca28873dd98027735db1a1f5cd7b1ffca92dbcfa1ad83de8"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/contact/contact.module.css",
+          "bytes": 1317,
+          "sha256": "e4a9ac33080b0056c9b97921d1a7bdaa2c34c8ee53c22eff0179cfd276a62d0f"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/episodes/episode/episode.module.css",
+          "bytes": 1091,
+          "sha256": "1e359b072746e8185c23d926685394aa196a60b7cba5a91bff4bf2c6d7b16da7"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/episodes/episodes.module.css",
+          "bytes": 645,
+          "sha256": "67c820f54b951a5bb55b854745ce08e35bc5eaa2929254c84be251d60705006b"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/footer/footer.module.css",
+          "bytes": 732,
+          "sha256": "624ac2d7650a7f35a038e500660dfe4976b1bb84bec35c5df2c13988b9ac30d8"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/header/header.module.css",
+          "bytes": 247,
+          "sha256": "c0bd068e143552f7286a342c9a78445fae45e25ad8b05899af3aae6744c005d6"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/hero/hero-image/hero-image.module.css",
+          "bytes": 503,
+          "sha256": "03ce09035ca262d14fa9239b03573f974febe6c839beb7ca0cf021d79f894f5c"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/hero/hero.module.css",
+          "bytes": 1208,
+          "sha256": "beff8002001bd8f4743fa365c8e556dce69763a3d8674e16672676083730137f"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/menu/menu.module.css",
+          "bytes": 786,
+          "sha256": "44e710e49a2574d89406a2197eecd2703c729963f4bce5ef4ee0ff6082c735a1"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/navbar/navbar.module.css",
+          "bytes": 519,
+          "sha256": "6a885707fc6e3a3d405b17e53a5963aeb108fb32fd4ad831e4035446b088e12d"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/panel/panel.module.css",
+          "bytes": 65,
+          "sha256": "4807cbc553710737065f4dfe262b4069173a4e06eec90e6d40c89f610e96f616"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/reviews/rating/rating.module.css",
+          "bytes": 149,
+          "sha256": "3626018e65ec5266ac4a61a521fd31850b0aaddc11bcdd2b88a563855f294c16"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/reviews/review/review.module.css",
+          "bytes": 489,
+          "sha256": "ce6c2b3747c4203263731182e863dcaf71a4338bebbe15b9d30d8fd569d4ce79"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/reviews/reviews.module.css",
+          "bytes": 406,
+          "sha256": "7770b6c9ce5ffcc84c90c7b83432e405093a99da79e715b168538e242353a813"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/components/section/section.module.css",
+          "bytes": 264,
+          "sha256": "2fc07b7150d79e756d4238e32b90ff79ffa02d5267bd362c5d255a726ffb6941"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/demo.module.css",
+          "bytes": 426,
+          "sha256": "c6c6e276d51cdc60c0de5bdff47e2f10c9faeb8c69c63cc8fce4d5994783394f"
+        },
+        {
+          "path": "app/(practice)/practice/castaway/globals.css",
+          "bytes": 400,
+          "sha256": "97d7506bc00cb962e808a928f779bfda823906e73b34f12bc4554fa67c8c438b"
+        },
+        {
+          "path": "app/admin/admin.css",
+          "bytes": 4426,
+          "sha256": "ce9b11a94e890b474762a108edb1bc67d31f42fa16d53d524b168cd000d50708"
+        },
+        {
+          "path": "app/globals.css",
+          "bytes": 7833,
+          "sha256": "8463472588cb78b74a0723ce8784c99d937604c4f8523137f37646d5493b0d68"
+        },
+        {
+          "path": "components/algorithms/AlgorithmArticle.module.css",
+          "bytes": 908,
+          "sha256": "c59501a31459666cb8b69283221d5bc1f56e89e90ad9c4622e9ca97e168c9fc1"
+        },
+        {
+          "path": "components/algorithms/AlgorithmVideo.module.css",
+          "bytes": 248,
+          "sha256": "a59ca21b6855b9521b1fdfad70008007be9267461651aebf197fa95031b5f475"
+        },
+        {
+          "path": "components/algorithms/BellmanFordPlayer.module.css",
+          "bytes": 2211,
+          "sha256": "f90aa576c9d5103a0d97a358daeda144df0bc732390105338f20fe5553ce53dd"
+        },
+        {
+          "path": "components/algorithms/BinarySearchPlayer.module.css",
+          "bytes": 1578,
+          "sha256": "dd7727e6cc499a46cd038994b007b9f94f920a5ed2a0fa0888a2589b9d5f2140"
+        },
+        {
+          "path": "components/algorithms/BoidsPlayer.module.css",
+          "bytes": 2084,
+          "sha256": "5fef346e87215b9f84fc36807025ca70bf6e635f5e3f95552a505ccbf1b94a7e"
+        },
+        {
+          "path": "components/algorithms/BreadthFirstSearchPlayer.module.css",
+          "bytes": 2692,
+          "sha256": "90f69cfc6828c7f5fd22be46b90a53b5b4f0b4fc239a75277e05d93192b4977c"
+        },
+        {
+          "path": "components/algorithms/ChaosGamePlayer.module.css",
+          "bytes": 1217,
+          "sha256": "106a1ef0791a7a1769911ef1d014c0622822c790a62291c0ed9c2dad6da0f44b"
+        },
+        {
+          "path": "components/algorithms/ClosestPairPlayer.module.css",
+          "bytes": 2262,
+          "sha256": "5f38cb3a918cb661526328f549f31f5a37280c8e098dcaf43d6829cedb466492"
+        },
+        {
+          "path": "components/algorithms/ConvexHullPlayer.module.css",
+          "bytes": 2028,
+          "sha256": "99778590c73c7535813dc93fe9aa01acedaa84e8a254ad999dab866df93a3b7d"
+        },
+        {
+          "path": "components/algorithms/DelaunayPlayer.module.css",
+          "bytes": 1991,
+          "sha256": "4a0922aa724179b505215956886b37078c3149c4e1c884eb4cb1c33fd8096965"
+        },
+        {
+          "path": "components/algorithms/DsuPlayer.module.css",
+          "bytes": 2095,
+          "sha256": "07382790aeedff6c452e8b3df53f438d786dfbcced6a737be6d53c7e91b481de"
+        },
+        {
+          "path": "components/algorithms/FallingSandPlayer.module.css",
+          "bytes": 2397,
+          "sha256": "47fbc1497ea5bf8808baca33d958688de57f12f7c8258993de7679309c0d8c32"
+        },
+        {
+          "path": "components/algorithms/FloydWarshallPlayer.module.css",
+          "bytes": 2950,
+          "sha256": "26e4081128bf6c91e31bb49a10faf93b33a14ce8618f69f5b760c25d456c630e"
+        },
+        {
+          "path": "components/algorithms/GameOfLifePlayer.module.css",
+          "bytes": 2234,
+          "sha256": "6d7e1ac364963e0216a73f3b32d72ee61453b7228a7d409d3cec5da9bbb562d5"
+        },
+        {
+          "path": "components/algorithms/KochSnowflakePlayer.module.css",
+          "bytes": 1901,
+          "sha256": "20e2d287d6b9fb451c89811f8599873b74f5efbd0b29af2cd45cdbf6702a926e"
+        },
+        {
+          "path": "components/algorithms/KruskalPlayer.module.css",
+          "bytes": 1999,
+          "sha256": "2c8e9405cb2469708428bc0f84d0fb1c8d1969d73dfb89bfba2338c5fb64890e"
+        },
+        {
+          "path": "components/algorithms/LangtonsAntPlayer.module.css",
+          "bytes": 1336,
+          "sha256": "89da9ebf872a14b05bb3727d480be1a6ba533dbbb766230e033cd591d43da6ca"
+        },
+        {
+          "path": "components/algorithms/MazeGenerationComparisonPlayer.module.css",
+          "bytes": 1328,
+          "sha256": "2e0437cdf4423458e0e9add61c6bdeac5fdf8426101491cc1e54e4ead3a565b8"
+        },
+        {
+          "path": "components/algorithms/MazePlayer.module.css",
+          "bytes": 5301,
+          "sha256": "d3b162acce95a7c2a3d9212f1534b837e99e2c41208f317809e22eddac65a04a"
+        },
+        {
+          "path": "components/algorithms/MstComparisonPlayer.module.css",
+          "bytes": 2159,
+          "sha256": "0060eb8fdae0b2977688614b4501d29b9980a9d433f3c153a0438db58fa92207"
+        },
+        {
+          "path": "components/algorithms/PrimPlayer.module.css",
+          "bytes": 1444,
+          "sha256": "fcca4aed87a6e79f2868662c1b19df9e6b700bb0ce279431570571ab18559d11"
+        },
+        {
+          "path": "components/algorithms/PythagorasTreePlayer.module.css",
+          "bytes": 2162,
+          "sha256": "eafd2af05dda375ce6febfaef22524b6cdd56ff2e1918ecb8c76377e3f57057f"
+        },
+        {
+          "path": "components/algorithms/Rule30Player.module.css",
+          "bytes": 2046,
+          "sha256": "afa9b85be14b24f8a9dad463ac0a7cde7520acdb82d9b622bead621cfb0622ab"
+        },
+        {
+          "path": "components/algorithms/ShortestPathComparisonPlayer.module.css",
+          "bytes": 3810,
+          "sha256": "990abf4cdf4032969e8a2200187752229d48edc0df028d551acfb2921cd0a6c7"
+        },
+        {
+          "path": "components/algorithms/SortingPlayer.module.css",
+          "bytes": 2239,
+          "sha256": "491e5e23c497e97ee777305dcbd03bafda760e92386adcc96f6173d15c700485"
+        },
+        {
+          "path": "components/algorithms/TextMazeConstructor.module.css",
+          "bytes": 4684,
+          "sha256": "1d026fc82096c12b621a123ccdc53c18206ab4a20eb9ff1756874e32e111a918"
+        },
+        {
+          "path": "components/algorithms/TopologicalSortPlayer.module.css",
+          "bytes": 1920,
+          "sha256": "bc6f3d322a7f48c7eec39f00a5020301636ed04a9e6db218ad84b26aa87df091"
+        },
+        {
+          "path": "components/algorithms/VoronoiPlayer.module.css",
+          "bytes": 1372,
+          "sha256": "2430a569cf192fa751640882c72dbf02ef574a3ef2ebba9502bf83624ab7037d"
+        },
+        {
+          "path": "components/algorithms/WeightedMazeComparison.module.css",
+          "bytes": 4154,
+          "sha256": "913afccb45630183f245c4d12a75566235548e8ee229ab097d7ca1a1599256a5"
+        },
+        {
+          "path": "components/algorithms/player/AlgorithmPlayer.module.css",
+          "bytes": 5889,
+          "sha256": "0972a220d99058842e2701128627219cfa25dd42c67fe7bb7df783a07286a0f5"
+        },
+        {
+          "path": "components/design-preview/DrawerMenu.module.css",
+          "bytes": 3189,
+          "sha256": "d440fcc08564c4c933d98190dc0452b806519e820a6898f167b7fd413e7faa90"
+        },
+        {
+          "path": "components/design-preview/InteractiveDemo.module.css",
+          "bytes": 1701,
+          "sha256": "4fbbdaf0d555684036981d09f661fae8bacea46861b1499f21f4f8c88b15f6c4"
+        },
+        {
+          "path": "components/design-preview/Preview.module.css",
+          "bytes": 7237,
+          "sha256": "d98e0b8c2cfb5081e91a70b6d44af7ff88f055a14bf88fd78c58cbe6492464b0"
+        },
+        {
+          "path": "components/home/CssOrderPreview.module.css",
+          "bytes": 1082,
+          "sha256": "920833ff6d010f146341076e673a31e21b3fad0c3ecf443ce1da2112d32e9235"
+        },
+        {
+          "path": "components/home/Home.module.css",
+          "bytes": 6308,
+          "sha256": "4f1e3d7c150c838bc063fd5ca20371d026755b890aade13eb8bdb19a14d7eece"
+        },
+        {
+          "path": "components/short-links/PublicLinks.module.css",
+          "bytes": 7763,
+          "sha256": "03e809f8fa75b4237dc38ada8c7197872d22c4012921a0b42c6fb7ae555dbc0b"
+        },
+        {
+          "path": "components/site/Site.module.css",
+          "bytes": 18364,
+          "sha256": "47f62df9bfc5e401dca0e9f5364c105f7808c927720e134f5cb085b8694afc01"
+        },
+        {
+          "path": "components/slider/SliderItem.module.scss",
+          "bytes": 103,
+          "sha256": "d54ddcadaa8304cfa2342ee23375335763b430d742270eb1cd8b75690b93a42d"
+        },
+        {
+          "path": "components/so/SoInfo.module.scss",
+          "bytes": 141,
+          "sha256": "945d9d525a19692feeb75fe29cbcda53bd205ca34ea25023bcc48f177ba2d9c1"
+        }
+      ]
+    },
+    {
+      "id": "grundyjs.ru-6f9645c",
+      "origin": {
+        "kind": "local-git",
+        "repository": "grundyjs.ru"
+      },
       "revision": "6f9645c65d9c6cd2cfa2f87a7ef34b06bba4a8a4",
       "selection": {
         "roots": [

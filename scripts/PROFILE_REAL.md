@@ -2,6 +2,8 @@
 
 The profiling commands use the pinned whole-file corpus. They create temporary source snapshots and never edit production modules or change the sorting API. Reports and CPU profiles belong outside the repository. All files of a project are processed separately; times cover the entire project batch.
 
+The default selection includes both `grundyjs.ru` and the preserved `grundyjs.ru-6f9645c` batch. Use `--project` to inspect one revision. Historical findings below retain their original corpus; their recorded totals do not describe the refreshed default selection.
+
 Full-format phase clocks follow the current direct parse/serialize path and measure Processor fallback for maps without parsing twice. Recorded findings below retain their original baseline commit; they are not measurements of the new default integration.
 
 ```sh

@@ -44,6 +44,103 @@
     gap: 24px;
     align-items: start;
 }
+.summary {
+    margin-bottom: 32px;
+}
+.summaryHeading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.summaryHeading h2 {
+    font-size: 22px;
+    font-weight: 650;
+}
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+.summaryCard {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface, var(--paper));
+}
+.summaryCard h3 {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+.summaryCard .summaryValue {
+    font-size: 28px;
+    font-weight: 650;
+    margin-block: 10px;
+}
+.summaryCard dl {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 8px;
+    font-size: 13px;
+}
+.summaryCard dd {
+    margin: 0;
+    text-align: right;
+}
+.summaryCard progress {
+    width: 100%;
+    height: 6px;
+    accent-color: var(--accent);
+}
+.summaryRequests {
+    margin-top: 16px;
+}
+.summaryRequests dl {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-block: 14px;
+}
+.summaryRequests dd {
+    margin-top: 6px;
+    text-align: left;
+    font-size: 28px;
+    font-weight: 650;
+}
+.destinationPreview {
+    margin-bottom: 24px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+.destinationPreview strong {
+    display: block;
+    margin-bottom: 8px;
+}
+.destinationPreview bdi {
+    display: block;
+    overflow-wrap: anywhere;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    user-select: text;
+}
+@media (max-width: 1000px) {
+    .summaryGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 540px) {
+    .summaryGrid {
+        grid-template-columns: 1fr;
+    }
+    .summaryRequests dl {
+        grid-template-columns: 1fr;
+    }
+}
 .card {
     padding: 28px;
     border: 1px solid var(--line);
@@ -278,6 +375,11 @@
     margin-top: 8px;
     color: var(--muted);
     font-size: 13px;
+}
+.statistics {
+    margin-block: 12px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
 }
 @media (max-width: 800px) {
     .grid {

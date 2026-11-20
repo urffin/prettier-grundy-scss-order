@@ -38,7 +38,7 @@ The command packs the current checkout, installs the tarball and the selected Pr
 
 To use an existing installed package, including a published version, pass `--package-root /consumer/node_modules/prettier-grundy-scss-order`. It uses that consumer's Prettier and PostCSS. For a manually opened browser, use `--serve`: the command prints a local URL, waits for the page to submit results and launches no browser or debugger. In PowerShell, use `npm.cmd` if the shim consumes `--`.
 
-The 312 cases cover all 15 pinned regression fixtures across five presets and strict/loose, BOM/CRLF and comment-only/empty input, comments and ignore directives, root/group spacing combinations, aliases, configuration/syntax diagnostics, root/nested/missing/inline/malformed map annotations. Each success is checked against an explicit Processor reference and a second formatting pass. Sparse generated maps normalize only random PostCSS input source IDs for within-Node reference comparison; map-free CSS is compared separately across runtimes. Empty input can use Prettier's own fast path without calling the parser.
+The 342 cases cover all 18 pinned regression fixtures across five presets and strict/loose, BOM/CRLF and comment-only/empty input, comments and ignore directives, root/group spacing combinations, aliases, configuration/syntax diagnostics, root/nested/missing/inline/malformed map annotations. Each success is checked against an explicit Processor reference and a second formatting pass. Sparse generated maps normalize only random PostCSS input source IDs for within-Node reference comparison; map-free CSS is compared separately across runtimes. Empty input can use Prettier's own fast path without calling the parser.
 
 `browser-results.json` records package/dependency versions, bundle/input/source hashes, browser environment, per-case output hashes and direct/fallback call counts. Its sibling `browser-results.evidence` directory retains raw Node/browser results, cases, metadata and the generated bundle. Failed comparisons exit nonzero. Unit tests reject missing/duplicate results, changed comments/output, wrong integration paths and map-policy exceptions that alter CSS.
 
@@ -46,7 +46,7 @@ CI runs this check in the existing Node.js 24/Linux matrix with minimum Prettier
 
 ## Runtime dependency matrix
 
-Four additional Node.js 24/Linux CI jobs run every minimum/latest combination of `postcss` and `postcss-scss`, using the checkout's locked Prettier. Each installs the actual plugin tarball in a fresh consumer and runs the same 312 Node/browser cases: both safety modes, all presets, comments/ignore, direct/fallback, valid and invalid maps. These jobs also gate releases through the reusable checks workflow.
+Four additional Node.js 24/Linux CI jobs run every minimum/latest combination of `postcss` and `postcss-scss`, using the checkout's locked Prettier. Each installs the actual plugin tarball in a fresh consumer and runs the same 342 Node/browser cases: both safety modes, all presets, comments/ignore, direct/fallback, valid and invalid maps. These jobs also gate releases through the reusable checks workflow.
 
 ```sh
 npm run test:browser -- --postcss minimum --postcss-scss latest --output browser-results.json

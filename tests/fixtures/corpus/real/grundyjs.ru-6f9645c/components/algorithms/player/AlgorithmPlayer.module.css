@@ -1,0 +1,268 @@
+.player {
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--ink);
+}
+.player > fieldset,
+.controls {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.actions,
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 8px;
+}
+.actions {
+    justify-content: flex-end;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+}
+.player :is(button, select),
+.download {
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 14px;
+}
+.player select {
+    font-size: 16px;
+}
+.player button:disabled {
+    opacity: 0.4;
+}
+.player button:hover:not(:disabled) {
+    background: var(--surface);
+}
+.player :is(button, select, input, summary, a):focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: 3px;
+}
+.controls label,
+.seek,
+.share {
+    display: grid;
+    gap: 5px;
+    font-size: 14px;
+}
+.seek {
+    margin-top: 12px;
+}
+.seek input {
+    width: 100%;
+    min-height: 44px;
+}
+.share {
+    margin: 12px 0;
+}
+.share input {
+    width: 100%;
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+}
+.share a {
+    overflow-wrap: anywhere;
+}
+.status {
+    font-size: 13px;
+    margin-block: 8px;
+}
+.export {
+    margin-block: 12px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+.export progress {
+    display: block;
+    width: 100%;
+    margin-block: 10px;
+}
+.export video {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    margin-block: 12px;
+}
+.download {
+    display: inline-flex;
+    align-items: center;
+}
+.player:fullscreen,
+.expanded {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    max-width: none;
+    overflow: hidden;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    overscroll-behavior: contain;
+}
+.expanded {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+}
+@media (max-width: 640px) {
+    .player {
+        padding: 12px;
+    }
+    .actions {
+        justify-content: flex-start;
+    }
+    .actions button,
+    .controls > button {
+        flex: 1 1 auto;
+    }
+    .controls > label:first-child {
+        flex: 1 1 100%;
+    }
+}
+
+/* Keep the original scene mounted: fullscreen changes layout, never the algorithm session.
+ * Only canvas ancestry participates in this layout, including render-prop scenes. */
+.player[data-expanded="true"] {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+}
+.player[data-expanded="true"] > :not(.sceneContent, .overlay, .exit) {
+    display: none;
+}
+.player[data-expanded="true"] .sceneContent {
+    position: absolute;
+    inset: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    overflow: hidden;
+}
+.player[data-expanded="true"] .sceneContent :has(canvas) {
+    display: contents;
+}
+.player[data-expanded="true"] .sceneContent:has([data-fullscreen-board]) {
+    padding-top: 56px;
+}
+.player[data-expanded="true"] .sceneContent :not(canvas, :has(canvas), [data-fullscreen-label]) {
+    display: none;
+}
+.player[data-expanded="true"] .sceneContent [data-fullscreen-board] {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+.player[data-expanded="true"] [data-fullscreen-label] {
+    padding: 8px 12px;
+    margin: 0;
+}
+.player[data-expanded="true"] .sceneContent canvas {
+    width: var(--fullscreen-canvas-width, 100%) !important;
+    height: var(--fullscreen-canvas-height, 100%) !important;
+    place-self: center;
+    min-width: 0;
+    min-height: 0;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    object-fit: contain;
+}
+.player .exit {
+    position: absolute;
+    z-index: 2;
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+}
+.overlay {
+    position: absolute;
+    z-index: 2;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(520px, calc(100% - 32px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper);
+    transition: opacity 180ms ease;
+}
+.overlay[data-visible="false"] {
+    opacity: 0;
+    pointer-events: none;
+}
+.overlay:has(:focus-visible) {
+    opacity: 1;
+    pointer-events: auto;
+}
+.overlay .seek {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+}
+.overlay .seek input {
+    min-width: 0;
+}
+.overlay .controls {
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 6px;
+}
+.overlay .controls > button {
+    flex: 0 1 auto;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+}
+.overlay .controls > label {
+    display: flex;
+    align-items: center;
+    font-size: 0;
+}
+.overlay [hidden] {
+    display: none;
+}
+@media (orientation: portrait) {
+    .player[data-expanded="true"] .sceneContent {
+        grid-auto-flow: row;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: none;
+        grid-auto-rows: minmax(0, 1fr);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .overlay {
+        transition: none;
+    }
+}

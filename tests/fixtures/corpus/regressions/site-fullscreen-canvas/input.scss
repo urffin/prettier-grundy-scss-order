@@ -1,0 +1,11 @@
+/* Reduced from the expanded algorithm players. */
+.player[data-expanded="true"] .canvas {
+  width: var(--fullscreen-canvas-width, 100%);
+  height: var(--fullscreen-canvas-height, auto);
+  margin-inline: auto;
+  transform: translateY(var(--fullscreen-canvas-offset-y, 0px));
+}
+.player[data-expanded="true"] .metrics,
+.player[data-expanded="true"] .inspection {
+  display: none;
+}

@@ -1,0 +1,13 @@
+.poster {
+    color: var(--ink, #f4f4f5);
+    background: var(--surface, #111827);
+}
+.poster:hover {
+    background: var(--paper, #1e1b4b);
+}
+.poster .icon {
+    color: var(--link, #c7d2fe);
+}
+.poster .caption {
+    color: var(--muted, #d1d5db);
+}

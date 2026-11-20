@@ -1,0 +1,13 @@
+/* The shared button reset precedes the glossary decoration. */
+.site-shell article button.article-term {
+  text-decoration: none;
+  color: inherit;
+  cursor: help;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  &:is(:hover, :focus-visible, [aria-expanded="true"]) {
+    text-decoration-style: solid;
+  }
+}

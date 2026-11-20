@@ -1,0 +1,114 @@
+.player {
+    margin-block: 2rem;
+}
+.canvas {
+    display: block;
+    width: 100%;
+    border-radius: 0.75rem;
+    touch-action: none;
+}
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 0.65rem;
+}
+.row label {
+    display: grid;
+    gap: 0.25rem;
+}
+.row input {
+    width: 6rem;
+}
+.player button,
+.player select,
+.row input {
+    min-height: 44px;
+    border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+    border-radius: 0.5rem;
+    padding: 0.45rem 0.65rem;
+    background: var(--color-background, transparent);
+    color: inherit;
+}
+.player button {
+    cursor: pointer;
+}
+.player button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+.player :is(button, input, select):focus-visible {
+    outline: 3px solid #a78bfa;
+    outline-offset: 3px;
+}
+.panels {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.panel {
+    min-width: 0;
+    border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+}
+.panel h3 {
+    font-weight: 600;
+}
+.panel p {
+    overflow-wrap: anywhere;
+}
+.panel p,
+.status,
+.help,
+.legend,
+.toggle {
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+.status {
+    padding: 0.5rem;
+}
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    padding: 0.5rem;
+}
+.legend span::before {
+    content: "";
+    display: inline-block;
+    width: 0.7rem;
+    height: 0.7rem;
+    margin-right: 0.35rem;
+    background: #38bdf8;
+    border: 1px solid currentColor;
+}
+.legend span:nth-child(2)::before {
+    background: #fbbf24;
+}
+.legend span:nth-child(3)::before {
+    background: #34d399;
+}
+.toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+}
+.toggle input {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+.help {
+    margin-top: 1rem;
+}
+@media (max-width: 700px) {
+    .panels {
+        grid-template-columns: 1fr;
+    }
+}

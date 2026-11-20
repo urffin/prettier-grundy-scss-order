@@ -1,0 +1,129 @@
+.player {
+    min-width: 0;
+}
+.settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: end;
+    margin-bottom: 14px;
+}
+.settings label {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+    font-size: 14px;
+}
+.settings input,
+.settings select {
+    min-height: 44px;
+    max-width: 100%;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink);
+    background: var(--paper);
+    font-size: 16px;
+}
+.settings input {
+    width: 100px;
+}
+.note {
+    margin-block: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+}
+.alert {
+    color: var(--canvas-recording);
+    margin-block: 10px;
+}
+.scene {
+    display: grid;
+    gap: 16px;
+    align-items: start;
+    min-width: 0;
+}
+.canvas {
+    display: block;
+    width: 100%;
+    border-radius: 8px;
+    touch-action: none;
+    cursor: crosshair;
+}
+.inspection {
+    min-width: 0;
+    font-size: 14px;
+}
+.inspection h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+.inspection ol {
+    padding-left: 20px;
+    list-style: decimal;
+    line-height: 1.7;
+    margin-block: 14px;
+}
+.neighbors {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+}
+.neighbors div {
+    min-width: 0;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+.neighbors .wall {
+    background: var(--line);
+}
+.neighbors .center {
+    outline: 2px solid var(--ink);
+    outline-offset: -2px;
+}
+.neighbors .chosen {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+}
+.decision {
+    padding: 10px;
+    border-left: 3px solid var(--link);
+    background: var(--surface);
+    line-height: 1.6;
+}
+@media (min-width: 900px) {
+    .inspecting {
+        grid-template-columns: minmax(0, 1fr) 245px;
+    }
+}
+@media (max-width: 450px) {
+    .settings label {
+        flex: 1 1 120px;
+    }
+    .settings input,
+    .settings select {
+        width: 100%;
+    }
+    .settings button {
+        flex: 1 1 auto;
+    }
+    .neighbors {
+        max-width: 280px;
+    }
+}
+:global([data-expanded="true"]) .canvas {
+    transform: translateY(var(--fullscreen-canvas-offset-y, 0px));
+}
+
+.neighbors .contested {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+}

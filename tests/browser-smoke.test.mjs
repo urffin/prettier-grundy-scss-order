@@ -1,6 +1,7 @@
 import { test } from "uvu";
 import assert from "node:assert/strict";
 import prettier from "prettier";
+import { readFile } from "node:fs/promises";
 import { browserCases } from "../scripts/browser/cases.mjs";
 import { verifyBrowserResults, canonicalMapOutput } from "../scripts/browser/verification.mjs";
 import { parseBrowserArgs } from "../scripts/test-browser.mjs";
@@ -42,8 +43,15 @@ test("Browser case set covers pinned regressions, presets, modes, aliases and ma
     const cases = await browserCases();
     assert.equal(new Set(cases.map(c => c.id)).size, cases.length);
     const fixtures = cases.filter(c => c.expected);
-    assert.equal(new Set(fixtures.map(c => c.id.split("/")[1])).size, 15);
-    assert.equal(fixtures.length, 15 * 5 * 2);
+    const manifest = JSON.parse(
+        await readFile(new URL("fixtures/corpus/regressions/manifest.json", import.meta.url), "utf8")
+    );
+    const expected = manifest.fixtures.flatMap(f =>
+        ["default", "csscomb", "csscomb-yandex", "csscomb-zen", "pepelsbey"].flatMap(preset =>
+            ["strict", "loose"].map(mode => `fixture/${f.id}/${preset}/${mode}`)
+        )
+    );
+    assert.deepEqual(fixtures.map(c => c.id).sort(), expected.sort());
     for (const preset of ["default", "csscomb", "csscomb-yandex", "csscomb-zen", "pepelsbey"])
         for (const mode of ["strict", "loose"])
             assert(

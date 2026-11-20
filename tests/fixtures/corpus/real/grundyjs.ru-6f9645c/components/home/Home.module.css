@@ -1,0 +1,354 @@
+.home {
+    background: #f8f9fc;
+    color: #192235;
+    --accent: #5744db;
+}
+.home a {
+    transition:
+        color 0.2s,
+        background 0.2s;
+}
+.home a:focus-visible {
+    outline: 3px solid #9e91f8;
+    outline-offset: 5px;
+}
+.home a:hover {
+    color: var(--accent);
+}
+.hero,
+.section,
+.signoff {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 76px 32px;
+    scroll-margin-top: 80px;
+}
+.hero {
+    padding-top: 98px;
+    padding-bottom: 58px;
+    background: radial-gradient(ellipse at 88% 18%, #e9e5ff 0, transparent 52%);
+}
+.eyebrow,
+.tag {
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 11px;
+    letter-spacing: 0.13em;
+    font-weight: 600;
+    color: #636b80;
+}
+.eyebrow {
+    margin-bottom: 24px;
+}
+.hero h1 {
+    font-size: clamp(36px, 5.3vw, 70px);
+    font-weight: 650;
+    letter-spacing: -0.055em;
+    line-height: 1.12;
+    margin: 0 0 28px;
+}
+.hero h1 span {
+    color: var(--accent);
+}
+.hero > p {
+    font-size: 19px;
+    line-height: 1.75;
+    max-width: 660px;
+    color: #596277;
+}
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-top: 34px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.actions .primary {
+    background: var(--accent);
+    color: white;
+    padding: 16px 23px;
+    border-radius: 10px;
+}
+.actions .primary:hover {
+    background: #4130b8;
+    color: white;
+}
+.heroMeta {
+    display: flex;
+    gap: 25px;
+    margin-top: 48px;
+    font-size: 12px;
+    color: #747c8e;
+}
+.sectionHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+.section h2 {
+    font-size: clamp(26px, 3vw, 38px);
+    letter-spacing: -0.04em;
+    font-weight: 600;
+    line-height: 1.2;
+}
+.sectionHead .eyebrow {
+    margin-bottom: 12px;
+}
+.sectionHead > a {
+    font-size: 13px;
+    white-space: nowrap;
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+.card {
+    background: white;
+    border: 1px solid #e2e5ee;
+    border-radius: 18px;
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+}
+.preview {
+    height: 165px;
+    margin: 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5fb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.preview pre {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #6557ab;
+}
+.codePreview {
+    height: auto;
+    min-height: 165px;
+}
+.bars {
+    display: flex;
+    align-items: end;
+    gap: 8px;
+    height: 120px;
+}
+.bars span {
+    width: 21px;
+    border-radius: 5px 5px 2px 2px;
+    background: #a79beb;
+}
+.bars span:nth-child(3n) {
+    background: #5944cf;
+}
+.record {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font:
+        11px var(--font-geist-mono),
+        monospace;
+    color: #636b80;
+}
+.recDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #dc627d;
+}
+.wave {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    height: 70px;
+}
+.wave i {
+    display: block;
+    width: 5px;
+    background: #9689dc;
+    border-radius: 8px;
+}
+.package {
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 12px;
+    color: #6554b8;
+    overflow-wrap: anywhere;
+}
+.card h3 {
+    font-size: 22px;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+    line-height: 1.35;
+    margin: 14px 0;
+}
+.card p,
+.articles p,
+.demoIntro p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #667085;
+}
+.cardLinks {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    margin-top: auto;
+    padding-top: 25px;
+}
+.cardLinks a:first-child {
+    margin-right: auto;
+    font-weight: 600;
+}
+.demo {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 55px;
+    align-items: center;
+}
+.demoIntro h2 {
+    max-width: 350px;
+}
+.demoIntro p {
+    margin: 24px 0;
+}
+.demoIntro > a {
+    font-size: 14px;
+    font-weight: 600;
+}
+.player {
+    min-width: 0;
+    background: white;
+    border: 1px solid #e2e5ee;
+    border-radius: 18px;
+    padding: 12px;
+}
+.articles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 30px;
+}
+.articles > a {
+    border-top: 1px solid #d9deea;
+    padding-top: 23px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+.articles h3 {
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.025em;
+    margin: 15px 0;
+}
+.articles p {
+    margin-bottom: 24px;
+}
+.articles > a > span:last-child {
+    font-size: 13px;
+    margin-top: auto;
+}
+.signoff {
+    border-top: 1px solid #e2e5ee;
+    padding-top: 28px;
+    padding-bottom: 28px;
+    display: flex;
+    gap: 24px;
+    font-size: 12px;
+    color: #667085;
+}
+.signoff > span {
+    margin-right: auto;
+}
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    .card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 28px;
+    }
+    .preview {
+        grid-column: 2;
+        grid-row: 1/6;
+        margin: 0;
+        height: 100%;
+    }
+    .cardLinks {
+        grid-column: 1;
+    }
+    .demo {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    .demoIntro h2 {
+        max-width: none;
+    }
+    .articles {
+        grid-template-columns: 1fr;
+    }
+    .section {
+        padding-top: 45px;
+        padding-bottom: 45px;
+    }
+}
+@media (max-width: 540px) {
+    .hero,
+    .section,
+    .signoff {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .hero {
+        padding-top: 56px;
+    }
+    .hero > p {
+        font-size: 16px;
+    }
+    .heroMeta {
+        flex-wrap: wrap;
+        gap: 12px 20px;
+        margin-top: 30px;
+    }
+    .actions {
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    .sectionHead {
+        align-items: start;
+        flex-direction: column;
+        gap: 16px;
+    }
+    .card {
+        display: flex;
+        padding: 22px;
+    }
+    .preview {
+        height: 140px;
+        margin: 20px 0;
+    }
+    .signoff {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    .signoff > span {
+        width: 100%;
+    }
+    .player {
+        padding: 5px;
+    }
+    .cardLinks {
+        font-size: 12px;
+    }
+}

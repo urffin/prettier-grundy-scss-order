@@ -1,0 +1,107 @@
+.embedded {
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    container-type: inline-size;
+}
+.player {
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    container-type: inline-size;
+}
+.player button {
+    min-height: 44px;
+}
+.arrayCanvas {
+    aspect-ratio: 16 / 9;
+    min-height: 280px;
+}
+.mergeCanvas {
+    aspect-ratio: 100 / 65;
+    min-height: 380px;
+}
+.options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.options label {
+    display: grid;
+    grid-column: 1 / -1;
+    gap: 8px;
+}
+.options button {
+    flex: 1 1 0;
+}
+@container (min-width: 480px) {
+    .options {
+        display: flex;
+        align-items: end;
+    }
+    .options label {
+        flex: 1 1 auto;
+    }
+    .options button {
+        flex: 0 1 auto;
+    }
+}
+:is(.embedded, .player) .inputForm {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+:is(.embedded, .player) input:not([type="range"]),
+:is(.embedded, .player) select {
+    min-width: 0;
+    min-height: 44px;
+    font-size: 16px;
+}
+:is(.embedded, .player) .inputForm button,
+:is(.embedded, .player) .playbackControls button {
+    min-width: 0;
+    min-height: 44px;
+    margin-top: 0;
+    padding: 10px 8px;
+    font-size: 14px;
+    line-height: 1.35;
+    text-wrap: balance;
+}
+:is(.embedded, .player) .playbackControls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 16px 0;
+}
+:is(.embedded, .player) .speed {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 4px;
+}
+.speed select {
+    min-width: 90px;
+}
+:is(.embedded, .player) input[type="range"] {
+    min-height: 44px;
+}
+:is(.embedded, .player) p {
+    overflow-wrap: anywhere;
+}
+@container (max-width: 360px) {
+    :is(.embedded, .player) .inputForm {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+@container (min-width: 480px) {
+    :is(.embedded, .player) .playbackControls {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}

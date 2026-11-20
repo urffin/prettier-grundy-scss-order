@@ -1,0 +1,247 @@
+.builder {
+    margin-block: 2rem;
+}
+.controls {
+    border: 1px solid var(--line, #d7dadd);
+    border-radius: 1rem;
+    padding: clamp(1rem, 3vw, 2rem);
+}
+.fields {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+.fields label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-weight: 600;
+    min-width: 0;
+}
+.fields input:not([type="checkbox"]),
+.fields select,
+.fields textarea {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--line, #b4bdc7);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    background: var(--paper, #fff);
+    color: var(--ink, #17212b);
+    font: inherit;
+    font-weight: 400;
+}
+.fields textarea {
+    resize: vertical;
+}
+.fields small,
+.hint {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--muted, #586470);
+    font-weight: 400;
+}
+.wide {
+    grid-column: 1 / -1;
+}
+fieldset.wide {
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+.wide legend {
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+}
+.methods {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+}
+.methods label {
+    flex-direction: row;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid var(--line, #d7dadd);
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+.methods small {
+    display: block;
+}
+.methods input {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+.dot {
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 1px solid #526374;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.actions,
+.transport {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-block: 1rem;
+}
+.builder button {
+    min-height: 44px;
+    border: 1px solid var(--line, #aab5c0);
+    border-radius: 0.5rem;
+    padding: 0.6rem 1rem;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+.builder button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+.builder :is(button, input, select, textarea, a):focus-visible {
+    outline: 3px solid #648cf3;
+    outline-offset: 3px;
+}
+.builder p {
+    margin-block: 0.75rem;
+    line-height: 1.65;
+}
+.preview {
+    margin-top: 1.5rem;
+}
+.preview canvas {
+    display: block;
+    width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+    background: #10151c;
+    border-radius: 0.75rem;
+}
+.preview h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2rem;
+}
+.transport output {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+}
+.seek {
+    flex-basis: 100%;
+    width: 100%;
+    min-height: 32px;
+    accent-color: #3867d6;
+}
+.table {
+    overflow-x: auto;
+}
+.table table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+.table :is(th, td) {
+    padding: 0.8rem 0.65rem;
+    border-bottom: 1px solid var(--line, #d7dadd);
+    white-space: nowrap;
+}
+.error {
+    color: #bc3044;
+}
+.saved {
+    border: 1px solid var(--line, #d7dadd);
+    padding: 1rem;
+    border-radius: 0.75rem;
+}
+.music {
+    margin-block: 1.5rem;
+    border: 1px solid var(--line, #d7dadd);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    min-width: 0;
+}
+.customFont {
+    margin: 0;
+    border: 1px solid var(--line, #d7dadd);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    min-width: 0;
+}
+.music legend {
+    font-weight: 700;
+    padding-inline: 0.35rem;
+}
+.musicFile {
+    display: grid;
+    gap: 0.6rem;
+    font-weight: 600;
+}
+.musicName {
+    overflow-wrap: anywhere;
+}
+.share {
+    margin-block: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--line, #d7dadd);
+    border-radius: 0.75rem;
+}
+.share label {
+    display: grid;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+.share input {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    border: 1px solid var(--line, #b4bdc7);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    background: var(--paper, #fff);
+    color: var(--ink, #17212b);
+    font: inherit;
+    font-weight: 400;
+}
+.musicVolume {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 3.5rem;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+.musicVolume input {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    width: 100%;
+    min-height: 44px;
+    accent-color: #3867d6;
+}
+.musicVolume output {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.saved video {
+    display: block;
+    width: 100%;
+    max-height: 65vh;
+}
+@media (max-width: 600px) {
+    .fields,
+    .methods {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .transport output {
+        font-size: 0.85rem;
+    }
+}

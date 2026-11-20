@@ -183,6 +183,18 @@ body {
 .site-shell button {
     cursor: pointer;
 }
+/* Keep glossary hints visible despite the shared button decoration reset. */
+.site-shell article button.article-term {
+    color: inherit;
+    cursor: help;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+}
+.site-shell article button.article-term:is(:hover, :focus-visible, [aria-expanded="true"]) {
+    text-decoration-style: solid;
+}
 .site-shell button:disabled {
     cursor: default;
 }

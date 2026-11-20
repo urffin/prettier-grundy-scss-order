@@ -1,0 +1,28 @@
+.review {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.reviewText {
+    font-size: 36px;
+    line-height: 43.2px;
+    letter-spacing: 0;
+}
+.reviewAuthor {
+    font-size: 24px;
+    line-height: 28.8px;
+    letter-spacing: 0;
+
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.review {
+    min-width: 0;
+    padding: clamp(20px, 4vw, 50px);
+}
+.reviewText {
+    font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}

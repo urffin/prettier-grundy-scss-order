@@ -19,6 +19,7 @@ export const scenarios = [
         source: `.a { z-index: 1; @if $flag { width: 1px; color: red; } ${Array.from({ length: 30 }, (_, i) => `\n// branch ${i}\n@else if $flag == ${i} { width: 1px; color: blue; }`).join("")} color: green; }`
     },
     { id: "real-grundyjs", project: "grundyjs.ru" },
+    { id: "real-grundyjs-6f9645c", project: "grundyjs.ru-6f9645c" },
     { id: "real-landos", project: "landos-new" },
     { id: "real-falcon", project: "falcon-frontend-main" },
     { id: "real-eywa", project: "eywa-neo2" }

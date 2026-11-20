@@ -9,12 +9,14 @@ import postcss from "postcss";
 import scss from "postcss-scss";
 import plugin from "../src/index.mjs";
 import { corpusManifest } from "../scripts/corpus.mjs";
+import { createProcessorPlugin } from "../scripts/processor-reference.mjs";
 
 const root = fileURLToPath(new URL("fixtures/corpus/regressions/", import.meta.url));
 const manifest = JSON.parse(readFileSync(path.join(root, "manifest.json"), "utf8"));
 const read = name => readFileSync(path.join(root, name), "utf8");
 const common = { parser: "scss", printWidth: 100, tabWidth: 2, endOfLine: "lf" };
 const presets = ["default", "csscomb", "csscomb-yandex", "csscomb-zen", "pepelsbey"];
+const processor = createProcessorPlugin();
 const compile = (source, entry) =>
     sass.compileString(source, {
         url: pathToFileURL(path.join(root, entry)),
@@ -75,15 +77,20 @@ test("Regression manifest covers corpus adaptations and missing SCSS constructs"
         "shorthands",
         "all",
         "ignore",
-        "keyframes"
+        "keyframes",
+        "attribute-selectors",
+        "functional-selectors",
+        "grid-functions"
     ])
         assert.ok(features.has(feature), `Missing fixture feature: ${feature}`);
     const corpus = corpusManifest();
     for (const fixture of manifest.fixtures) {
+        assert.match((fixture.oracle ?? manifest.oracle).revision, /^[a-f0-9]{40}$/);
         assert.ok(["exact", "projection"].includes(fixture.strictCSS));
         if (fixture.origin.kind !== "adapted") continue;
         const project = corpus.projects.find(p => p.id === fixture.origin.project);
         assert.ok(project, fixture.id);
+        if (fixture.origin.revision) assert.is(project.revision, fixture.origin.revision, fixture.id);
         for (const file of fixture.origin.files)
             assert.ok(
                 project.files.some(f => f.path === file),
@@ -110,6 +117,11 @@ for (const fixture of manifest.fixtures) {
                         grundyScssSorterWithRoot: true
                     };
                     const output = await prettier.format(source, options);
+                    assert.is(
+                        output,
+                        await prettier.format(source, { ...options, plugins: [processor] }),
+                        `${label}: Processor reference`
+                    );
                     assert.is(await prettier.format(output, options), output, `${label}: idempotence`);
                     assert.equal(comments(output), beforeComments, `${label}: comments`);
                     for (const fragment of fixture.verbatim ?? [])

@@ -1,0 +1,98 @@
+.preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 120px;
+    margin-bottom: 16px;
+}
+.opened:focus-visible {
+    outline: 2px solid var(--link, var(--accent));
+    outline-offset: 4px;
+}
+.opened {
+    min-width: 0;
+    max-width: 100%;
+    container-type: inline-size;
+}
+.fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    min-width: 0;
+}
+.fields .field {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    margin: 0;
+}
+.fields select {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    font-size: 16px;
+}
+.fields textarea {
+    max-width: 100%;
+    min-width: 0;
+    min-height: 180px;
+    margin: 0;
+    overflow: auto;
+    font-size: 14px;
+}
+.fields .action,
+.record .action {
+    min-height: 44px;
+    margin-top: 0;
+}
+.record {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+}
+.record canvas,
+.record video,
+.record img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 8px;
+}
+.record canvas {
+    height: auto;
+}
+.opened .record p {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+.opened .fields p {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.result {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+}
+.result .download {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+@container (max-width: 480px) {
+    .fields textarea {
+        font-size: 16px;
+    }
+    .action {
+        width: 100%;
+    }
+}
